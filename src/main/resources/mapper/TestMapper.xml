@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plateer.ec1.TestMapper">
+    <select id="selectInt" resultType="com.plateer.ec1.TestVO">
+        select prm_no as num from cc_cpn_base limit 1
+    </select>
+</mapper>
