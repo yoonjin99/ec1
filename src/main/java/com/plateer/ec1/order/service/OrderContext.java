@@ -7,9 +7,6 @@ import com.plateer.ec1.order.vo.OrderVo;
 import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import com.plateer.ec1.order.vo.OrderValidationVo;
-import com.plateer.ec1.payment.factory.PaymentType;
-import com.plateer.ec1.payment.service.PayService;
-import com.plateer.ec1.payment.vo.PayInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
