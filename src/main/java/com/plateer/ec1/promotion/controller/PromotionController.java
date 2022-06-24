@@ -1,10 +1,10 @@
 package com.plateer.ec1.promotion.controller;
 
-import com.plateer.ec1.promotion.service.PromotionService;
-import com.plateer.ec1.promotion.vo.CartCouponResponDto;
-import com.plateer.ec1.promotion.vo.PriceDiscountResponseDto;
-import com.plateer.ec1.promotion.vo.ProductCouponResponseDto;
-import com.plateer.ec1.promotion.vo.PromotionRequestDto;
+import com.plateer.ec1.promotion.service.impl.PromotionServiceImpl;
+import com.plateer.ec1.promotion.vo.CartCouponResponseVo;
+import com.plateer.ec1.promotion.vo.PriceDiscountResponseVo;
+import com.plateer.ec1.promotion.vo.ProductCouponResponseVo;
+import com.plateer.ec1.promotion.vo.PromotionRequestVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -12,17 +12,17 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class PromotionController {
 
-    private final PromotionService promotionService;
+    private final PromotionServiceImpl promotionService;
 
-    public PriceDiscountResponseDto getPriceDiscountApplyData(PromotionRequestDto requestPromotionVO){
+    public PriceDiscountResponseVo getPriceDiscountApplyData(PromotionRequestVo requestPromotionVO){
         return promotionService.getPriceDiscountApplyData(requestPromotionVO);
     }
 
-    public ProductCouponResponseDto getProductCouponApplyData(PromotionRequestDto requestPromotionVO){
+    public ProductCouponResponseVo getProductCouponApplyData(PromotionRequestVo requestPromotionVO){
         return promotionService.getProductCouponApplyData(requestPromotionVO);
     }
 
-    public CartCouponResponDto getCartCouponApplyData(PromotionRequestDto requestPromotionVO){
+    public CartCouponResponseVo getCartCouponApplyData(PromotionRequestVo requestPromotionVO){
         return promotionService.getCartCouponApplyData(requestPromotionVO);
     }
 }
