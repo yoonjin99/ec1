@@ -2,6 +2,7 @@ package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
 import com.plateer.ec1.claim.enums.ClaimType;
+import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,39 +14,34 @@ public class ECouponCancelAcceptDataCreator extends ClaimDataCreator {
         return ClaimType.MCA;
     }
 
-//    @Override
-//    public ClaimModel updateOrderBenefitData(ClaimModel claimModel) {
-//        log.info("주문 혜택 업데이트 데이터 생성---------");
-//        return null;
-//    }
-//
-//    @Override
-//    public ClaimModel insertOrderBenefitRelation(ClaimModel claimModel) {
-//        log.info("주문 혜택 등록 데이터 생성---------");
-//        return null;
-//    }
-//
-//    @Override
-//    public ClaimModel updateOrderCost(ClaimModel claimModel) {
-//        log.info("주문 비용 업데이트 데이터 생성---------");
-//        return null;
-//    }
-//
-//    @Override
-//    public  ClaimModel insertOrderCost(ClaimModel claimModel) {
-//        log.info("주문 비용 등록 데이터 생성---------");
-//        return null;
-//    }
-//
-//    @Override
-//    public ClaimModel updateOrderClaim(ClaimModel claimModel) {
-//        log.info("주문 클레임 업데이트 데이터 생성---------");
-//        return null;
-//    }
-//
-//    @Override
-//    public ClaimModel insertOrderClaim(ClaimModel claimModel) {
-//        log.info("주문 클레임 등록 데이터 생성---------");
-//        return null;
-//    }
+    @Override
+    public ClaimProcessVo updateOrderBenefitData(ClaimProcessVo claimModel) {
+        return null;
+    }
+
+    @Override
+    public ClaimProcessVo insertOrderBenefitRelation(ClaimProcessVo claimModel) {
+        return null;
+    }
+
+    @Override
+    public ClaimProcessVo updateOrderCost(ClaimProcessVo claimModel) {
+        return null;
+    }
+
+    @Override
+    public ClaimProcessVo insertOrderCost(ClaimProcessVo claimModel) {
+        return null;
+    }
+
+    @Override
+    public ClaimProcessVo updateOrderClaim(ClaimProcessVo claimModel) {
+        return null;
+    }
+
+    @Override
+    public ClaimProcessVo insertOrderClaim(ClaimProcessVo claimModel) {
+        return null;
+    }
+
 }

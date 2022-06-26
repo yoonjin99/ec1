@@ -1,7 +1,7 @@
 package com.plateer.ec1.payment.factory.impl;
 
 import com.plateer.ec1.payment.enums.PaymentType;
-import com.plateer.ec1.payment.factory.PaymentService;
+import com.plateer.ec1.payment.factory.PaymentTypeService;
 import com.plateer.ec1.payment.vo.ApproveResVo;
 import com.plateer.ec1.payment.vo.NetCancelReqVo;
 import com.plateer.ec1.payment.vo.OriginalOrderVo;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class PayPoint implements PaymentService {
+public class PayPointServiceImpl implements PaymentTypeService {
 
 //    private final Point point;
 

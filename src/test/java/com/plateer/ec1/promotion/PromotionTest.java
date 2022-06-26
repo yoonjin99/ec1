@@ -1,6 +1,6 @@
-package com.plateer.ec1;
+package com.plateer.ec1.promotion;
 
-import com.plateer.ec1.promotion.service.impl.PromotionServiceImpl;
+import com.plateer.ec1.promotion.service.PromotionService;
 import com.plateer.ec1.promotion.vo.PromotionRequestVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class PromotionTest {
 
     @Autowired
-    PromotionServiceImpl promotionService;
+    PromotionService promotionService;
 
     @Test
     void priceDiscount(){

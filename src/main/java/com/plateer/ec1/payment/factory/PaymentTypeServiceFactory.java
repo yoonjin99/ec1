@@ -10,15 +10,15 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class PaymentServiceFactory {
+public class PaymentTypeServiceFactory {
 
-    private final Map<PaymentType, PaymentService> map = new HashMap();
+    private final Map<PaymentType, PaymentTypeService> map = new HashMap();
 
-    public PaymentServiceFactory(List<PaymentService> paymentServices) {
+    public PaymentTypeServiceFactory(List<PaymentTypeService> paymentServices) {
         paymentServices.forEach(paymentService -> map.put(paymentService.getType(), paymentService));
     }
 
-    public PaymentService getPaymentService(PaymentType type){
+    public PaymentTypeService getPaymentService(PaymentType type){
         log.info("-----------------PaymentServiceFactory start");
         return map.get(type);
     }

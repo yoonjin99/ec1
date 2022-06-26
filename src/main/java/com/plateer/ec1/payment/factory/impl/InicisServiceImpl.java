@@ -1,7 +1,7 @@
 package com.plateer.ec1.payment.factory.impl;
 
 import com.plateer.ec1.payment.enums.PaymentType;
-import com.plateer.ec1.payment.factory.PaymentService;
+import com.plateer.ec1.payment.factory.PaymentTypeService;
 import com.plateer.ec1.payment.vo.ApproveResVo;
 import com.plateer.ec1.payment.vo.NetCancelReqVo;
 import com.plateer.ec1.payment.vo.OriginalOrderVo;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Inicis implements PaymentService {
+public class InicisServiceImpl implements PaymentTypeService {
 
     @Override
     public void validateAuth(PayInfoVo payInfo) {

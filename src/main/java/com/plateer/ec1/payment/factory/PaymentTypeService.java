@@ -6,7 +6,7 @@ import com.plateer.ec1.payment.vo.NetCancelReqVo;
 import com.plateer.ec1.payment.vo.OriginalOrderVo;
 import com.plateer.ec1.payment.vo.PayInfoVo;
 
-public interface PaymentService {
+public interface PaymentTypeService {
     public void validateAuth(PayInfoVo payInfo);
     public ApproveResVo approvePay(PayInfoVo payInfo);
     public void cancelPay(OriginalOrderVo originalOrder);

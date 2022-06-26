@@ -1,6 +1,6 @@
 package com.plateer.ec1.promotion.controller;
 
-import com.plateer.ec1.promotion.service.impl.PromotionServiceImpl;
+import com.plateer.ec1.promotion.service.PromotionService;
 import com.plateer.ec1.promotion.vo.CartCouponResponseVo;
 import com.plateer.ec1.promotion.vo.PriceDiscountResponseVo;
 import com.plateer.ec1.promotion.vo.ProductCouponResponseVo;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class PromotionController {
 
-    private final PromotionServiceImpl promotionService;
+    private final PromotionService promotionService;
 
     public PriceDiscountResponseVo getPriceDiscountApplyData(PromotionRequestVo requestPromotionVO){
         return promotionService.getPriceDiscountApplyData(requestPromotionVO);

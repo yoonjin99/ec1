@@ -7,6 +7,9 @@ import com.plateer.ec1.order.vo.OrderVo;
 import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import com.plateer.ec1.order.vo.OrderValidationVo;
+import com.plateer.ec1.payment.enums.PaymentType;
+import com.plateer.ec1.payment.service.PaymentService;
+import com.plateer.ec1.payment.vo.PayInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +19,12 @@ import java.util.Locale;
 @Component
 public class OrderContext {
     private OrderHistoryService orderHistoryService;
-//    private PayService payService;
+    private PaymentService paymentService;
 
-//    OrderContext(OrderHistoryService orderHistoryService, PayService payService){
-//        this.orderHistoryService = orderHistoryService;
-//        this.payService = payService;
-//    }
+    OrderContext(OrderHistoryService orderHistoryService, PaymentService paymentService){
+        this.orderHistoryService = orderHistoryService;
+        this.paymentService = paymentService;
+    }
 
     public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
@@ -39,9 +42,9 @@ public class OrderContext {
             dto = dataStrategy.create(orderRequest, new OrderProductViewVo());
 
             // 결제
-//            PayInfo payInfo = new PayInfo();
-//            payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getPaymentType().toUpperCase(Locale.ROOT)));
-//            payService.approve(payInfo);
+            PayInfoVo payInfo = new PayInfoVo();
+            payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getPaymentType().toUpperCase(Locale.ROOT)));
+            paymentService.approve(payInfo);
 
             // 데이터 등록
             insertOrderData(dto);
@@ -49,13 +52,6 @@ public class OrderContext {
             // 금액검증
             amountValidation(orderRequest.getOrderNo());
 
-            // 재고차감
-            deleteStock(dto);
-
-            // FO일 경우 장바구니 사용처리
-//            if(orderRequest.getSystemType().equals("FO")){
-//                deleteCartData(dto);
-//            }
             // 후처리
             afterStrategy.call(orderRequest, dto);
 
@@ -76,11 +72,4 @@ public class OrderContext {
         log.info("--------------insertOrderData start");
     }
 
-    private void deleteCartData(OrderVo orderDto){
-        log.info("-----------장바구니 사용처리");
-    }
-    
-    private void deleteStock(OrderVo orderDto){
-        log.info("-----------재고차감");
-    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class PriceDiscountCalculation implements Calculation {
+public class PriceDiscountCalculationImpl implements Calculation {
     @Override
     public BaseResponseVo getCalculationData(PromotionRequestVo vo) {
         log.info("-------PriceDiscountCalculation getCalculationData start");
