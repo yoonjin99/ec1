@@ -23,7 +23,7 @@ public class ClaimTest {
     @Test
     void mcaClaim(){
         ClaimVo dto = new ClaimVo();
-        dto.setClaimType(ClaimType.MCA);
+        dto.setClaimType(ClaimType.RA);
         claimService.claim(dto);
     }
 }

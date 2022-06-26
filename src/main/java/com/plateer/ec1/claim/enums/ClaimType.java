@@ -7,25 +7,25 @@ import java.util.List;
 
 @AllArgsConstructor
 public enum ClaimType {
-    GCC(ProcessorType.COMPLETE, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    MCA(ProcessorType.ACCEPTWITHDRWAL, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    MCC(ProcessorType.COMPLETE, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    RA(ProcessorType.ACCEPTWITHDRWAL, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    RC(ProcessorType.COMPLETE, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    RW(ProcessorType.ACCEPTWITHDRWAL, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    EA(ProcessorType.ACCEPTWITHDRWAL, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList()),
-    EW(ProcessorType.ACCEPTWITHDRWAL, Arrays.asList(),Arrays.asList(), true, "","",Arrays.asList());
+    GCC(ProcessorType.COMPLETE, CreatorType.CANCEL, Arrays.asList(),Arrays.asList(), true, ""),
+    MCA(ProcessorType.ACCEPTWITHDRWAL, CreatorType.CANCEL, Arrays.asList(),Arrays.asList(), true, ""),
+    RA(ProcessorType.ACCEPTWITHDRWAL, CreatorType.RETURN, Arrays.asList(),Arrays.asList(), true, ""),
+    RW(ProcessorType.ACCEPTWITHDRWAL, CreatorType.RETURN, Arrays.asList(),Arrays.asList(), true, ""),
+    EA(ProcessorType.ACCEPTWITHDRWAL, CreatorType.EXCHANGE, Arrays.asList(),Arrays.asList(), true, "");
 
     private ProcessorType processorType;
+    private CreatorType creatorType;
     private List<String> validStatusList;
     private List<String> productType;
     private Boolean claimNoFlag;
     private String claimCode;
-    private String orderStateCode;
-    private List<String> deliveryCode;
 
     public ProcessorType getProcessor(){
         return processorType;
+    }
+
+    public CreatorType getCreatorType(){
+        return creatorType;
     }
 
 }
