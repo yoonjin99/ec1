@@ -26,3 +26,5 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         return null;
     }
 }
+
+// 데이터가 극히 일부 다르므로 분기처리 해주면 될 것 같음

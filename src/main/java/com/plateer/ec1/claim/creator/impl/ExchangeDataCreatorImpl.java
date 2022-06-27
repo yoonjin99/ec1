@@ -26,3 +26,5 @@ public class ExchangeDataCreatorImpl extends ClaimDataCreator {
         return null;
     }
 }
+
+// 교환은 ecoupon은 존재하지 않음.

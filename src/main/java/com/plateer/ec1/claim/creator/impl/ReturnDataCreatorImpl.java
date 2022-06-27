@@ -27,3 +27,5 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
     }
 
 }
+
+// ecoupon과 일반주문이 데이터가 같음
