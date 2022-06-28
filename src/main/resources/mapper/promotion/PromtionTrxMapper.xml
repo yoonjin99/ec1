@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.plateer.ec1.promotion.mapper.PromotionMapper">
+<mapper namespace="com.plateer.ec1.promotion.mapper.PromotionTrxMapper">
     <insert id="insertDownloadCoupon" parameterType="map">
         insert into cc_cpn_issue(
             mbr_no,

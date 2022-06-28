@@ -2,6 +2,7 @@ package com.plateer.ec1.promotion.service.coupon;
 
 import com.plateer.ec1.common.model.promotion.CcCpnIssueModel;
 import com.plateer.ec1.promotion.mapper.PromotionMapper;
+import com.plateer.ec1.promotion.mapper.PromotionTrxMapper;
 import com.plateer.ec1.promotion.vo.PromotionVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class DownloadCouponService {
 
     private final PromotionMapper promotionMapper;
+    private final PromotionTrxMapper promotionTrxMapper;
 
     // 다운로드 가능 여부
     private boolean checkAvailableDownloadCoupon(String memberNo, PromotionVo promotion){
@@ -29,7 +31,6 @@ public class DownloadCouponService {
             put("mbrNo", memberNo);
             put("prmNo", promotion.getPrmNo());
         }};
-        //predicate 로 할까
         return promotionMapper.selectDownloadAvailableCoupon(map) != null ? true : false;
     }
 
@@ -45,7 +46,7 @@ public class DownloadCouponService {
                 put("sysRegrId", "admin");
                 put("sysModrId", "admin");
             }};
-            promotionMapper.insertDownloadCoupon(map);
+            promotionTrxMapper.insertDownloadCoupon(map);
         }
         return promotionMapper.selectDownloadCouponList(memberNo);
     }

@@ -10,7 +10,6 @@ import java.util.Map;
 @Mapper
 public interface PromotionMapper {
     Long selectDownloadAvailableCoupon(Map<String, Object> param);
-    int insertDownloadCoupon(Map<String, Object> map);
     List<PromotionVo> selectAvailableCouponList(String mbrNo);
     List<PromotionVo> selectDownloadCouponList(String mbrNo);
 }
