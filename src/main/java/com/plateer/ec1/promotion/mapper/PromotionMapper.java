@@ -9,7 +9,8 @@ import java.util.Map;
 
 @Mapper
 public interface PromotionMapper {
-    Long selectDownloadAvailableCoupon(Map<String, Object> param);
-    List<PromotionVo> selectAvailableCouponList(String mbrNo);
+    Long selectAvailableCoupon(Map<String, Object> param);
     List<PromotionVo> selectDownloadCouponList(String mbrNo);
+
+    Long selectAvailableRestoreCoupon(Long prmNo);
 }

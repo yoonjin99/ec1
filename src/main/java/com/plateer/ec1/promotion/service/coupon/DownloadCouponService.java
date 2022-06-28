@@ -31,7 +31,7 @@ public class DownloadCouponService {
             put("mbrNo", memberNo);
             put("prmNo", promotion.getPrmNo());
         }};
-        return promotionMapper.selectDownloadAvailableCoupon(map) != null ? true : false;
+        return promotionMapper.selectAvailableCoupon(map) != null ? true : false;
     }
 
     // 다운로드
@@ -40,13 +40,12 @@ public class DownloadCouponService {
         boolean validateCheck = checkAvailableDownloadCoupon(memberNo, promotion);
         if(validateCheck){
             log.info("다운로드 시작 ------------------------");
-            Map<String, Object> map = new HashMap<String,Object>(){{
-                put("mbrNo", memberNo);
-                put("prmNo", promotion.getPrmNo());
-                put("sysRegrId", "admin");
-                put("sysModrId", "admin");
-            }};
-            promotionTrxMapper.insertDownloadCoupon(map);
+            CcCpnIssueModel cpnIssueModel = CcCpnIssueModel
+                    .builder()
+                    .mbrNo(memberNo)
+                    .prmNo(promotion.getPrmNo())
+                    .build();
+            promotionTrxMapper.insertDownloadCoupon(cpnIssueModel);
         }
         return promotionMapper.selectDownloadCouponList(memberNo);
     }

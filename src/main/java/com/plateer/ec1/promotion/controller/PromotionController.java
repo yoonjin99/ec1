@@ -1,18 +1,28 @@
 package com.plateer.ec1.promotion.controller;
 
 import com.plateer.ec1.promotion.service.PromotionService;
-import com.plateer.ec1.promotion.vo.CartCouponResponseVo;
-import com.plateer.ec1.promotion.vo.PriceDiscountResponseVo;
-import com.plateer.ec1.promotion.vo.ProductCouponResponseVo;
-import com.plateer.ec1.promotion.vo.PromotionRequestVo;
+import com.plateer.ec1.promotion.service.coupon.DownloadCouponService;
+import com.plateer.ec1.promotion.vo.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/promotion")
 public class PromotionController {
 
     private final PromotionService promotionService;
+    private final DownloadCouponService downloadCouponService;
+
+    // 쿠폰 다운로드
+    @GetMapping("/coupon/download")
+    public List<PromotionVo> downloadCoupon(String memberNo, PromotionVo promotionVo){
+        return downloadCouponService.downloadCoupon(memberNo, promotionVo);
+    }
 
     public PriceDiscountResponseVo getPriceDiscountApplyData(PromotionRequestVo requestPromotionVO){
         return promotionService.getPriceDiscountApplyData(requestPromotionVO);

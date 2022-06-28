@@ -1,7 +1,6 @@
 package com.plateer.ec1.promotion;
 
 import com.plateer.ec1.promotion.service.PromotionService;
-import com.plateer.ec1.promotion.service.coupon.DownloadAvailableCouponService;
 import com.plateer.ec1.promotion.service.coupon.DownloadCouponService;
 import com.plateer.ec1.promotion.vo.PromotionRequestVo;
 import com.plateer.ec1.promotion.vo.PromotionVo;
@@ -17,8 +16,6 @@ public class PromotionTest {
     @Autowired
     PromotionService promotionService;
 
-    @Autowired
-    DownloadAvailableCouponService downloadAvailableCouponService;
 
     @Autowired
     DownloadCouponService downloadCouponService;
@@ -43,12 +40,6 @@ public class PromotionTest {
         log.info("장바구니쿠폰 금액 계산");
         PromotionRequestVo requestPromotionVO = new PromotionRequestVo();
         promotionService.getCartCouponApplyData(requestPromotionVO);
-    }
-
-    @Test
-    void availableCouponList(){
-        log.info("다운 가능한 쿠폰 리스트 조회");
-        downloadAvailableCouponService.getDownloadAvailableCouponList("test01");
     }
 
     @Test

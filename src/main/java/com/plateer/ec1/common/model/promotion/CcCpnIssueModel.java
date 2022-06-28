@@ -1,13 +1,12 @@
 package com.plateer.ec1.common.model.promotion;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Builder
 public class CcCpnIssueModel {
     private Long cpnIssNo;
     private String mbrNo;
@@ -17,9 +16,11 @@ public class CcCpnIssueModel {
     private String ordNo;
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime sysRegDtime;
-    private String sysRegrId;
+    @Builder.Default
+    private String sysRegrId = "admin";
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime sysModDtime;
-    private String sysModrId;
+    @Builder.Default
+    private String sysModrId = "admin";
     private Long prmNo;
 }

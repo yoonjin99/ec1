@@ -4,71 +4,51 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.plateer.ec1.promotion.mapper.PromotionMapper">
-    <select id="selectDownloadAvailableCoupon" resultType="long" parameterType="map">
-        select
-            ccb.prm_no
-        from cc_cpn_base ccb
-        where
-              prm_no = #{prmNo}
-              and psn_dwl_psb_cnt <![CDATA[ > ]]>
-                (
-                select
-                    count(1) as cnt
-                from cc_cpn_issue cpi
-                where
-                    cpi.prm_no = #{prmNo}
-                    and cpi.mbr_no = #{mbrNo}
-                )
-              and ccb.dwl_psb_cnt <![CDATA[ > ]]>
-                (
-                    select count('1')
-                    from cc_cpn_issue cpi
-                    where
-                        cpi.prm_no = #{prmNo}
-                )
-    </select>
+    <sql id="selectCouponQuery">
+      select
+        /* PromotionMapper.selectAvailableCoupon */
+        cpb.prm_no
+      from
+        cc_prm_base cpb
+          inner join
+        cc_cpn_base ccb
+        on cpb.prm_no = ccb.prm_no
+      where
+        cpb.prm_no = #{prmNo}
+        and (current_date between ccb.dwl_avl_strt_dd::date and ccb.dwl_avl_end_dd::date)
+    </sql>
 
-    <select id="selectAvailableCouponList" resultType="com.plateer.ec1.promotion.vo.PromotionVo" parameterType="string">
-        select
-            cpb.prm_no,
-            cpb.prm_nm
-        from
-            cc_prm_base cpb
-                inner join
-            cc_cpn_base ccb
-            on cpb.prm_no = ccb.prm_no
-        where
-          ccb.psn_dwl_psb_cnt <![CDATA[ > ]]> 0
+    <!-- 다운로드 가능한 쿠폰 확인 -->
+    <select id="selectAvailableCoupon" resultType="long" parameterType="map">
+        <include refid="selectCouponQuery"></include>
+          and ccb.psn_dwl_psb_cnt <![CDATA[ >= ]]> 1
+          and ccb.dwl_psb_cnt <![CDATA[ >= ]]> 1
           and ccb.dwl_psb_cnt <![CDATA[ > ]]> (
                 select count('1')
                 from cc_cpn_issue cpi
                 where
                     cpi.prm_no = ccb.prm_no
+                    and cpi.org_cpn_iss_no is null
                 )
-          and ccb.dwl_psb_cnt <![CDATA[ > ]]>
+          and ccb.psn_dwl_psb_cnt <![CDATA[ > ]]>
                 (
                   select count('1')
                   from cc_cpn_issue cpi
                   where
                       cpi.mbr_no = #{mbrNo}
-                    and cpi.prm_no = ccb.prm_no
+                      and cpi.prm_no = ccb.prm_no
+                      and cpi.org_cpn_iss_no is null
                 )
-            and ((  ccb.dwl_priod_ccd = '10'
-                    and current_date between ccb.dwl_avl_strt_dd::date and ccb.dwl_avl_end_dd::date)
-                or (
-                    ccb.dwl_priod_ccd = '20'
-                    and current_date between ccb.sys_reg_dtime::date and ccb.sys_reg_dtime::date + ccb.dwl_std_dd
-                ))
-            and ((  cpb.prm_priod_ccd = '10'
-                    and current_date between cpb.prm_strt_dt::date and cpb.prm_end_dt::date)
-                or (
-                    cpb.prm_priod_ccd = '20'
-                    and current_date between cpb.sys_reg_dtime::date and cpb.sys_reg_dtime::date + cpb.prm_std_dd
-                ))
+        union all
+      <include refid="selectCouponQuery"></include>
+          and ccb.psn_dwl_psb_cnt = 0
+          and ccb.dwl_psb_cnt = 0
     </select>
 
+    <!-- 다운로드 받은 쿠폰 목록 -->
     <select id="selectDownloadCouponList" parameterType="string" resultType="com.plateer.ec1.promotion.vo.PromotionVo">
         select
+            /* PromotionMapper.selectDownloadCouponList */
             cpb.prm_no,
             cpb.prm_nm
         from
@@ -81,5 +61,15 @@
                     mbr_no = #{mbrNo}
             ) cci
             on cpb.prm_no = cci.prm_no
+    </select>
+
+    <!-- 복원 가능한 쿠폰인지 확인 -->
+    <select id="selectAvailableRestoreCoupon" parameterType="long" resultType="long">
+        select
+            /* PromotionMapper.selectAvailableRestoreCoupon */
+               cpb.prm_no
+        from cc_prm_base cpb
+        where
+            cpb.prm_no = #{prmNo}
     </select>
 </mapper>
