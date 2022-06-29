@@ -2,6 +2,7 @@ package com.plateer.ec1.promotion;
 
 import com.plateer.ec1.promotion.service.PromotionService;
 import com.plateer.ec1.promotion.service.coupon.DownloadCouponService;
+import com.plateer.ec1.promotion.vo.CouponRequestVo;
 import com.plateer.ec1.promotion.vo.PromotionRequestVo;
 import com.plateer.ec1.promotion.vo.PromotionVo;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +46,9 @@ public class PromotionTest {
     @Test
     void setDownloadAvailableCouponService(){
         log.info("다운 가능한 쿠폰 리스트 조회");
-        PromotionVo vo = new PromotionVo();
+        CouponRequestVo vo = new CouponRequestVo();
         vo.setPrmNo(1L);
-        downloadCouponService.downloadCoupon("test01", vo);
+        vo.setMbrNo("test01");
+        downloadCouponService.downloadCoupon(vo);
     }
 }

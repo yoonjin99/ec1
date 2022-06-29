@@ -9,10 +9,5 @@ import lombok.Setter;
 public class PromotionVo {
     private Long prmNo;
     private String prmNm;
-
-    private String cpnKindCd;
-    private Long couponIssueNo;
-    private String degrCcd;
-    private Long dcAmt;
-    private String maxBenefitYn;
+    private Long cpsIssNo;
 }

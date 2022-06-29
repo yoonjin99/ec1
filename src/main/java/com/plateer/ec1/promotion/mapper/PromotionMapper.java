@@ -1,6 +1,8 @@
 package com.plateer.ec1.promotion.mapper;
 
 import com.plateer.ec1.common.model.promotion.CcCpnIssueModel;
+import com.plateer.ec1.promotion.vo.CouponRequestVo;
+import com.plateer.ec1.promotion.vo.CouponVo;
 import com.plateer.ec1.promotion.vo.PromotionVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,8 +11,8 @@ import java.util.Map;
 
 @Mapper
 public interface PromotionMapper {
-    Long selectAvailableCoupon(Map<String, Object> param);
+    CouponVo selectAvailableCoupon(CouponRequestVo couponRequestVo);
     List<PromotionVo> selectDownloadCouponList(String mbrNo);
 
-    Long selectAvailableRestoreCoupon(Long prmNo);
+    CouponVo selectAvailableRestoreCoupon(Long prmNo);
 }

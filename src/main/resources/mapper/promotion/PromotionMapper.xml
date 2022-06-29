@@ -3,46 +3,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- 줄맞추기 -->
 <mapper namespace="com.plateer.ec1.promotion.mapper.PromotionMapper">
-    <sql id="selectCouponQuery">
+    <!-- 다운로드 가능한 쿠폰 확인 -->
+    <select id="selectAvailableCoupon" resultType="com.plateer.ec1.promotion.vo.CouponVo" parameterType="com.plateer.ec1.promotion.vo.CouponRequestVo">
       select
-        /* PromotionMapper.selectAvailableCoupon */
         cpb.prm_no
+        , cpb.prm_nm
+        , ccb.dwl_psb_cnt
+        , ccb.psn_dwl_psb_cnt
+        , (select count(prm_no) from cc_cpn_issue where prm_no = #{prmNo}) as tot_cnt
+        , (select count(prm_no) from cc_cpn_issue where prm_no = #{prmNo} and mbr_no = #{mbrNo}) as mbr_cnt
+        , cpb.prm_strt_dt
+        , (case when cpb.prm_priod_ccd = '10' then cpb.prm_end_dt
+                else cpb.prm_strt_dt::date + cpb.prm_std_dd
+                end) as prm_end_dt
       from
         cc_prm_base cpb
-          inner join
-        cc_cpn_base ccb
+        inner join cc_cpn_base ccb
         on cpb.prm_no = ccb.prm_no
       where
-        cpb.prm_no = #{prmNo}
-        and (current_date between ccb.dwl_avl_strt_dd::date and ccb.dwl_avl_end_dd::date)
-    </sql>
-
-    <!-- 다운로드 가능한 쿠폰 확인 -->
-    <select id="selectAvailableCoupon" resultType="long" parameterType="map">
-        <include refid="selectCouponQuery"></include>
-          and ccb.psn_dwl_psb_cnt <![CDATA[ >= ]]> 1
-          and ccb.dwl_psb_cnt <![CDATA[ >= ]]> 1
-          and ccb.dwl_psb_cnt <![CDATA[ > ]]> (
-                select count('1')
-                from cc_cpn_issue cpi
-                where
-                    cpi.prm_no = ccb.prm_no
-                    and cpi.org_cpn_iss_no is null
-                )
-          and ccb.psn_dwl_psb_cnt <![CDATA[ > ]]>
-                (
-                  select count('1')
-                  from cc_cpn_issue cpi
-                  where
-                      cpi.mbr_no = #{mbrNo}
-                      and cpi.prm_no = ccb.prm_no
-                      and cpi.org_cpn_iss_no is null
-                )
-        union all
-      <include refid="selectCouponQuery"></include>
-          and ccb.psn_dwl_psb_cnt = 0
-          and ccb.dwl_psb_cnt = 0
+        cpb.use_yn = 'Y'
+        and cpb.prm_no = #{prmNo}
+        and now() between ccb.dwl_avl_strt_dd::date and ccb.dwl_avl_end_dd::date + 1
     </select>
 
     <!-- 다운로드 받은 쿠폰 목록 -->
@@ -50,26 +33,26 @@
         select
             /* PromotionMapper.selectDownloadCouponList */
             cpb.prm_no,
-            cpb.prm_nm
+            cpb.prm_nm,
+            cci.cpn_iss_no
         from
             cc_prm_base cpb
-            inner join (
-                select
-                    cpi.prm_no
-                from cc_cpn_issue cpi
-                where
-                    mbr_no = #{mbrNo}
-            ) cci
+            inner join cc_cpn_issue cci
             on cpb.prm_no = cci.prm_no
+            and cci.mbr_no = #{mbrNo}
     </select>
 
     <!-- 복원 가능한 쿠폰인지 확인 -->
-    <select id="selectAvailableRestoreCoupon" parameterType="long" resultType="long">
+    <select id="selectAvailableRestoreCoupon" parameterType="com.plateer.ec1.promotion.vo.CouponRequestVo" resultType="com.plateer.ec1.promotion.vo.CouponVo">
         select
             /* PromotionMapper.selectAvailableRestoreCoupon */
-               cpb.prm_no
-        from cc_prm_base cpb
+          cpi.prm_no
+        , cpi.use_strt_dtime as prm_strt_dt
+        , cpi.use_end_dtime as prm_end_dt
+        from cc_cpn_issue cpi
         where
-            cpb.prm_no = #{prmNo}
+          cpi.prm_no = #{prmNo}
+          and cpi.cpn_iss_no = #{couponIssueNo}
+          and now() between cpi.use_strt_dtime::date and cpi.use_end_dtime::date + 1
     </select>
 </mapper>

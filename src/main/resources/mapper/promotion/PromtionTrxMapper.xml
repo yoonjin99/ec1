@@ -5,12 +5,14 @@
 
 <mapper namespace="com.plateer.ec1.promotion.mapper.PromotionTrxMapper">
     <!-- 쿠폰 다운로드 -->
-    <insert id="insertDownloadCoupon" parameterType="com.plateer.ec1.common.model.promotion.CcCpnIssueModel">
+    <insert id="insertDownloadCoupon" parameterType="com.plateer.ec1.promotion.vo.CouponRequestVo">
         insert into cc_cpn_issue(
             /* PromotionTrxMapper.insertDownloadCoupon */
             org_cpn_iss_no,
             mbr_no,
             prm_no,
+            use_strt_dtime,
+            use_end_dtime,
             sys_reg_dtime,
             sys_regr_id,
             sys_mod_dtime,
@@ -19,6 +21,8 @@
             #{orgCpnIssNo},
             #{mbrNo},
             #{prmNo},
+            #{useStrtDtime},
+            #{useEndDtime},
             now(),
             #{sysRegrId},
             now(),

@@ -20,8 +20,8 @@ public class PromotionController {
 
     // 쿠폰 다운로드
     @GetMapping("/coupon/download")
-    public List<PromotionVo> downloadCoupon(String memberNo, PromotionVo promotionVo){
-        return downloadCouponService.downloadCoupon(memberNo, promotionVo);
+    public List<PromotionVo> downloadCoupon(CouponRequestVo vo){
+        return downloadCouponService.downloadCoupon(vo);
     }
 
     public PriceDiscountResponseVo getPriceDiscountApplyData(PromotionRequestVo requestPromotionVO){
