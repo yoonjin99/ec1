@@ -54,7 +54,7 @@ public class ProductCouponCalculationImpl implements Calculation {
 
 
     private List<ProductCouponsVo> calculateDcAmt(List<ProductCouponsVo> productCouponsVoList){
-        log.info("-------쿠폰 할인 금액 계산");
+        log.info("-------쿠폰 할인 금액 계산" + productCouponsVoList.toString());
         return productCouponsVoList.stream()
                 .filter(prd -> prd.getPrdPrice() > prd.getMinPurAmt())
                 .peek(prd -> {

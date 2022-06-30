@@ -89,6 +89,7 @@
         <foreach collection="products" item="item" open="(" close=")" separator=",">
           #{item.goodsNo}
         </foreach>
+    order by cci.cpn_iss_no
   </select>
 
 </mapper>

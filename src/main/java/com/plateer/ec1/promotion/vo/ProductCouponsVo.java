@@ -40,4 +40,9 @@ public class ProductCouponsVo {
         return Objects.equals(prmNo, other.prmNo) && Objects.equals(goodsNo, other.goodsNo);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(prmNo, goodsNo);
+    }
+
 }
