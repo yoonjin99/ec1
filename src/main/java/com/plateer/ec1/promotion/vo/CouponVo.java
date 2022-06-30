@@ -16,4 +16,13 @@ public class CouponVo {
     private int mbrCnt;
     private LocalDateTime prmStrtDt;
     private LocalDateTime prmEndDt;
+
+    public CouponVo downloadValidCheck(CouponVo couponVo){
+        if(couponVo.getDwlPsbCnt() > couponVo.getTotCnt()){
+            if(couponVo.getPsnDwlPsbCnt() > couponVo.getMbrCnt()){
+                return couponVo;
+            }
+        }
+        return null;
+    }
 }

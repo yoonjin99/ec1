@@ -26,12 +26,7 @@ public class DownloadCouponService {
     private CouponVo checkAvailableDownloadCoupon(CouponRequestVo couponRequestVo){
         log.info("다운로드 가능 수량 체크 -------------------");
         CouponVo couponVo = promotionMapper.selectAvailableCoupon(couponRequestVo);
-        if(couponVo.getDwlPsbCnt() > couponVo.getTotCnt()){
-            if(couponVo.getPsnDwlPsbCnt() > couponVo.getMbrCnt()){
-                return couponVo;
-            }
-        }
-        return null;
+        return couponVo.downloadValidCheck(couponVo);
     }
 
     // 다운로드
