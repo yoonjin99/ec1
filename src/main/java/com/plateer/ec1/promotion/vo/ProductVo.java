@@ -1,11 +1,12 @@
 package com.plateer.ec1.promotion.vo;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ProductVo {
-    private String productNo;
-    private int productAmt;
-    private int productCnt;
-    private String productItemNo;
+    private String goodsNo;
+    private int prdTotCnt;
+    private int prdPrice;
 }

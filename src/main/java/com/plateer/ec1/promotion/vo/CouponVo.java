@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class CouponVo {
     private Long prmNo;
     private String prmNm;
-    private int dwlPsdCnt;
+    private int dwlPsbCnt;
     private int psnDwlPsbCnt;
     private int totCnt;
     private int mbrCnt;

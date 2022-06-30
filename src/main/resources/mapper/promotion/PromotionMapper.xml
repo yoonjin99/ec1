@@ -46,13 +46,49 @@
     <select id="selectAvailableRestoreCoupon" parameterType="com.plateer.ec1.promotion.vo.CouponRequestVo" resultType="com.plateer.ec1.promotion.vo.CouponVo">
         select
             /* PromotionMapper.selectAvailableRestoreCoupon */
-          cpi.prm_no
-        , cpi.use_strt_dtime as prm_strt_dt
-        , cpi.use_end_dtime as prm_end_dt
-        from cc_cpn_issue cpi
+          cci.prm_no
+        , cci.use_strt_dtime as prm_strt_dt
+        , cci.use_end_dtime as prm_end_dt
+        from cc_cpn_issue cci
         where
-          cpi.prm_no = #{prmNo}
-          and cpi.cpn_iss_no = #{couponIssueNo}
-          and now() between cpi.use_strt_dtime::date and cpi.use_end_dtime::date + 1
+          cci.prm_no = #{prmNo}
+          and cci.cpn_iss_no = #{couponIssueNo}
+          and now() between cci.use_strt_dtime::date and cci.use_end_dtime::date + 1
     </select>
+
+  <!-- 상품에 적용 가능한 쿠폰 목록 -->
+  <select id="selectAvailablePromotionList" resultType="com.plateer.ec1.promotion.vo.ProductCouponsVo" parameterType="com.plateer.ec1.promotion.vo.PromotionRequestVo">
+    select
+      /* PromotionMapper.selectAvailablePromtionList */
+      cpb.prm_no
+      , cpb.prm_nm
+      , cpb.dc_val
+      , cpb.min_pur_amt
+      , cpb.max_dc_amt
+      , cpb.dc_ccd
+      , (select cpn_kind_cd from cc_cpn_base where prm_no = cpb.prm_no) as cpb_kind_cd
+      , cci.cpn_iss_no
+      , pgb.goods_no
+      , COALESCE(pgb.prm_prc, pgb.sale_prc) as prd_price
+      , #{mbrNo} as mbr_no
+    from
+      cc_prm_base cpb
+      inner join cc_prm_aply_tgt cpat
+      on cpb.prm_no = cpat.prm_no
+      inner join cc_cpn_issue cci
+      on cpb.prm_no = cci.prm_no
+      and cci.mbr_no = #{mbrNo}
+      inner join pr_goods_base pgb
+      on cpat.aply_tgt_no = pgb.goods_no
+    where
+      cpb.use_yn = 'Y'
+      and cci.cpn_use_dt is null
+      and cpb.prm_kind_cd = '20'
+      and now() between cci.use_strt_dtime::date and cci.use_end_dtime::date + 1
+      and aply_tgt_no in
+        <foreach collection="products" item="item" open="(" close=")" separator=",">
+          #{item.goodsNo}
+        </foreach>
+  </select>
+
 </mapper>

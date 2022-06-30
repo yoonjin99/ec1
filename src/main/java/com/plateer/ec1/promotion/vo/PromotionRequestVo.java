@@ -7,7 +7,5 @@ import java.util.List;
 @Data
 public class PromotionRequestVo {
     private String mbrNo;
-    private List<ProductVo> productList;
-    private Long prmNo;
-    private Long couponIssueNo;
+    private List<ProductVo> products;
 }
