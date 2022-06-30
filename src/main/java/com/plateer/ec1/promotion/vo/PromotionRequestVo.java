@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class PromotionRequestVo {
-    private String mbrNo;
+    private String mbrNo = "test01";
     private List<ProductVo> products;
 }

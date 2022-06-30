@@ -62,7 +62,7 @@ public class PromotionTest {
     void setDownloadAvailableCouponService(){
         log.info("다운 가능한 쿠폰 리스트 조회");
         CouponRequestVo vo = new CouponRequestVo();
-        vo.setPrmNo(1L);
+        vo.setPrmNo(3L);
         vo.setMbrNo("test01");
         downloadCouponService.downloadCoupon(vo);
     }

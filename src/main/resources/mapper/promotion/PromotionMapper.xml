@@ -14,10 +14,12 @@
         , ccb.psn_dwl_psb_cnt
         , (select count(prm_no) from cc_cpn_issue where prm_no = #{prmNo}) as tot_cnt
         , (select count(prm_no) from cc_cpn_issue where prm_no = #{prmNo} and mbr_no = #{mbrNo}) as mbr_cnt
-        , cpb.prm_strt_dt
+        , (case when cpb.prm_priod_ccd = '10' then cpb.prm_strt_dt
+             else cpb.sys_mod_dtime
+           end) as prm_strt_dt
         , (case when cpb.prm_priod_ccd = '10' then cpb.prm_end_dt
-                else cpb.prm_strt_dt::date + cpb.prm_std_dd
-                end) as prm_end_dt
+                else cpb.sys_mod_dtime::date + cpb.prm_std_dd
+            end) as prm_end_dt
       from
         cc_prm_base cpb
         inner join cc_cpn_base ccb
@@ -70,7 +72,6 @@
       , cci.cpn_iss_no
       , pgb.goods_no
       , COALESCE(pgb.prm_prc, pgb.sale_prc) as prd_price
-      , #{mbrNo} as mbr_no
     from
       cc_prm_base cpb
       inner join cc_prm_aply_tgt cpat
