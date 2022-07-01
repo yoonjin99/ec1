@@ -9,4 +9,5 @@ public class ProductVo {
     private String goodsNo;
     private int prdTotCnt;
     private int prdPrice;
+    private int prdDcPrice;
 }

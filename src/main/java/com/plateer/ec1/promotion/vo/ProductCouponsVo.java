@@ -1,6 +1,7 @@
 package com.plateer.ec1.promotion.vo;
 
 import com.plateer.ec1.common.code.promotion.PRM0003Code;
+import com.plateer.ec1.common.code.promotion.PRM0004Code;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,8 +25,8 @@ public class ProductCouponsVo {
     private int dcPrice;
     private String dcCcd;
     private String maxBenefitYn;
-    private String cpbKindCd;
-
+    private String cpnKindCd;
+    private int totalPrice;
     // 프로모션 번호 & 상품번호 같은 경우 중복처리
     @Override
     public boolean equals(Object obj) {
@@ -55,5 +56,6 @@ public class ProductCouponsVo {
     public void calculatePrice(ProductCouponsVo prd){
         int dcPrice = PRM0003Code.PRICE.getType().equals(prd.getDcCcd()) ? prd.getDcVal() : (int) (prd.getPrdPrice() * (prd.getDcVal() * 0.01));
         setDcPrice(Math.min(dcPrice, prd.getMaxDcAmt()) * prd.getPrdTotCnt());
+        setTotalPrice(prd.getPrdPrice() * prd.getPrdTotCnt() - getDcPrice());
     }
 }

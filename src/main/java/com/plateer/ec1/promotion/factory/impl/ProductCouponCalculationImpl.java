@@ -35,7 +35,7 @@ public class ProductCouponCalculationImpl implements Calculation {
         log.info("-------해당 상품에 적용 가능한 쿠폰 목록 조회");
         List<ProductCouponsVo> productCouponsVoList = promotionMapper.selectAvailablePromotionList(reqVO);
         productCouponsVoList =  productCouponsVoList.stream()
-                                                    .filter(prd -> PRM0004Code.PRODUCT.getType().equals(prd.getCpbKindCd()) && prd.getPrdPrice() > prd.getMinPurAmt())
+                                                    .filter(prd -> PRM0004Code.PRODUCT.getType().equals(prd.getCpnKindCd()) && prd.getPrdPrice() >= prd.getMinPurAmt())
                                                     .distinct()
                                                     .collect(Collectors.toList());
         productCouponsVoList.forEach(productCouponsVo -> productCouponsVo.setterPrdTotCnt(reqVO));
