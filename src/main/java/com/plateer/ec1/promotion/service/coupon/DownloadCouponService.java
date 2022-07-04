@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class DownloadCouponService {
     private final PromotionTrxMapper promotionTrxMapper;
 
     // 다운로드 가능 여부
-    private CouponVo checkAvailableDownloadCoupon(CouponRequestVo couponRequestVo){
+    private CouponVo checkAvailableDownloadCoupon(CouponRequestVo couponRequestVo) {
         log.info("다운로드 가능 수량 체크 -------------------");
         CouponVo couponVo = promotionMapper.selectAvailableCoupon(couponRequestVo);
         return couponVo.downloadValidCheck(couponVo);
@@ -32,12 +33,13 @@ public class DownloadCouponService {
     // 다운로드
     @Transactional
     public List<PromotionVo> downloadCoupon(CouponRequestVo couponRequestVo){
-        CouponVo couponVo = checkAvailableDownloadCoupon(couponRequestVo);
-        if(!Objects.isNull(couponVo)){
-            log.info("다운로드 시작 ------------------------");
+        try {
+            CouponVo couponVo = checkAvailableDownloadCoupon(couponRequestVo);
             couponRequestVo.setUseStrtDtime(couponVo.getPrmStrtDt());
             couponRequestVo.setUseEndDtime(couponVo.getPrmEndDt());
             promotionTrxMapper.insertDownloadCoupon(couponRequestVo);
+        }catch (Exception e){
+            log.info("DownloadCouponService downloadCoupon error : " + e.getMessage());
         }
         return promotionMapper.selectDownloadCouponList(couponRequestVo.getMbrNo());
     }

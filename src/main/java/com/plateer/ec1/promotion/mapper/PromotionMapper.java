@@ -1,6 +1,7 @@
 package com.plateer.ec1.promotion.mapper;
 
 import com.plateer.ec1.common.model.promotion.CcCpnIssueModel;
+import com.plateer.ec1.common.model.promotion.CcMbrPntModel;
 import com.plateer.ec1.promotion.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,5 +15,7 @@ public interface PromotionMapper {
 
     CouponVo selectAvailableRestoreCoupon(Long prmNo);
 
-    List<ProductCouponsVo> selectAvailablePromotionList(PromotionRequestVo reqVO);
+    List<PromotionVo> selectAvailablePromotionList(PromotionRequestVo reqVO);
+
+    CcMbrPntModel selectPrePoint(String mbrNo);
 }

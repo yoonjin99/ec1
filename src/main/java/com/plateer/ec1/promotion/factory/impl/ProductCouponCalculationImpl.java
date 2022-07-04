@@ -33,12 +33,25 @@ public class ProductCouponCalculationImpl implements Calculation {
 
     private List<ProductCouponsVo> getAvailablePromotionData(PromotionRequestVo reqVO){
         log.info("-------해당 상품에 적용 가능한 쿠폰 목록 조회");
-        List<ProductCouponsVo> productCouponsVoList = promotionMapper.selectAvailablePromotionList(reqVO);
-        productCouponsVoList =  productCouponsVoList.stream()
-                                                    .filter(prd -> PRM0004Code.PRODUCT.getType().equals(prd.getCpnKindCd()) && prd.getPrdPrice() >= prd.getMinPurAmt())
-                                                    .distinct()
-                                                    .collect(Collectors.toList());
-        productCouponsVoList.forEach(productCouponsVo -> productCouponsVo.setterPrdTotCnt(reqVO));
+        // TODO : 기적용쿠폰 값 넣기 , valid 적용
+        List<PromotionVo> promotionList = promotionMapper.selectAvailablePromotionList(reqVO); // 프로모션 목록 가져옴
+        promotionList =  promotionList.stream()
+                                    .filter(prd -> PRM0004Code.PRODUCT.getType().equals(prd.getCpnKindCd()))
+                                    .collect(Collectors.toList());
+
+        List<ProductCouponsVo> productCouponsVoList = new ArrayList<>();
+        for(ProductVo prd : reqVO.getProducts()){
+            List<PromotionVo> prm = promotionList.stream()
+                    .filter(vo -> vo.getGoodsNo().equals(prd.getGoodsNo()) && vo.getMinPurAmt() <= prd.getPrdPrice())
+                    .collect(Collectors.toList());
+            prm.stream().filter(p -> p.getCpnIssNo().equals(prd.getCpnIssNo())).forEach(t -> t.setApplyCpnYn("Y"));
+
+            ProductCouponsVo couponsVo = new ProductCouponsVo();
+            couponsVo.setProductVo(prd);
+            couponsVo.setPromotionVoList(prm);
+            productCouponsVoList.add(couponsVo);
+        }
+
         return productCouponsVoList;
     }
 
@@ -50,12 +63,14 @@ public class ProductCouponCalculationImpl implements Calculation {
 
     private ProductCouponResponseVo calculateMaxBenefit(List<ProductCouponsVo> productCouponsVoList, String mbrNo){
         log.info("-------최대혜택 확인후 리턴-----------");
-        productCouponsVoList.stream()
-                            .collect(Collectors.groupingByConcurrent(ProductCouponsVo::getGoodsNo,
-                                    Collectors.maxBy(Comparator.comparing(ProductCouponsVo::getDcPrice))))
-                            .forEach((s, productCouponsVo) -> {
-                                productCouponsVo.ifPresent(couponsVo -> couponsVo.setMaxBenefitYn("Y"));
-                            });
+        productCouponsVoList.forEach(productCouponsVo -> {
+            productCouponsVo.getPromotionVoList().stream()
+                    .collect(Collectors.groupingByConcurrent(PromotionVo::getGoodsNo,
+                            Collectors.maxBy(Comparator.comparing(PromotionVo::getDcPrice))))
+                    .forEach((s, promotionVo) -> {
+                        promotionVo.ifPresent(couponsVo -> couponsVo.setMaxBenefitYn("Y"));
+                    });
+        });
 
         return ProductCouponResponseVo.builder()
                 .productPromotionList(productCouponsVoList)

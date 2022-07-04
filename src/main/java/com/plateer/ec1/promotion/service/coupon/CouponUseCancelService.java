@@ -20,21 +20,16 @@ public class CouponUseCancelService {
     private final PromotionMapper promotionMapper;
     private final PromotionTrxMapper promotionTrxMapper;
 
-    public Long useCoupon(PromotionRequestVo vo){
-        return 1L;
-    }
-
     @Transactional
     public void cancelCoupon(CouponRequestVo vo){
-        CouponVo couponVo = promotionMapper.selectAvailableRestoreCoupon(vo.getPrmNo());
-        if(!Objects.isNull(couponVo)){
+        try {
+            CouponVo couponVo = promotionMapper.selectAvailableRestoreCoupon(vo.getPrmNo());
             vo.setUseStrtDtime(couponVo.getPrmStrtDt());
             vo.setUseEndDtime(couponVo.getPrmEndDt());
             promotionTrxMapper.insertDownloadCoupon(vo);
+        }catch (Exception e){
+            log.info("CouponUseCancelService cancelCoupon error : {}" , e.getMessage());
         }
     }
 
-    public boolean verifyCoupon(PromotionRequestVo vo){
-        return true;
-    }
 }
