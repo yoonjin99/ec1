@@ -8,7 +8,9 @@ import com.plateer.ec1.promotion.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,25 +35,22 @@ public class ProductCouponCalculationImpl implements Calculation {
 
     private List<ProductCouponsVo> getAvailablePromotionData(PromotionRequestVo reqVO){
         log.info("-------해당 상품에 적용 가능한 쿠폰 목록 조회");
-        // TODO : 기적용쿠폰 값 넣기 , valid 적용
         List<PromotionVo> promotionList = promotionMapper.selectAvailablePromotionList(reqVO); // 프로모션 목록 가져옴
-        promotionList =  promotionList.stream()
-                                    .filter(prd -> PRM0004Code.PRODUCT.getType().equals(prd.getCpnKindCd()))
-                                    .collect(Collectors.toList());
 
         List<ProductCouponsVo> productCouponsVoList = new ArrayList<>();
         for(ProductVo prd : reqVO.getProducts()){
-            List<PromotionVo> prm = promotionList.stream()
-                    .filter(vo -> vo.getGoodsNo().equals(prd.getGoodsNo()) && vo.getMinPurAmt() <= prd.getPrdPrice())
-                    .collect(Collectors.toList());
-            prm.stream().filter(p -> p.getCpnIssNo().equals(prd.getCpnIssNo())).forEach(t -> t.setApplyCpnYn("Y"));
-
             ProductCouponsVo couponsVo = new ProductCouponsVo();
+            List<PromotionVo> prm = promotionList.stream()
+                    .filter(vo -> PRM0004Code.PRODUCT.getType().equals(vo.getCpnKindCd()))
+                    .filter(vo -> vo.getGoodsNo().equals(prd.getGoodsNo()) &&  vo.getItemNo().equals(prd.getItemNo()) && vo.getMinPurAmt() <= prd.getPrdPrice())
+                    .distinct()
+                    .collect(Collectors.toList());
+            prm.stream().filter(p -> p.getCpnIssNo().equals(prd.getCpnIssNo()) && p.getItemNo().equals(prd.getItemNo())).forEach(t -> t.setApplyCpnYn("Y"));
+
             couponsVo.setProductVo(prd);
             couponsVo.setPromotionVoList(prm);
             productCouponsVoList.add(couponsVo);
         }
-
         return productCouponsVoList;
     }
 

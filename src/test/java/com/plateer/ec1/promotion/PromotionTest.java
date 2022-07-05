@@ -37,7 +37,7 @@ public class PromotionTest {
         ProductVo productVo2 = new ProductVo();
         productVo2.setPrdPrice(8000);
         productVo2.setGoodsNo("P001");
-        productVo2.setItemNo("3");
+        productVo2.setItemNo("2");
 
         List<ProductVo> list = new ArrayList<>();
         list.add(productVo);
