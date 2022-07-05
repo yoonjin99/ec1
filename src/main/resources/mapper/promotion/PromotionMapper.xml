@@ -58,10 +58,6 @@
           and now() between cci.use_strt_dtime::date and cci.use_end_dtime::date + 1
     </select>
 
-    <sql id="commonQuery">
-
-    </sql>
-
     <!-- 상품에 적용 가능한 쿠폰 목록 -->
     <select id="selectAvailablePromotionList" resultType="com.plateer.ec1.promotion.vo.PromotionVo" parameterType="com.plateer.ec1.promotion.vo.PromotionRequestVo">
       select
