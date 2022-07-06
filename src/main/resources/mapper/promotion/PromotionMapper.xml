@@ -107,11 +107,12 @@
               cpb.use_yn = 'Y'
               and cci.cpn_use_dt is null
               and cpb.prm_kind_cd = '20'
+              and ccb.cpn_kind_cd = '10'
               and aply_tgt_no in
               <foreach collection="products" item="item" open="(" close=")" separator=",">
                 #{item.goodsNo}
               </foreach>
-            order by cpn_iss_no
+            order by aply_tgt_no, item_no
             ) t
         where now() between t.prm_strt_dt::date and t.prm_end_dt::date + 1
     </select>

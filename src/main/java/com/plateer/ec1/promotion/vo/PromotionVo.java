@@ -12,6 +12,7 @@ import java.util.Objects;
 @ToString
 public class PromotionVo {
     private Long prmNo;
+    private String prmNm;
     private int dcVal;
     private int minPurAmt;
     private int maxDcAmt;

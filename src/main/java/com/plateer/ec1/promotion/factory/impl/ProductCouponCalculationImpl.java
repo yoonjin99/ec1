@@ -41,9 +41,7 @@ public class ProductCouponCalculationImpl implements Calculation {
         for(ProductVo prd : reqVO.getProducts()){
             ProductCouponsVo couponsVo = new ProductCouponsVo();
             List<PromotionVo> prm = promotionList.stream()
-                    .filter(vo -> PRM0004Code.PRODUCT.getType().equals(vo.getCpnKindCd()))
                     .filter(vo -> vo.getGoodsNo().equals(prd.getGoodsNo()) &&  vo.getItemNo().equals(prd.getItemNo()) && vo.getMinPurAmt() <= prd.getPrdPrice())
-                    .distinct()
                     .collect(Collectors.toList());
             prm.stream().filter(p -> p.getCpnIssNo().equals(prd.getCpnIssNo()) && p.getItemNo().equals(prd.getItemNo())).forEach(t -> t.setApplyCpnYn("Y"));
 
