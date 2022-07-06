@@ -12,5 +12,5 @@ import java.util.List;
 @SuperBuilder
 @ToString
 public class CartCouponResponseVo extends BaseResponseVo {
-    private List<ProductCouponsVo> promotionProductList;
+    private List<CouponProductsVo> promotionProductList;
 }

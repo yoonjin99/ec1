@@ -16,6 +16,7 @@ public interface PromotionMapper {
     CouponVo selectAvailableRestoreCoupon(Long prmNo);
 
     List<PromotionVo> selectAvailablePromotionList(PromotionRequestVo reqVO);
+    List<PromotionVo> selectAvailableCartPromotionList(PromotionRequestVo reqVO);
 
     CcMbrPntModel selectPrePoint(String mbrNo);
 }

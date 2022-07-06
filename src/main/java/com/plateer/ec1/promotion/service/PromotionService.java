@@ -17,11 +17,6 @@ public class PromotionService {
 
     private final CalculationFactory calculationFactory;
 
-    public PriceDiscountResponseVo getPriceDiscountApplyData(PromotionRequestVo vo){
-        log.info("----------PromotionService getPriceDiscountApplyData start");
-        return (PriceDiscountResponseVo) calculationFactory.getPromotionCalculationData(vo, PromotionType.priceDiscount);
-    }
-
     public ProductCouponResponseVo getProductCouponApplyData(PromotionRequestVo vo){
         log.info("----------PromotionService getProductCouponApplyData start");
         return (ProductCouponResponseVo) calculationFactory.getPromotionCalculationData(vo, PromotionType.productCoupon);

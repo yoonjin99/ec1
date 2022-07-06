@@ -16,6 +16,7 @@ public class ProductVo {
     private String itemNo;
     @NotNull
     private int prdPrice;
+    private int orderCnt;
     private Long prmNo;
     private Long cpnIssNo;
 }

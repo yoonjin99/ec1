@@ -10,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,8 +24,8 @@ public class CartCouponCalculationImpl implements Calculation {
     @Override
     public BaseResponseVo getCalculationData(PromotionRequestVo vo) {
         log.info("-------CartCouponCalculation getCalculationData start");
-        List<ProductCouponsVo> getAvailablePromotionDataList = getAvailablePromotionData(vo);
-        List<ProductCouponsVo> calculateDcAmtList =  calculateDcAmt(getAvailablePromotionDataList,vo);
+        List<CouponProductsVo> getAvailablePromotionDataList = getAvailablePromotionData(vo);
+        List<CouponProductsVo> calculateDcAmtList =  calculateDcAmt(getAvailablePromotionDataList,vo);
         CartCouponResponseVo cartCouponResponseVo = calculateMaxBenefit(calculateDcAmtList, vo.getMbrNo());
         return cartCouponResponseVo;
     }
@@ -37,41 +35,59 @@ public class CartCouponCalculationImpl implements Calculation {
         return PromotionType.cartCoupon;
     }
 
-    private List<ProductCouponsVo> getAvailablePromotionData(PromotionRequestVo reqVO){
+    private List<CouponProductsVo> getAvailablePromotionData(PromotionRequestVo reqVO){
         log.info("-------적용 가능한 장바구니 쿠폰 목록 가져옴");
-//        List<ProductCouponsVo> productCouponsVoList = promotionMapper.selectAvailablePromotionList(reqVO);
-//        productCouponsVoList =  productCouponsVoList.stream()
-//                .filter(prd -> PRM0004Code.CART.getType().equals(prd.getCpnKindCd()))
-//                .distinct()
-//                .collect(Collectors.toList());
-//        return productCouponsVoList;
-        return null;
+        List<PromotionVo> promotionList = promotionMapper.selectAvailableCartPromotionList(reqVO);
+        promotionList =  promotionList.stream()
+                .filter(prd -> PRM0004Code.CART.getType().equals(prd.getCpnKindCd()))
+                .distinct()
+                .collect(Collectors.toList());
+        
+        List<CouponProductsVo> couponProductsVo = new ArrayList<>();
+        for(PromotionVo prm : promotionList){
+            CouponProductsVo couponsVo = new CouponProductsVo();
+            List<ProductVo> productVoList = new ArrayList<>();
+
+            String[] goodsNo = prm.getGoodsNo().split(",");
+            for(String no : goodsNo){
+                for(ProductVo prd : reqVO.getProducts()){
+                    if(no.equals(prd.getGoodsNo())){
+                        productVoList.add(prd);
+                    }
+                }
+            }
+
+            couponsVo.setPromotion(prm);
+            couponsVo.setProductList(productVoList);
+            couponProductsVo.add(couponsVo);
+        }
+        
+        return couponProductsVo;
     }
 
-    private List<ProductCouponsVo> calculateDcAmt(List<ProductCouponsVo> productCouponsVoList, PromotionRequestVo reqVO){
+    private List<CouponProductsVo> calculateDcAmt(List<CouponProductsVo> productCouponsVoList, PromotionRequestVo reqVO){
         log.info("--------장바구니 쿠폰 할인 금액 계산");
-//        for (ProductCouponsVo prd : productCouponsVoList) {
-//
-//            int includeGoods = reqVO.getProducts().stream()
-//                    .filter(vo -> Arrays.stream(prd.getGoodsNo().split(",")).anyMatch(Predicate.isEqual(vo.getGoodsNo())))
-//                    .mapToInt(ProductVo::getPrdDcPrice).sum(); // 쿠폰 해당 상품 금액 sum
-//
-//            int allGoods = reqVO.getProducts().stream().mapToInt(ProductVo::getPrdDcPrice).sum(); // 모든 상품 금액 sum
-//
-//            if (includeGoods >= prd.getMinPurAmt()) {
-//                int dcPrice = PRM0003Code.PRICE.getType().equals(prd.getDcCcd()) ? prd.getDcVal() : (int) (includeGoods * (prd.getDcVal() * 0.01));
-//                prd.setDcPrice(Math.min(dcPrice, prd.getMaxDcAmt()));
-//                prd.setTotalPrice(allGoods - prd.getDcPrice());
-//            }
-//        }
+        for (CouponProductsVo prd : productCouponsVoList) {
+            // 할인금액 계산하기
+            // 1. 프로모션 상품 sum
+            int sum = 0;
+            for(ProductVo vo : prd.getProductList()){
+                sum += vo.getPrdPrice() * vo.getOrderCnt();
+            }
+            // 2. 정률, 정액 할인에 따라 할인 금액 return
+            if (sum >= prd.getPromotion().getMinPurAmt()) {
+                int dcPrice = PRM0003Code.PRICE.getType().equals(prd.getPromotion().getDcCcd()) ? prd.getPromotion().getDcVal() : (int) (sum * (prd.getPromotion().getDcVal() * 0.01));
+                prd.getPromotion().setDcPrice(Math.min(dcPrice, prd.getPromotion().getMaxDcAmt()));
+            }
+        }
         return productCouponsVoList;
     }
 
-    private CartCouponResponseVo calculateMaxBenefit(List<ProductCouponsVo> productCouponsVoList, String mbrNo){
+    private CartCouponResponseVo calculateMaxBenefit(List<CouponProductsVo> productCouponsVoList, String mbrNo){
         log.info("-------최대 할인 적용 쿠폰 확인");
-//        productCouponsVoList.stream()
-//                .max(Comparator.comparing(ProductCouponsVo::getDcPrice))
-//                .ifPresent(couponsVo -> couponsVo.setMaxBenefitYn("Y"));
+        productCouponsVoList.stream()
+                .max((couponProductsVo, t1) -> t1.getPromotion().getDcPrice())
+                .ifPresent(couponProductsVo -> couponProductsVo.getPromotion().setMaxBenefitYn("Y"));
 
         return CartCouponResponseVo.builder()
                 .promotionProductList(productCouponsVoList)
