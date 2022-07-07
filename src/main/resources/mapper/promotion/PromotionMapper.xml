@@ -112,7 +112,7 @@
               <foreach collection="products" item="item" open="(" close=")" separator=",">
                 #{item.goodsNo}
               </foreach>
-            order by aply_tgt_no, item_no
+            order by aply_tgt_no, item_no, cpb.prm_no, cci.cpn_iss_no
             ) t
         where now() between t.prm_strt_dt::date and t.prm_end_dt::date + 1
     </select>

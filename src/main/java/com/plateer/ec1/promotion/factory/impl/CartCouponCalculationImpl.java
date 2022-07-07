@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,6 @@ public class CartCouponCalculationImpl implements Calculation {
         List<PromotionVo> promotionList = promotionMapper.selectAvailableCartPromotionList(reqVO);
         promotionList =  promotionList.stream()
                 .filter(prd -> PRM0004Code.CART.getType().equals(prd.getCpnKindCd()))
-                .distinct()
                 .collect(Collectors.toList());
         
         List<CouponProductsVo> couponProductsVo = new ArrayList<>();
@@ -67,7 +68,8 @@ public class CartCouponCalculationImpl implements Calculation {
 
     private List<CouponProductsVo> calculateDcAmt(List<CouponProductsVo> productCouponsVoList, PromotionRequestVo reqVO){
         log.info("--------장바구니 쿠폰 할인 금액 계산");
-        for (CouponProductsVo prd : productCouponsVoList) {
+        for (Iterator<CouponProductsVo> iterator = productCouponsVoList.listIterator(); iterator.hasNext();) {
+            CouponProductsVo prd = iterator.next();
             // 할인금액 계산하기
             // 1. 프로모션 상품 sum
             int sum = 0;
@@ -78,6 +80,8 @@ public class CartCouponCalculationImpl implements Calculation {
             if (sum >= prd.getPromotion().getMinPurAmt()) {
                 int dcPrice = PRM0003Code.PRICE.getType().equals(prd.getPromotion().getDcCcd()) ? prd.getPromotion().getDcVal() : (int) (sum * (prd.getPromotion().getDcVal() * 0.01));
                 prd.getPromotion().setDcPrice(Math.min(dcPrice, prd.getPromotion().getMaxDcAmt()));
+            }else{
+                iterator.remove();
             }
         }
         return productCouponsVoList;
@@ -86,7 +90,7 @@ public class CartCouponCalculationImpl implements Calculation {
     private CartCouponResponseVo calculateMaxBenefit(List<CouponProductsVo> productCouponsVoList, String mbrNo){
         log.info("-------최대 할인 적용 쿠폰 확인");
         productCouponsVoList.stream()
-                .max((couponProductsVo, t1) -> t1.getPromotion().getDcPrice())
+                .max(Comparator.comparing(couponProductsVo -> couponProductsVo.getPromotion().getDcPrice()))
                 .ifPresent(couponProductsVo -> couponProductsVo.getPromotion().setMaxBenefitYn("Y"));
 
         return CartCouponResponseVo.builder()

@@ -1,16 +1,16 @@
 package com.plateer.ec1.promotion.factory.impl;
 
+import com.plateer.ec1.common.code.promotion.PRM0003Code;
 import com.plateer.ec1.common.code.promotion.PRM0004Code;
 import com.plateer.ec1.promotion.enums.PromotionType;
 import com.plateer.ec1.promotion.factory.Calculation;
 import com.plateer.ec1.promotion.mapper.PromotionMapper;
 import com.plateer.ec1.promotion.vo.*;
+import jdk.nashorn.internal.parser.JSONParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,14 +60,22 @@ public class ProductCouponCalculationImpl implements Calculation {
 
     private ProductCouponResponseVo calculateMaxBenefit(List<ProductCouponsVo> productCouponsVoList, String mbrNo){
         log.info("-------최대혜택 확인후 리턴-----------");
-        productCouponsVoList.forEach(productCouponsVo -> {
+        List<PromotionVo> map = new ArrayList<>();
+        for (ProductCouponsVo productCouponsVo : productCouponsVoList) {
+            List<PromotionVo> finalMap = map;
             productCouponsVo.getPromotionVoList().stream()
-                    .collect(Collectors.groupingByConcurrent(PromotionVo::getGoodsNo,
-                            Collectors.maxBy(Comparator.comparing(PromotionVo::getDcPrice))))
-                    .forEach((s, promotionVo) -> {
-                        promotionVo.ifPresent(couponsVo -> couponsVo.setMaxBenefitYn("Y"));
-                    });
-        });
+                    .filter(v -> finalMap.stream().noneMatch(m -> v.getPrmNo().equals(m.getPrmNo()) && v.getCpnIssNo().equals(m.getCpnIssNo())))
+                    .max(Comparator.comparing(PromotionVo::getDcPrice))
+                    .ifPresent(promotionVo -> promotionVo.setMaxBenefitYn("Y"));
+
+            PromotionVo useCoupon = new PromotionVo();
+            for(PromotionVo vo : productCouponsVo.getPromotionVoList()){
+                if("Y".equals(vo.getMaxBenefitYn())){
+                    useCoupon = vo;
+                }
+            }
+            map.add(useCoupon);
+        }
 
         return ProductCouponResponseVo.builder()
                 .productPromotionList(productCouponsVoList)

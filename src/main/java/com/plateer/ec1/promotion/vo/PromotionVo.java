@@ -35,11 +35,11 @@ public class PromotionVo {
         if (getClass() != obj.getClass())
             return false;
         PromotionVo other = (PromotionVo) obj;
-        return Objects.equals(prmNo, other.prmNo) && Objects.equals(goodsNo, other.goodsNo) && Objects.equals(itemNo, other.itemNo);
+        return Objects.equals(prmNo, other.prmNo) && Objects.equals(cpnIssNo, other.cpnIssNo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prmNo, goodsNo, itemNo);
+        return Objects.hash(prmNo, cpnIssNo);
     }
 }
