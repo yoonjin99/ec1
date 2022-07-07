@@ -46,79 +46,42 @@
 
     <!-- 복원 가능한 쿠폰인지 확인 -->
     <select id="selectAvailableRestoreCoupon" parameterType="com.plateer.ec1.promotion.vo.CouponRequestVo" resultType="com.plateer.ec1.promotion.vo.CouponVo">
-        select
-            /* PromotionMapper.selectAvailableRestoreCoupon */
-          cci.prm_no
-        , cci.use_strt_dtime as prm_strt_dt
-        , cci.use_end_dtime as prm_end_dt
-        from cc_cpn_issue cci
-        where
-          cci.prm_no = #{prmNo}
-          and cci.cpn_iss_no = #{couponIssueNo}
-          and now() between cci.use_strt_dtime::date and cci.use_end_dtime::date + 1
-    </select>
-
-    <!-- 상품에 적용 가능한 쿠폰 목록 -->
-    <select id="selectAvailablePromotionList" resultType="com.plateer.ec1.promotion.vo.PromotionVo" parameterType="com.plateer.ec1.promotion.vo.PromotionRequestVo">
-      select
-            t.prm_no
-            , t.prm_nm
-            , t.dc_val
-            , t.min_pur_amt
-            , t.max_dc_amt
-            , t.dc_ccd
-            , t.cpn_kind_cd
-            , t.cpn_iss_no
-            , t.goods_no
-            , t.item_no
+        select *
         from
-            (select
-              /* PromotionMapper.selectAvailablePromtionList */
-              cpb.prm_no
-              , cpb.prm_nm
-              , cpb.dc_val
-              , cpb.min_pur_amt
-              , cpb.max_dc_amt
-              , cpb.dc_ccd
-              , ccb.cpn_kind_cd
-              , cci.cpn_iss_no
-              , pgb.goods_no
-              , pii.item_no
-              , (case when cpb.prm_priod_ccd = '10' then cpb.prm_strt_dt
-                      else cpb.sys_mod_dtime
-                      end) as prm_strt_dt
-              , (case when cpb.prm_priod_ccd = '10' then cpb.prm_end_dt
-                      else cpb.sys_mod_dtime::date + cpb.prm_std_dd
-                      end) as prm_end_dt
-            from
-              cc_prm_base cpb
-              inner join cc_prm_aply_tgt cpat
-              on cpb.prm_no = cpat.prm_no
-              inner join cc_cpn_issue cci
-              on cpb.prm_no = cci.prm_no
-              and cci.mbr_no = #{mbrNo}
-              inner join cc_cpn_base ccb
-              on ccb.prm_no = cpb.prm_no
-              inner join pr_goods_base pgb
-              on cpat.aply_tgt_no = pgb.goods_no
-              inner join pr_item_info pii
-              on pii.goods_no = pgb.goods_no
-            where
-              cpb.use_yn = 'Y'
-              and cci.cpn_use_dt is null
-              and cpb.prm_kind_cd = '20'
-              and ccb.cpn_kind_cd = '10'
-              and aply_tgt_no in
-              <foreach collection="products" item="item" open="(" close=")" separator=",">
-                #{item.goodsNo}
-              </foreach>
-            order by aply_tgt_no, item_no, cpb.prm_no, cci.cpn_iss_no
+             (  select
+                /* PromotionMapper.selectAvailableRestoreCoupon */
+                  cci.prm_no
+                  , cci.cpn_iss_no as org_cpn_iss_no
+                  , (case when cpb.prm_priod_ccd = '10' then cpb.prm_strt_dt
+                             else cpb.sys_mod_dtime
+                    end) as prm_strt_dt
+                  , (case when cpb.prm_priod_ccd = '10' then cpb.prm_end_dt
+                             else cpb.sys_mod_dtime::date + cpb.prm_std_dd
+                    end) as prm_end_dt
+                from
+                  cc_cpn_issue cci
+                  inner join cc_prm_base cpb
+                  on cci.prm_no = cpb.prm_no
+                where
+                  cci.prm_no = #{prmNo}
+                  and cci.cpn_iss_no = #{cpnIssNo}
             ) t
         where now() between t.prm_strt_dt::date and t.prm_end_dt::date + 1
     </select>
 
-  <!-- 상품에 적용 가능한 쿠폰 목록 -->
-    <select id="selectAvailableCartPromotionList" resultType="com.plateer.ec1.promotion.vo.PromotionVo" parameterType="com.plateer.ec1.promotion.vo.PromotionRequestVo">
+    <resultMap id="resultMap" type="com.plateer.ec1.promotion.vo.ProductCouponsVo" >
+      <id column="goods_no"/>
+      <id column="item_no"/>
+      <association property="productVo" autoMapping="true">
+        <result column="goods_no" property="goodsNo"/>
+        <result column="item_no" property="itemNo"/>
+        <result column="prd_prm_no" property="prmNo"/>
+        <result column="prd_cpn_iss_no" property="cpnIssNo"/>
+      </association>
+      <collection property="promotionVoList" ofType="com.plateer.ec1.promotion.vo.PromotionVo" autoMapping="true"/>
+    </resultMap>
+
+    <select id="selectProductCoupon" resultMap="resultMap" parameterType="com.plateer.ec1.promotion.vo.PromotionRequestVo">
       select
         t.prm_no
         , t.prm_nm
@@ -129,9 +92,11 @@
         , t.cpn_kind_cd
         , t.cpn_iss_no
         , t.goods_no
+        , t.item_no
+        , t.prd_price
       from
         (select
-          /* PromotionMapper.selectAvailableCartPromotionList */
+          /* PromotionMapper.selectAvailablePromtionList */
           cpb.prm_no
           , cpb.prm_nm
           , cpb.dc_val
@@ -140,7 +105,9 @@
           , cpb.dc_ccd
           , ccb.cpn_kind_cd
           , cci.cpn_iss_no
-          , ARRAY_TO_STRING(ARRAY_AGG(pgb.goods_no),',') as goods_no
+          , pgb.goods_no
+          , pii.item_no
+          , COALESCE(pgb.prm_prc, pgb.sale_prc) as prd_price
           , (case when cpb.prm_priod_ccd = '10' then cpb.prm_strt_dt
           else cpb.sys_mod_dtime
           end) as prm_strt_dt
@@ -158,17 +125,86 @@
           on ccb.prm_no = cpb.prm_no
           inner join pr_goods_base pgb
           on cpat.aply_tgt_no = pgb.goods_no
+          inner join pr_item_info pii
+          on pii.goods_no = pgb.goods_no
         where
           cpb.use_yn = 'Y'
           and cci.cpn_use_dt is null
           and cpb.prm_kind_cd = '20'
+          and ccb.cpn_kind_cd = '10'
           and aply_tgt_no in
           <foreach collection="products" item="item" open="(" close=")" separator=",">
             #{item.goodsNo}
           </foreach>
+        order by aply_tgt_no, item_no, cpb.prm_no, cci.cpn_iss_no
+      ) t
+      where now() between t.prm_strt_dt::date and t.prm_end_dt::date + 1
+    </select>
+
+  <resultMap id="cartCouponMap" type="com.plateer.ec1.promotion.vo.CouponProductsVo">
+    <id column="prm_no"/>
+    <id column="cpn_iss_no"/>
+    <association property="promotion" autoMapping="true"/>
+    <collection property="productList" ofType="com.plateer.ec1.promotion.vo.ProductVo" autoMapping="true"/>
+  </resultMap>
+
+  <!-- 상품에 적용 가능한 쿠폰 목록 -->
+    <select id="selectAvailableCartPromotionList" resultMap="cartCouponMap" parameterType="com.plateer.ec1.promotion.vo.CouponProductsVo">
+      select
+        t.prm_no
+        , t.prm_nm
+        , t.dc_val
+        , t.min_pur_amt
+        , t.max_dc_amt
+        , t.dc_ccd
+        , t.cpn_kind_cd
+        , t.cpn_iss_no
+        , t.goods_no
+        , t.item_no
+        , t.prd_price
+      from
+        (select
+          /* PromotionMapper.selectAvailablePromtionList */
+          cpb.prm_no
+          , cpb.prm_nm
+          , cpb.dc_val
+          , cpb.min_pur_amt
+          , cpb.max_dc_amt
+          , cpb.dc_ccd
+          , ccb.cpn_kind_cd
+          , cci.cpn_iss_no
+          , pgb.goods_no
+          , pii.item_no
+          , COALESCE(pgb.prm_prc, pgb.sale_prc) as prd_price
+          , (case when cpb.prm_priod_ccd = '10' then cpb.prm_strt_dt
+          else cpb.sys_mod_dtime
+          end) as prm_strt_dt
+          , (case when cpb.prm_priod_ccd = '10' then cpb.prm_end_dt
+          else cpb.sys_mod_dtime::date + cpb.prm_std_dd
+          end) as prm_end_dt
+        from
+          cc_prm_base cpb
+          inner join cc_prm_aply_tgt cpat
+          on cpb.prm_no = cpat.prm_no
+          inner join cc_cpn_issue cci
+          on cpb.prm_no = cci.prm_no
+          and cci.mbr_no = #{mbrNo}
+          inner join cc_cpn_base ccb
+          on ccb.prm_no = cpb.prm_no
+          inner join pr_goods_base pgb
+          on cpat.aply_tgt_no = pgb.goods_no
+          inner join pr_item_info pii
+          on pii.goods_no = pgb.goods_no
+        where
+          cpb.use_yn = 'Y'
+          and cci.cpn_use_dt is null
+          and cpb.prm_kind_cd = '20'
           and ccb.cpn_kind_cd = '30'
-          group by cpb.prm_no, cpb.prm_nm, cpb.dc_val, cpb.min_pur_amt, cpb.max_dc_amt, cpb.dc_ccd, ccb.cpn_kind_cd, cci.cpn_iss_no
-        order by cpn_iss_no
+          and aply_tgt_no in
+          <foreach collection="products" item="item" open="(" close=")" separator=",">
+            #{item.goodsNo}
+          </foreach>
+        order by aply_tgt_no, item_no, cpb.prm_no, cci.cpn_iss_no
       ) t
       where now() between t.prm_strt_dt::date and t.prm_end_dt::date + 1
     </select>

@@ -23,10 +23,12 @@ public class CouponUseCancelService {
     @Transactional
     public void cancelCoupon(CouponRequestVo vo){
         try {
-            CouponVo couponVo = promotionMapper.selectAvailableRestoreCoupon(vo.getPrmNo());
-            vo.setUseStrtDtime(couponVo.getPrmStrtDt());
-            vo.setUseEndDtime(couponVo.getPrmEndDt());
-            promotionTrxMapper.insertDownloadCoupon(vo);
+            CouponVo couponVo = promotionMapper.selectAvailableRestoreCoupon(vo);
+            if(!Objects.isNull(couponVo)){
+                vo.setUseStrtDtime(couponVo.getPrmStrtDt());
+                vo.setUseEndDtime(couponVo.getPrmEndDt());
+                promotionTrxMapper.insertDownloadCoupon(vo);
+            }
         }catch (Exception e){
             log.info("CouponUseCancelService cancelCoupon error : {}" , e.getMessage());
         }

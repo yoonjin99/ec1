@@ -37,6 +37,7 @@ public class ProductCouponTest {
         reqVo.setMbrNo("test01");
         reqVo.setProducts(goodsList);
         ProductCouponResponseVo pcsList = promotionService.getProductCouponApplyData(reqVo);
+        log.info(pcsList.toString() + "결과값");
         List<ProductCouponsVo> list = pcsList.getProductPromotionList();
 
         // 예상 결과값

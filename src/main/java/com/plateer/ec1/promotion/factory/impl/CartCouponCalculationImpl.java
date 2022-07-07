@@ -28,8 +28,7 @@ public class CartCouponCalculationImpl implements Calculation {
         log.info("-------CartCouponCalculation getCalculationData start");
         List<CouponProductsVo> getAvailablePromotionDataList = getAvailablePromotionData(vo);
         List<CouponProductsVo> calculateDcAmtList =  calculateDcAmt(getAvailablePromotionDataList,vo);
-        CartCouponResponseVo cartCouponResponseVo = calculateMaxBenefit(calculateDcAmtList, vo.getMbrNo());
-        return cartCouponResponseVo;
+        return calculateMaxBenefit(calculateDcAmtList, vo.getMbrNo());
     }
 
     @Override
@@ -38,45 +37,35 @@ public class CartCouponCalculationImpl implements Calculation {
     }
 
     private List<CouponProductsVo> getAvailablePromotionData(PromotionRequestVo reqVO){
-        log.info("-------적용 가능한 장바구니 쿠폰 목록 가져옴");
-        List<PromotionVo> promotionList = promotionMapper.selectAvailableCartPromotionList(reqVO);
-        promotionList =  promotionList.stream()
-                .filter(prd -> PRM0004Code.CART.getType().equals(prd.getCpnKindCd()))
-                .collect(Collectors.toList());
-        
-        List<CouponProductsVo> couponProductsVo = new ArrayList<>();
-        for(PromotionVo prm : promotionList){
-            CouponProductsVo couponsVo = new CouponProductsVo();
-            List<ProductVo> productVoList = new ArrayList<>();
+        log.info("-------적용 가능한 장바구니 쿠폰 목록 가져옴" + reqVO.toString());
+        List<CouponProductsVo> couponProductsVoList = promotionMapper.selectAvailableCartPromotionList(reqVO);
 
-            String[] goodsNo = prm.getGoodsNo().split(",");
-            for(String no : goodsNo){
-                for(ProductVo prd : reqVO.getProducts()){
-                    if(no.equals(prd.getGoodsNo())){
-                        productVoList.add(prd);
+
+        couponProductsVoList.forEach(cpn -> {
+            for (ProductVo vo : reqVO.getProducts()) {
+                for (ProductVo prd : cpn.getProductList()) {
+                    if (!vo.getGoodsNo().equals(prd.getGoodsNo()) && !vo.getItemNo().equals(prd.getItemNo())) {
+                        cpn.getProductList().remove(prd);
                     }
+                    break;
                 }
             }
+        });
 
-            couponsVo.setPromotion(prm);
-            couponsVo.setProductList(productVoList);
-            couponProductsVo.add(couponsVo);
+        for (CouponProductsVo cpn : couponProductsVoList) {
+            reqVO.getProducts()
+                    .forEach(vo -> cpn.getProductList().stream().filter(prd -> vo.getGoodsNo().equals(prd.getGoodsNo())
+                            && vo.getItemNo().equals(prd.getItemNo())).forEach(prd -> prd.setOrderCnt(vo.getOrderCnt())));
         }
-        
-        return couponProductsVo;
+
+        return couponProductsVoList;
     }
 
     private List<CouponProductsVo> calculateDcAmt(List<CouponProductsVo> productCouponsVoList, PromotionRequestVo reqVO){
         log.info("--------장바구니 쿠폰 할인 금액 계산");
         for (Iterator<CouponProductsVo> iterator = productCouponsVoList.listIterator(); iterator.hasNext();) {
             CouponProductsVo prd = iterator.next();
-            // 할인금액 계산하기
-            // 1. 프로모션 상품 sum
-            int sum = 0;
-            for(ProductVo vo : prd.getProductList()){
-                sum += vo.getPrdPrice() * vo.getOrderCnt();
-            }
-            // 2. 정률, 정액 할인에 따라 할인 금액 return
+            int sum = prd.getProductList().stream().mapToInt(vo -> vo.getPrdPrice() * vo.getOrderCnt()).sum();
             if (sum >= prd.getPromotion().getMinPurAmt()) {
                 int dcPrice = PRM0003Code.PRICE.getType().equals(prd.getPromotion().getDcCcd()) ? prd.getPromotion().getDcVal() : (int) (sum * (prd.getPromotion().getDcVal() * 0.01));
                 prd.getPromotion().setDcPrice(Math.min(dcPrice, prd.getPromotion().getMaxDcAmt()));

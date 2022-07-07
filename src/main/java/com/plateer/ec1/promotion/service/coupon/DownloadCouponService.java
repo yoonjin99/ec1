@@ -35,9 +35,11 @@ public class DownloadCouponService {
     public List<PromotionVo> downloadCoupon(CouponRequestVo couponRequestVo){
         try {
             CouponVo couponVo = checkAvailableDownloadCoupon(couponRequestVo);
-            couponRequestVo.setUseStrtDtime(couponVo.getPrmStrtDt());
-            couponRequestVo.setUseEndDtime(couponVo.getPrmEndDt());
-            promotionTrxMapper.insertDownloadCoupon(couponRequestVo);
+            if(!Objects.isNull(couponVo)){
+                couponRequestVo.setUseStrtDtime(couponVo.getPrmStrtDt());
+                couponRequestVo.setUseEndDtime(couponVo.getPrmEndDt());
+                promotionTrxMapper.insertDownloadCoupon(couponRequestVo);
+            }
         }catch (Exception e){
             log.info("DownloadCouponService downloadCoupon error : " + e.getMessage());
         }

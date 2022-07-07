@@ -18,7 +18,7 @@
             sys_mod_dtime,
             sys_modr_id
         ) VALUES (
-            #{orgCpnIssNo},
+            #{cpnIssNo},
             #{mbrNo},
             #{prmNo},
             #{useStrtDtime},

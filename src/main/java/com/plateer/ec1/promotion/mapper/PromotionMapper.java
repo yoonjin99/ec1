@@ -13,10 +13,10 @@ public interface PromotionMapper {
     CouponVo selectAvailableCoupon(CouponRequestVo couponRequestVo);
     List<PromotionVo> selectDownloadCouponList(String mbrNo);
 
-    CouponVo selectAvailableRestoreCoupon(Long prmNo);
+    CouponVo selectAvailableRestoreCoupon(CouponRequestVo couponRequestVo);
 
-    List<PromotionVo> selectAvailablePromotionList(PromotionRequestVo reqVO);
-    List<PromotionVo> selectAvailableCartPromotionList(PromotionRequestVo reqVO);
+    List<ProductCouponsVo> selectProductCoupon(PromotionRequestVo reqVO);
+    List<CouponProductsVo> selectAvailableCartPromotionList(PromotionRequestVo reqVO);
 
     CcMbrPntModel selectPrePoint(String mbrNo);
 }

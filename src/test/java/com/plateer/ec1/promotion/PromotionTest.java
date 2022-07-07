@@ -1,6 +1,7 @@
 package com.plateer.ec1.promotion;
 
 import com.plateer.ec1.promotion.service.PromotionService;
+import com.plateer.ec1.promotion.service.coupon.CouponUseCancelService;
 import com.plateer.ec1.promotion.service.coupon.DownloadCouponService;
 import com.plateer.ec1.promotion.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class PromotionTest {
 
     @Autowired
     DownloadCouponService downloadCouponService;
+
+    @Autowired
+    CouponUseCancelService cancelCoupon;
 
     @Test
     @DisplayName("상품쿠폰적용테스트")
@@ -130,6 +134,11 @@ public class PromotionTest {
 
     @Test
     void couponCancelTest(){
-
+        log.info("쿠폰 취소 테스트");
+        CouponRequestVo vo = new CouponRequestVo();
+        vo.setPrmNo(1L);
+        vo.setMbrNo("test01");
+        vo.setCpnIssNo(16L);
+        cancelCoupon.cancelCoupon(vo);
     }
 }

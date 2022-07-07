@@ -27,9 +27,11 @@ public class CartCouponTest {
         goodsP001.setGoodsNo("P001");
         goodsP001.setPrdPrice(29000);
         goodsP001.setItemNo("1");
+        goodsP001.setOrderCnt(2);
         goodsP002.setGoodsNo("P002");
         goodsP002.setPrdPrice(10250);
         goodsP002.setItemNo("1");
+        goodsP002.setOrderCnt(3);
         List goodsList = new ArrayList();
         goodsList.add(goodsP001);
         goodsList.add(goodsP002);
