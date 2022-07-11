@@ -44,7 +44,7 @@ public class OrderContext {
             // 결제
             PayInfoVo payInfo = new PayInfoVo();
             payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getPaymentType().toUpperCase(Locale.ROOT)));
-            paymentService.approve(payInfo);
+//            paymentService.approve(payInfo);
 
             // 데이터 등록
             insertOrderData(dto);

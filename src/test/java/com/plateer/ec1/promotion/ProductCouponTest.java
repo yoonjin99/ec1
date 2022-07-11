@@ -227,6 +227,8 @@ public class ProductCouponTest {
         prm.setCpnKindCd("10");
         prmList.add(prm);
 
+        Assertions.assertThat(list.size()).isEqualTo(8);
+
 //        Assertions.assertThat(list)
 //                .filteredOn(productCouponsVo -> productCouponsVo.getProductVo().getGoodsNo().equals("P001") && productCouponsVo.getProductVo().getItemNo().equals("1"))
 //                .extracting( "promotionVoList")

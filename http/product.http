@@ -1,0 +1,21 @@
+###
+POST localhost:8080/promotion/product
+Content-Type: application/json
+
+{
+  "mbrNo": "test01",
+  "products": [
+    {
+      "goodsNo": "P001",
+      "itemNo": "1",
+      "prdPrice": "29000",
+      "prmNo": "1",
+      "cpnIssNo": "1"
+    },
+    {
+      "goodsNo": "P002",
+      "itemNo": "1",
+      "prdPrice": "10250"
+    }
+  ]
+}

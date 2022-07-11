@@ -1,5 +1,6 @@
 package com.plateer.ec1.payment.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
 import com.plateer.ec1.payment.factory.PaymentTypeServiceFactory;
 import com.plateer.ec1.payment.vo.*;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Service;
 public class PaymentService {
     private final PaymentTypeServiceFactory paymentServiceFactory;
 
-    public ApproveResVo approve(PayInfoVo payInfo){
+    public ApproveResVo approve(OrderInfoVo orderInfoVo,PayInfoVo payInfo) throws JsonProcessingException {
         log.info("---------------PayService approve start---------------------");
         PaymentTypeService paymentTypeService = paymentServiceFactory.getPaymentService(payInfo.getPaymentType());
-        return paymentTypeService.approvePay(payInfo);
+        return paymentTypeService.approvePay(orderInfoVo, payInfo);
     }
 
     public void cancel(CancelReqVo cancelReqVO){

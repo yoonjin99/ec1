@@ -1,0 +1,31 @@
+###
+POST localhost:8080/promotion/cart
+Content-Type: application/json
+
+{
+  "mbrNo": "test01",
+  "products": [
+    {
+      "goodsNo": "P001",
+      "itemNo": "1",
+      "prdPrice": "29000",
+      "ordCnt": 5
+    },
+    {
+      "goodsNo": "P001",
+      "itemNo": "2",
+      "prdPrice": "29000",
+      "ordCnt": 3
+    },{
+      "goodsNo": "P002",
+      "itemNo": "1",
+      "prdPrice": "10250",
+      "ordCnt": 5
+    },{
+      "goodsNo": "P005",
+      "itemNo": "1",
+      "prdPrice": "9000",
+      "ordCnt": 5
+    }
+  ]
+}

@@ -2,10 +2,7 @@ package com.plateer.ec1.payment.factory.impl;
 
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
-import com.plateer.ec1.payment.vo.ApproveResVo;
-import com.plateer.ec1.payment.vo.NetCancelReqVo;
-import com.plateer.ec1.payment.vo.OriginalOrderVo;
-import com.plateer.ec1.payment.vo.PayInfoVo;
+import com.plateer.ec1.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,7 +18,7 @@ public class PayPointServiceImpl implements PaymentTypeService {
     public void validateAuth(PayInfoVo payInfo) {}
 
     @Override
-    public ApproveResVo approvePay(PayInfoVo payInfo) {
+    public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
         log.info("-----------------Point approvePay start");
 //        point.usePoint(null, 0);
         return null;

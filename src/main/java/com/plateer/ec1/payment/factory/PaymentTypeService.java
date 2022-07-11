@@ -1,14 +1,11 @@
 package com.plateer.ec1.payment.factory;
 
 import com.plateer.ec1.payment.enums.PaymentType;
-import com.plateer.ec1.payment.vo.ApproveResVo;
-import com.plateer.ec1.payment.vo.NetCancelReqVo;
-import com.plateer.ec1.payment.vo.OriginalOrderVo;
-import com.plateer.ec1.payment.vo.PayInfoVo;
+import com.plateer.ec1.payment.vo.*;
 
 public interface PaymentTypeService {
     public void validateAuth(PayInfoVo payInfo);
-    public ApproveResVo approvePay(PayInfoVo payInfo);
+    public ApproveResVo approvePay(OrderInfoVo orderInfoVo,PayInfoVo payInfo);
     public void cancelPay(OriginalOrderVo originalOrder);
     public void netCancel(NetCancelReqVo netCancelReqVO);
     PaymentType getType();
