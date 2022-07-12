@@ -3,7 +3,10 @@ package com.plateer.ec1.payment.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +18,8 @@ public class AccountVo {
     private String paymethod = "Vacct";
     @JsonFormat(pattern = "yyyyMMddHHmmss")
     private LocalDateTime timestamp;
-    private String clientIp;
+    @Builder.Default
+    private String clientIp = getClientIp();
     @Builder.Default
     private String mid = "INIpayTest";
     private String moid;
@@ -30,4 +34,12 @@ public class AccountVo {
     private long price;
     private String bankCode;
     private String nmInput;
+
+    private static String getClientIp(){
+        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String ip = req.getHeader("X-FORWARDED-FOR");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
+    }
 }

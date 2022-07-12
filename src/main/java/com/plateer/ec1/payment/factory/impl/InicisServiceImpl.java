@@ -1,7 +1,6 @@
 package com.plateer.ec1.payment.factory.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.plateer.ec1.common.code.order.OPT0009;
@@ -30,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -62,7 +62,6 @@ public class InicisServiceImpl implements PaymentTypeService {
                 .bankCode(payInfo.getBankCode())
                 .nmInput(payInfo.getNmInput())
                 .timestamp(LocalDateTime.now())
-                .clientIp(getClientIp())
                 .moid(orderInfoVo.getOrdNo())
                 .dtInput(LocalDateTime.now().plusDays(1))
                 .tmInput(LocalDateTime.now())
@@ -129,7 +128,7 @@ public class InicisServiceImpl implements PaymentTypeService {
                 String.valueOf(map.get("moid")),
                 String.valueOf(map.get("price"))));
 
-        String salt = String.join( "", objects);
+        String salt = String.join("", objects);
         String hex = "";
         try {
             MessageDigest msg = MessageDigest.getInstance("SHA-512");
@@ -141,11 +140,4 @@ public class InicisServiceImpl implements PaymentTypeService {
         return hex;
     }
 
-    private String getClientIp(){
-        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String ip = req.getHeader("X-FORWARDED-FOR");
-        if (ip == null)
-            ip = req.getRemoteAddr();
-        return ip;
-    }
 }
