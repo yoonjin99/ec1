@@ -1,34 +1,49 @@
 package com.plateer.ec1.payment.factory.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.plateer.ec1.common.code.order.OPT0009;
+import com.plateer.ec1.common.code.order.OPT0010;
+import com.plateer.ec1.common.code.order.OPT0011;
 import com.plateer.ec1.common.model.order.OpPayInfoModel;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
+import com.plateer.ec1.payment.mapper.InicisTrxMapper;
 import com.plateer.ec1.payment.vo.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class InicisServiceImpl implements PaymentTypeService {
 
     private static final String URL = "https://iniapi.inicis.com/api/v1/formpay";
+    private final InicisTrxMapper inicisTrxMapper;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public PaymentType getType() {
+        return PaymentType.INICIS;
+    }
 
     @Override
     public void validateAuth(PayInfoVo payInfo) {
@@ -36,10 +51,9 @@ public class InicisServiceImpl implements PaymentTypeService {
     }
 
     @Override
+    @Transactional
     public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
         log.info("-----------------Inicis approvePay start");
-        // TODO : 유효성 검증 + 테스트 코드 작성
-        // approveResVO 에 어떤 값이 들어오는지 - > responseData ? -> 주문 데이터
         AccountVo accountVo = AccountVo.builder()
                 .goodName(orderInfoVo.getGoodName())
                 .buyerName(orderInfoVo.getBuyerName())
@@ -48,35 +62,50 @@ public class InicisServiceImpl implements PaymentTypeService {
                 .bankCode(payInfo.getBankCode())
                 .nmInput(payInfo.getNmInput())
                 .timestamp(LocalDateTime.now())
-                .clientIp("127.0.0.1")
-                .moid("INIpayTest_1657505411924")
+                .clientIp(getClientIp())
+                .moid(orderInfoVo.getOrdNo())
                 .dtInput(LocalDateTime.now().plusDays(1))
                 .tmInput(LocalDateTime.now())
                 .build();
 
-        RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         objectMapper.registerModule(new JavaTimeModule());
         Map<String, Object> requestMap = objectMapper.convertValue(accountVo, new TypeReference<Map<String, Object>>(){});
         body.setAll(requestMap);
         body.add("hashData", SHA512(requestMap));
 
-        HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
-        ResponseEntity<AccountResponseVo> response = restTemplate.postForEntity(URL, requestMessage, AccountResponseVo.class);
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.postForEntity(URL, new HttpEntity<>(body, httpHeaders), String.class).getBody();
 
-        // response data insert logic call
-        log.info("이니시스 연결 완료 ------" + Objects.requireNonNull(response.getBody()).toString());
-//        OpPayInfoModel opPayInfoModel = OpPayInfoModel.builder()
-//                .trsnId()
-//                .build();
+        try {
+            AccountResponseVo vo = objectMapper.readValue(response, AccountResponseVo.class);
 
+            if(!vo.getResultCode().equals("00")) throw new Exception(vo.getResultMsg());
 
-        return null;
+            OpPayInfoModel opPayInfoModel = OpPayInfoModel.builder()
+                    .payNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+                    .trsnId(vo.getTid())
+                    .ordNo(orderInfoVo.getOrdNo())
+                    .payCcd(OPT0009.VRACCOUNT.getType())
+                    .payPrgsScd(OPT0011.REQUESTPAY.getType())
+                    .payMnCd(OPT0010.PAY.getType())
+                    .vrAcct(vo.getVacct())
+                    .vrAcctNm(vo.getVacctName())
+                    .vrBnkCd(vo.getVacctBankCode())
+                    .vrValDt(vo.getValidDate())
+                    .vrValTt(vo.getValidTime())
+                    .payAmt(vo.getPrice())
+                    .rfndAvlAmt(0L)
+                    .cnclAmt(0L)
+                    .build();
+            inicisTrxMapper.insertPayinfo(opPayInfoModel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ApproveResVo();
     }
 
     @Override
@@ -89,21 +118,16 @@ public class InicisServiceImpl implements PaymentTypeService {
         log.info("-----------------Inicis netCancel start");
     }
 
-    @Override
-    public PaymentType getType() {
-        return PaymentType.INICIS;
-    }
-
-    private static String SHA512(Map<String, Object> map){
-        List<String> objects =new LinkedList<>();
-        objects.add("ItEQKi3rY7uvDS8l");
-        objects.add(String.valueOf(map.get("type")));
-        objects.add(String.valueOf(map.get("paymethod")));
-        objects.add(String.valueOf(map.get("timestamp")));
-        objects.add(String.valueOf(map.get("clientIp")));
-        objects.add(String.valueOf(map.get("mid")));
-        objects.add(String.valueOf(map.get("moid")));
-        objects.add(String.valueOf(map.get("price")));
+    private String SHA512(Map<String, Object> map){
+        LinkedList<String> objects = new LinkedList<>(
+                Arrays.asList("ItEQKi3rY7uvDS8l",
+                String.valueOf(map.get("type")),
+                String.valueOf(map.get("paymethod")),
+                String.valueOf(map.get("timestamp")),
+                String.valueOf(map.get("clientIp")),
+                String.valueOf(map.get("mid")),
+                String.valueOf(map.get("moid")),
+                String.valueOf(map.get("price"))));
 
         String salt = String.join( "", objects);
         String hex = "";
@@ -112,8 +136,16 @@ public class InicisServiceImpl implements PaymentTypeService {
             msg.update(salt.getBytes());
             hex = String.format("%0128x", new BigInteger(1, msg.digest()));
         }catch (Exception e){
-            log.info("SHA512 ERROR=" +  e);
+            e.printStackTrace();
         }
         return hex;
+    }
+
+    private String getClientIp(){
+        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String ip = req.getHeader("X-FORWARDED-FOR");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
     }
 }

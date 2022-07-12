@@ -7,14 +7,18 @@ import com.plateer.ec1.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class PaymentService {
     private final PaymentTypeServiceFactory paymentServiceFactory;
 
-    public ApproveResVo approve(OrderInfoVo orderInfoVo,PayInfoVo payInfo) throws JsonProcessingException {
+    public ApproveResVo approve(@Valid OrderInfoVo orderInfoVo,@Valid PayInfoVo payInfo) throws JsonProcessingException {
         log.info("---------------PayService approve start---------------------");
         PaymentTypeService paymentTypeService = paymentServiceFactory.getPaymentService(payInfo.getPaymentType());
         return paymentTypeService.approvePay(orderInfoVo, payInfo);

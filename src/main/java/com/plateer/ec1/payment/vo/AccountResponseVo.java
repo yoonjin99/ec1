@@ -1,11 +1,8 @@
 package com.plateer.ec1.payment.vo;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@NoArgsConstructor
+@Data
 public class AccountResponseVo {
     private String resultCode;
     private String resultMsg;
@@ -16,5 +13,10 @@ public class AccountResponseVo {
     private String vacctName;
     private String vacctBankCode;
     private String validDate;
-    private String price;
+    private String validTime;
+    private String inputName;
+    private Long price;
+    private String refundAcct;
+    private String refundBankCode;
+    private String refundAcctName;
 }
