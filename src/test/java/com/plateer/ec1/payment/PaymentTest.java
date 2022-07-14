@@ -131,8 +131,9 @@ public class PaymentTest {
         test.add("dt_trans", "20220713");
         test.add("tm_trans", "150531");
         test.add("amt_input", "1");
+        test.add("type_msg", "0200");
         test.add("no_req_tid", "INIAPIVBNKINIpayTest20220713150505264190");
-        paymentVaccountService.INIPayNotice(test);
+        paymentVaccountService.INIPayNotice(test, "203.238.37.15");
     }
 
     @Test

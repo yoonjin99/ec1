@@ -25,16 +25,7 @@ public class PaymentController {
     public String depositNotice(HttpServletRequest request, @RequestBody MultiValueMap<String, String> param){
         log.info("가상계좌 입금 통보 param : {}", param);
         String getIp = request.getHeader("X-FORWARDED-FOR").equals("") ? request.getRemoteAddr() : request.getHeader("X-FORWARDED-FOR") ;
-        String result = "FAIL";
-        List<String> ipList = Stream.of(PGIPType.values())
-                .map(PGIPType::getIp)
-                .collect(Collectors.toList());
-        for(String ip : ipList){
-            if(ip.equals(getIp.substring(0,10))){
-                result = paymentNoticeService.INIPayNotice(param);
-            }
-        }
 
-        return result;
+        return paymentNoticeService.INIPayNotice(param, getIp);
     }
 }
