@@ -3,7 +3,7 @@ package com.plateer.ec1.common.code.order;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum OPT0010 {
+public enum OPT0010Code {
     PAY("10"),
     CANCEL("20");
 

@@ -2,14 +2,13 @@ package com.plateer.ec1.payment.factory.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.plateer.ec1.common.code.order.OPT0009;
-import com.plateer.ec1.common.code.order.OPT0010;
-import com.plateer.ec1.common.code.order.OPT0011;
+import com.plateer.ec1.common.code.order.OPT0009Code;
+import com.plateer.ec1.common.code.order.OPT0010Code;
+import com.plateer.ec1.common.code.order.OPT0011Code;
 import com.plateer.ec1.common.model.order.OpPayInfoModel;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
-import com.plateer.ec1.payment.mapper.InicisTrxMapper;
+import com.plateer.ec1.payment.mapper.PaymentInicisTrxMapper;
 import com.plateer.ec1.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +32,7 @@ import java.util.stream.Collectors;
 public class InicisServiceImpl implements PaymentTypeService {
 
     private static final String URL = "https://iniapi.inicis.com/api/v1/formpay";
-    private final InicisTrxMapper inicisTrxMapper;
+    private final PaymentInicisTrxMapper inicisTrxMapper;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -66,12 +61,10 @@ public class InicisServiceImpl implements PaymentTypeService {
                 .dtInput(LocalDateTime.now().plusDays(1))
                 .tmInput(LocalDateTime.now())
                 .build();
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        objectMapper.registerModule(new JavaTimeModule());
         Map<String, Object> requestMap = objectMapper.convertValue(accountVo, new TypeReference<Map<String, Object>>(){});
         body.setAll(requestMap);
         body.add("hashData", SHA512(requestMap));
@@ -88,9 +81,9 @@ public class InicisServiceImpl implements PaymentTypeService {
                     .payNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                     .trsnId(vo.getTid())
                     .ordNo(orderInfoVo.getOrdNo())
-                    .payCcd(OPT0009.VRACCOUNT.getType())
-                    .payPrgsScd(OPT0011.REQUESTPAY.getType())
-                    .payMnCd(OPT0010.PAY.getType())
+                    .payCcd(OPT0009Code.VRACCOUNT.getType())
+                    .payPrgsScd(OPT0011Code.REQUESTPAY.getType())
+                    .payMnCd(OPT0010Code.PAY.getType())
                     .vrAcct(vo.getVacct())
                     .vrAcctNm(vo.getVacctName())
                     .vrBnkCd(vo.getVacctBankCode())

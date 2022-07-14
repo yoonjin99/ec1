@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.plateer.ec1.payment.mapper.InicisTrxMapper">
+<mapper namespace="com.plateer.ec1.payment.mapper.PaymentInicisTrxMapper">
 
   <insert id="insertPayinfo" parameterType="com.plateer.ec1.common.model.order.OpPayInfoModel">
     insert into op_pay_info(
@@ -50,4 +50,15 @@
       , #{vrValTt}
     )
   </insert>
+
+  <update id="updateDepositResult" parameterType="com.plateer.ec1.payment.vo.ININoticeVo">
+    update
+      op_pay_info
+    set
+        pay_prgs_scd = '20'
+        , rfnd_avl_amt = #{amtInput}::bigint
+        , pay_cmt_dtime = to_timestamp(#{dtTrans} || #{tmTrans}, 'YYYYMMDDHH24MISS')
+    where
+        trsn_id = #{noReqTid}
+  </update>
 </mapper>

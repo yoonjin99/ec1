@@ -19,8 +19,6 @@ public class AccountVo {
     @JsonFormat(pattern = "yyyyMMddHHmmss")
     private LocalDateTime timestamp;
     @Builder.Default
-    private String clientIp = getClientIp();
-    @Builder.Default
     private String mid = "INIpayTest";
     private String moid;
     @JsonFormat(pattern = "yyyyMMdd")
@@ -34,8 +32,10 @@ public class AccountVo {
     private long price;
     private String bankCode;
     private String nmInput;
+    @Builder.Default
+    private String clientIp = clientIpCheck();
 
-    private static String getClientIp(){
+    private static String clientIpCheck(){
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String ip = req.getHeader("X-FORWARDED-FOR");
         if (ip == null)

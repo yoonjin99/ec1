@@ -1,13 +1,10 @@
 package com.plateer.ec1.payment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.service.PaymentService;
+import com.plateer.ec1.payment.service.PaymentNoticeService;
 import com.plateer.ec1.payment.vo.AccountResponseVo;
 import com.plateer.ec1.payment.vo.OrderInfoVo;
 import com.plateer.ec1.payment.vo.PayInfoVo;
@@ -20,15 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @SpringBootTest
 @Slf4j
@@ -37,19 +31,22 @@ public class PaymentTest {
     @Autowired
     public PaymentService payService;
 
+    @Autowired
+    public PaymentNoticeService paymentVaccountService;
+
     @Test
     @DisplayName("가상계좌 통합 테스트")
     void insertTest() throws JsonProcessingException {
         log.info("---------------inicis 결제 통합테스트---------------------");
         PayInfoVo info = new PayInfoVo();
-        info.setNmInput("배윤진");
+        info.setNmInput("테스트");
         info.setBankCode("03");
         info.setPrice(1);
         OrderInfoVo orderInfoVo = new OrderInfoVo();
         orderInfoVo.setOrdNo("O20220712134700");
         orderInfoVo.setBuyerEmail("dbswls1999@naver.com");
         orderInfoVo.setGoodName("라운드넥티셔츠");
-        orderInfoVo.setBuyerName("배윤진");
+        orderInfoVo.setBuyerName("테스트");
         info.setPaymentType(PaymentType.INICIS);
         payService.approve(orderInfoVo, info);
         log.info("---------------inicis 결제 통합테스트 종료---------------------");
@@ -124,6 +121,20 @@ public class PaymentTest {
         AccountResponseVo vo = objectMapper.readValue(response, AccountResponseVo.class);
 
         Assertions.assertEquals("01", vo.getResultCode());
+    }
+
+    @Test
+    void vaccountDepositTest(){
+        MultiValueMap<String, String> test = new LinkedMultiValueMap<>();
+        test.add("len", "0534");
+        test.add("no_tid", "ININPGVBNKINIpayTest20220714111313693185");
+        test.add("dt_trans", "20220713");
+        test.add("tm_trans", "150531");
+        test.add("amt_input", "1");
+        test.add("no_req_tid", "INIAPIVBNKINIpayTest20220713150505264190");
+        test.add("nm_inputbank", "__�\u05FD�Ʈ__");
+        test.add("nm_input", "ȫ�浿");
+        paymentVaccountService.INIPayNotice(test);
     }
 
     @Test
