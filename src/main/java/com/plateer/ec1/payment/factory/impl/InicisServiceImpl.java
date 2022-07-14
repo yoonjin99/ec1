@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
@@ -49,7 +52,26 @@ public class InicisServiceImpl implements PaymentTypeService {
     @Transactional
     public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
         log.info("-----------------Inicis approvePay start");
-        AccountVo accountVo = AccountVo.builder()
+        AccountVo vo = createVo(orderInfoVo, payInfo);
+        String response = inicisApiCall(vo);
+        insertPayInfo(response, orderInfoVo);
+        return new ApproveResVo();
+    }
+
+    private AccountVo createVo(OrderInfoVo orderInfoVo, PayInfoVo payInfo){
+        StringBuilder sb = new StringBuilder();
+        sb.append("ItEQKi3rY7uvDS8l");
+        sb.append("Pay");
+        sb.append("Vacct");
+        sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        sb.append(clientIpCheck());
+        sb.append("INIpayTest");
+        sb.append(orderInfoVo.getOrdNo());
+        sb.append(payInfo.getPrice());
+
+        String hashData = SHA512(sb.toString());
+
+        return AccountVo.builder()
                 .goodName(orderInfoVo.getGoodName())
                 .buyerName(orderInfoVo.getBuyerName())
                 .buyerEmail(orderInfoVo.getBuyerEmail())
@@ -60,18 +82,32 @@ public class InicisServiceImpl implements PaymentTypeService {
                 .moid(orderInfoVo.getOrdNo())
                 .dtInput(LocalDateTime.now().plusDays(1))
                 .tmInput(LocalDateTime.now())
+                .clientIp(clientIpCheck())
+                .hashData(hashData)
                 .build();
+    }
+
+    private String clientIpCheck(){
+        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String ip = req.getHeader("X-FORWARDED-FOR");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
+    }
+
+    private String inicisApiCall(AccountVo accountVo){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         Map<String, Object> requestMap = objectMapper.convertValue(accountVo, new TypeReference<Map<String, Object>>(){});
         body.setAll(requestMap);
-        body.add("hashData", SHA512(requestMap));
 
         RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.postForEntity(URL, new HttpEntity<>(body, httpHeaders), String.class).getBody();
+        return restTemplate.postForEntity(URL, new HttpEntity<>(body, httpHeaders), String.class).getBody();
+    }
 
+    private void insertPayInfo(String response, OrderInfoVo orderInfoVo){
         try {
             AccountResponseVo vo = objectMapper.readValue(response, AccountResponseVo.class);
 
@@ -97,7 +133,6 @@ public class InicisServiceImpl implements PaymentTypeService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ApproveResVo();
     }
 
     @Override
@@ -110,22 +145,11 @@ public class InicisServiceImpl implements PaymentTypeService {
         log.info("-----------------Inicis netCancel start");
     }
 
-    private String SHA512(Map<String, Object> map){
-        LinkedList<String> objects = new LinkedList<>(
-                Arrays.asList("ItEQKi3rY7uvDS8l",
-                String.valueOf(map.get("type")),
-                String.valueOf(map.get("paymethod")),
-                String.valueOf(map.get("timestamp")),
-                String.valueOf(map.get("clientIp")),
-                String.valueOf(map.get("mid")),
-                String.valueOf(map.get("moid")),
-                String.valueOf(map.get("price"))));
-
-        String salt = String.join("", objects);
+    private String SHA512(String sb){
         String hex = "";
         try {
             MessageDigest msg = MessageDigest.getInstance("SHA-512");
-            msg.update(salt.getBytes());
+            msg.update(sb.getBytes());
             hex = String.format("%0128x", new BigInteger(1, msg.digest()));
         }catch (Exception e){
             e.printStackTrace();

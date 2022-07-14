@@ -1,6 +1,7 @@
 package com.plateer.ec1.payment.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.plateer.ec1.payment.enums.InicisReturnType;
 import com.plateer.ec1.payment.mapper.PaymentInicisTrxMapper;
 import com.plateer.ec1.payment.vo.ININoticeVo;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class PaymentNoticeService {
                                                                     .collect(Collectors.toMap(Map.Entry::getKey, p -> p.getValue().get(0)));
             ININoticeVo vo = objectMapper.convertValue(requestParam, ININoticeVo.class);
             validate(vo);
-            inicisTrxMapper.updateDepositResult(vo);
+            if(vo.getTypeMsg().equals(InicisReturnType.SUCCESS.getTypeMsg())) inicisTrxMapper.updateDepositResult(vo);
         } catch (Exception e) {
             e.printStackTrace();
         }
