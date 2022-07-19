@@ -150,6 +150,8 @@ public class InicisServiceImpl implements PaymentTypeService {
             orderInfoVo.setOrdNo(cancelCompleteData.getOrdNo());
             orderInfoVo.setGoodName(infoVo.getGoodsNm());
             orderInfoVo.setBuyerName(infoVo.getOrdNm());
+            orderInfoVo.setBuyerEmail("dbswls1999@naver.com");
+
             PayInfoVo payInfo = new PayInfoVo();
             payInfo.setBankCode(cancelCompleteData.getVrBnkCd());
             payInfo.setPrice(cancelPrice);
@@ -168,14 +170,20 @@ public class InicisServiceImpl implements PaymentTypeService {
         // TODO: 취소 실패일 경우 어떻게 처리 ?.?
         StringBuilder sb = new StringBuilder();
         sb.append("ItEQKi3rY7uvDS8l");
-        sb.append("PartialRefund");
         sb.append("Vacct");
         sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         sb.append(clientIpCheck());
         sb.append("INIpayTest");
-        sb.append(infoVo.getOpPayInfoModel().getTrsnId());
+//        sb.append(infoVo.getOpPayInfoModel().getTrsnId());
+        sb.append("INIAPIVBNKINIpayTest20220719174427102185");
 
         if(cancelPrice > 0){ // 부분환불
+            sb.append("ItEQKi3rY7uvDS8l");
+            sb.append("Vacct");
+            sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+            sb.append(clientIpCheck());
+            sb.append("INIpayTest");
+            sb.append("PartialRefund");
             sb.append(paymentCancelRequestVo.getCancelPrice());
             sb.append(cancelPrice);
             sb.append(infoVo.getOpPayInfoModel().getVrAcct());
@@ -200,9 +208,16 @@ public class InicisServiceImpl implements PaymentTypeService {
             PartCancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), PartCancelResponseVo.class).getBody();
             log.info(responseVo + "값!!!!");
         }else{ // 전체 환불
-            sb.append(infoVo.getOpPayInfoModel().getVrAcct());
+            sb.append("ItEQKi3rY7uvDS8l");
+            sb.append("Refund");
+            sb.append("Vacct");
+            sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+            sb.append(clientIpCheck());
+            sb.append("INIpayTest");
+            sb.append(infoVo.getOpPayInfoModel().getTrsnId());
+            sb.append(infoVo.getRfndAcctNo());
 
-            String hashData = SHA512(String.valueOf(sb));
+            String hashData = SHA512(sb.toString());
 
             cancelRequestVo = CancelRequestVo.builder()
                     .type("Refund")
@@ -210,6 +225,7 @@ public class InicisServiceImpl implements PaymentTypeService {
                     .timestamp(LocalDateTime.now())
                     .clientIp(clientIpCheck())
                     .mid("INIpayTest")
+                    .tid(infoVo.getOpPayInfoModel().getTrsnId())
                     .refundAcctNum(infoVo.getRfndAcctNo())
                     .refundBankCode(infoVo.getRfndBnkCk())
                     .refundAcctName(infoVo.getRfndAcctOwnNm())
@@ -220,7 +236,7 @@ public class InicisServiceImpl implements PaymentTypeService {
             CancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), CancelResponseVo.class).getBody();
             log.info(responseVo + "값2222");
         }
-//        inicisTrxMapper.insertPayinfo(opPayInfoModel);
+//        inicisTrxMapper.insertPayinfo(infoVo.getOpPayInfoModel());
     }
 
     @Override
@@ -236,6 +252,8 @@ public class InicisServiceImpl implements PaymentTypeService {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         Map<String, Object> requestMap = objectMapper.convertValue(t, new TypeReference<Map<String, Object>>(){});
         body.setAll(requestMap);
+        
+        log.info(body.toString() + "값 내놔");
 
         return new HttpEntity<>(body, httpHeaders);
     }

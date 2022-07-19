@@ -1,5 +1,6 @@
 package com.plateer.ec1.payment.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plateer.ec1.payment.enums.PaymentType;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ public class CancelRequestVo {
     private PaymentType paymentType;
     private String type;
     private String paymethod;
+    @JsonFormat(pattern = "yyyyMMddHHmmss")
     private LocalDateTime timestamp;
     private String clientIp;
     private String mid;

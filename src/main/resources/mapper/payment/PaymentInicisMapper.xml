@@ -6,6 +6,11 @@
 
   <resultMap id="resultMap" type="com.plateer.ec1.payment.vo.CancelInfoVo" >
     <id column="ord_no"/>
+    <result property="goodsNm" column="goods_nm"/>
+    <result property="ordNm" column="ord_nm"/>
+    <result property="rfndAcctNo" column="rfnd_acct_no"/>
+    <result property="rfndAcctOwnNm" column="rfnd_acct_own_nm"/>
+    <result property="rfndBnkCk" column="rfnd_bnk_ck"/>
     <association property="opPayInfoModel" autoMapping="true"/>
   </resultMap>
 

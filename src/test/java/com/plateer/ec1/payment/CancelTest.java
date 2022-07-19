@@ -41,8 +41,8 @@ public class CancelTest {
     void allCancel(){
         PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
         vo.setPaymentType(PaymentType.INICIS);
-        vo.setCancelPrice(1L);
-        vo.setOrdNo("O20220712134701");
+        vo.setCancelPrice(10000L);
+        vo.setOrdNo("O20220712134703");
         vo.setClmNo("C1");
         paymentService.cancel(vo);
     }
