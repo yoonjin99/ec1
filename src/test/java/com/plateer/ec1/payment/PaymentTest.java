@@ -41,9 +41,9 @@ public class PaymentTest {
         PayInfoVo info = new PayInfoVo();
         info.setNmInput("테스트");
         info.setBankCode("03");
-        info.setPrice(1);
+        info.setPrice(10000);
         OrderInfoVo orderInfoVo = new OrderInfoVo();
-        orderInfoVo.setOrdNo("O20220712134700");
+        orderInfoVo.setOrdNo("O20220712134703");
         orderInfoVo.setBuyerEmail("dbswls1999@naver.com");
         orderInfoVo.setGoodName("라운드넥티셔츠");
         orderInfoVo.setBuyerName("테스트");

@@ -22,8 +22,8 @@ public class IFCallHelper {
 
     public void callPaymentIF(){
         log.info("----------IFCallHelper 결제취소 실행--------");
-        CancelReqVo cancelReqVO = new CancelReqVo();
-        cancelReqVO.setPaymentType(PaymentType.INICIS);
-        paymentService.cancel(cancelReqVO);
+//        CancelReqVo cancelReqVO = new CancelReqVo();
+//        cancelReqVO.setPaymentType(PaymentType.INICIS);
+//        paymentService.cancel(cancelReqVO);
     }
 }

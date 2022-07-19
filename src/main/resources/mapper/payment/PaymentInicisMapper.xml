@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.ec1.payment.mapper.PaymentInicisMapper">
+
+  <resultMap id="resultMap" type="com.plateer.ec1.payment.vo.CancelInfoVo" >
+    <id column="ord_no"/>
+    <association property="opPayInfoModel" autoMapping="true"/>
+  </resultMap>
+
+  <select id="selectPayInfo" parameterType="com.plateer.ec1.payment.vo.PaymentCancelRequestVo" resultMap="resultMap">
+    select
+       opi.*
+    , oob.ord_nm
+    , oob.rfnd_acct_no
+    , oob.rfnd_acct_own_nm
+    , oob.rfnd_bnk_ck
+    , (select ogi.goods_nm from op_goods_info ogi where ogi.ord_no = opi.ord_no limit 1) as goods_nm
+    from op_pay_info opi
+        inner join op_ord_base oob
+        on opi.ord_no = oob.ord_no
+    where
+        opi.ord_no = #{ordNo}
+        and opi.pay_ccd = '10'
+        and opi.pay_amt <![CDATA[ > ]]> opi.cncl_amt
+  </select>
+</mapper>

@@ -25,7 +25,7 @@ public class PayPointServiceImpl implements PaymentTypeService {
     }
 
     @Override
-    public void cancelPay(OriginalOrderVo originalOrder) {
+    public void cancelPay(PaymentCancelRequestVo paymentCancelRequestVo) {
         log.info("-----------------Point cancelPay start");
 //        point.cancelPoint(null, 0);
     }

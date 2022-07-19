@@ -61,4 +61,22 @@
     where
         trsn_id = #{noReqTid}
   </update>
+
+  <update id="updateCancelResult" parameterType="com.plateer.ec1.payment.vo.PaymentCancelRequestVo">
+    <selectKey keyProperty="payAmt" resultType="long" order="BEFORE">
+      select opi.pay_amt
+        from op_pay_info opi
+        where
+            opi.ord_no = #{ordNo}
+            and pay_prgs_scd = '10'
+    </selectKey>
+    update
+        op_pay_info
+    set
+      cncl_amt = #{cancelPrice}
+    , rfnd_avl_amt = #{payAmt} - #{cancelPrice}
+    where
+        ord_no = #{ordNo}
+        and pay_prgs_scd = '10'
+  </update>
 </mapper>
