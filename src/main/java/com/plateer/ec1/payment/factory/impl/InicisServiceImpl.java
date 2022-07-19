@@ -169,13 +169,6 @@ public class InicisServiceImpl implements PaymentTypeService {
         CancelRequestVo cancelRequestVo;
         // TODO: 취소 실패일 경우 어떻게 처리 ?.?
         StringBuilder sb = new StringBuilder();
-        sb.append("ItEQKi3rY7uvDS8l");
-        sb.append("Vacct");
-        sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-        sb.append(clientIpCheck());
-        sb.append("INIpayTest");
-//        sb.append(infoVo.getOpPayInfoModel().getTrsnId());
-        sb.append("INIAPIVBNKINIpayTest20220719174427102185");
 
         if(cancelPrice > 0){ // 부분환불
             sb.append("ItEQKi3rY7uvDS8l");
