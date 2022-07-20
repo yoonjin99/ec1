@@ -19,8 +19,7 @@ public class PointService {
     private final PromotionTrxMapper promotionTrxMapper;
 
     @Transactional
-    public void usePoint(PointRequestVo vo){
-        // TODO : 포인트를 사용할게 없다면 ?? -라면 ??
+    public Long usePoint(PointRequestVo vo){
         log.info("포인트 사용");
         try {
             CcMbrPntModel insertCcMbrPntModel = CcMbrPntModel.builder()
@@ -30,13 +29,15 @@ public class PointService {
                     .svUseAmt(vo.getPointAmt())
                     .build();
             promotionTrxMapper.useCancelPoint(insertCcMbrPntModel);
+            return insertCcMbrPntModel.getPntHstSeq();
         }catch (Exception e){
             log.info("PointService usePoint error" + e.getMessage());
+            throw e;
         }
     }
 
     @Transactional
-    public void cancelPoint(PointRequestVo vo){
+    public Long cancelPoint(PointRequestVo vo){
         log.info("포인트 사용 취소");
         try {
             CcMbrPntModel insertCcMbrPntModel = CcMbrPntModel.builder()
@@ -46,14 +47,22 @@ public class PointService {
                     .svUseAmt(vo.getPointAmt())
                     .build();
             promotionTrxMapper.useCancelPoint(insertCcMbrPntModel);
+            return insertCcMbrPntModel.getPntHstSeq();
         }catch (Exception e){
             log.info("PointService usePoint error" + e.getMessage());
+            throw e;
         }
     }
 
     private Long balPoint(PointRequestVo vo){
         CcMbrPntModel ccMbrPntModel = promotionMapper.selectPrePoint(vo.getMemberNo());
-        if(vo.getSaveUseCcd().equals(PRM0011Code.USE.getType())) return ccMbrPntModel.getPntBlc() - vo.getPointAmt();
-        else return ccMbrPntModel.getPntBlc() + vo.getPointAmt();
+        if(vo.getSaveUseCcd().equals(PRM0011Code.USE.getType())) {
+            if(ccMbrPntModel.getPntBlc() < vo.getPointAmt()){
+                throw new IllegalStateException("총 포인트보다 결제 금액이 더 크기 때문에 포인트 결제가 불가능합니다.");
+            }
+            return ccMbrPntModel.getPntBlc() - vo.getPointAmt();
+        } else {
+            return ccMbrPntModel.getPntBlc() + vo.getPointAmt();
+        }
     }
 }

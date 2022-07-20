@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface PromotionTrxMapper {
     int insertDownloadCoupon(CouponRequestVo couponRequestVo);
 
-    int useCancelPoint(CcMbrPntModel ccMbrPntModel);
+    Long useCancelPoint(CcMbrPntModel ccMbrPntModel);
 }

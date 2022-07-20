@@ -28,7 +28,6 @@
     where
         opi.ord_no = #{ordNo}
         and opi.pay_ccd = '10'
-        and opi.pay_mn_cd = '10'
         and opi.pay_prgs_scd = '20'
         and opi.pay_amt <![CDATA[ > ]]> opi.cncl_amt
   </select>

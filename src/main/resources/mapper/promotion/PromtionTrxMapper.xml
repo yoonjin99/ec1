@@ -48,7 +48,7 @@
           #{mbrNo}
           , #{svUseCcd}
           , #{svUseAmt}
-          , #{pntBal}
+          , #{pntBlc}
           , #{ordNo}
           , #{payNo}
           , now()
@@ -56,5 +56,11 @@
           , now()
           , #{sysModrId}
         )
+        <selectKey resultType="long" order="AFTER" keyProperty="pntHstSeq">
+            select pnt_hst_seq
+            from cc_mbr_pnt
+            order by pnt_hst_seq desc
+            limit 1
+        </selectKey>
     </insert>
 </mapper>
