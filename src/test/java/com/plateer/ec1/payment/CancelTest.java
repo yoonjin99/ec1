@@ -57,4 +57,15 @@ public class CancelTest {
         vo.setClmNo("C1");
         paymentService.cancel(vo);
     }
+
+    @Test
+    @DisplayName("취소api 호출 전 미리 데이터 업데이트")
+    void claimCancel(){
+        PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
+        vo.setPaymentType(PaymentType.INICIS);
+        vo.setCancelPrice(4500L);
+        vo.setOrdNo("O20220712134701");
+        vo.setClmNo("C1");
+        paymentService.createCancelData(vo);
+    }
 }

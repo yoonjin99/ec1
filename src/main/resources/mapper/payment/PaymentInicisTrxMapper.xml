@@ -68,7 +68,7 @@
         from op_pay_info opi
         where
             opi.ord_no = #{ordNo}
-            and pay_prgs_scd = '10'
+            and pay_prgs_scd = '20'
     </selectKey>
     update
         op_pay_info
@@ -77,6 +77,6 @@
     , rfnd_avl_amt = #{payAmt} - #{cancelPrice}
     where
         ord_no = #{ordNo}
-        and pay_prgs_scd = '10'
+        and pay_prgs_scd = '20'
   </update>
 </mapper>
