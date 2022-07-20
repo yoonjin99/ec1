@@ -6,6 +6,7 @@ import com.plateer.ec1.common.code.order.OPT0009Code;
 import com.plateer.ec1.common.code.order.OPT0010Code;
 import com.plateer.ec1.common.code.order.OPT0011Code;
 import com.plateer.ec1.common.model.order.OpPayInfoModel;
+import com.plateer.ec1.payment.common.AESUtil;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
 import com.plateer.ec1.payment.mapper.PaymentInicisMapper;
@@ -58,7 +59,9 @@ public class InicisServiceImpl implements PaymentTypeService {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = inicisApiCall(vo);
         RestTemplate restTemplate = new RestTemplate();
         AccountResponseVo response = restTemplate.postForEntity(URL, httpEntity, AccountResponseVo.class).getBody();
-        insertPayInfo(response, orderInfoVo);
+        if(Objects.requireNonNull(response).getResultCode().equals("00")){
+            insertPayInfo(response, orderInfoVo);
+        }
         return new ApproveResVo();
     }
 
@@ -93,8 +96,6 @@ public class InicisServiceImpl implements PaymentTypeService {
 
     private void insertPayInfo(AccountResponseVo vo, OrderInfoVo orderInfoVo){
         try {
-            if(!vo.getResultCode().equals("00")) throw new Exception(vo.getResultMsg());
-
             OpPayInfoModel opPayInfoModel = OpPayInfoModel.builder()
                     .payNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                     .trsnId(vo.getTid())
@@ -118,6 +119,7 @@ public class InicisServiceImpl implements PaymentTypeService {
     }
 
     @Override
+    @Transactional
     public void cancelPay(PaymentCancelRequestVo paymentCancelRequestVo) {
         log.info("-----------------Inicis cancelPay start");
         CancelInfoVo info = inicisMapper.selectPayInfo(paymentCancelRequestVo);
@@ -125,16 +127,17 @@ public class InicisServiceImpl implements PaymentTypeService {
         if(info.getOpPayInfoModel().getPayPrgsScd().equals(OPT0011Code.REQUESTPAY.getType())){ // 결제 전
             beforeDeposit(info, paymentCancelRequestVo);
         }else{ // 결제 후
-            afterDeposit(info, paymentCancelRequestVo);
+            try {
+                afterDeposit(info, paymentCancelRequestVo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     // 결제 전 취소
-    @Transactional
-    protected void beforeDeposit(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){
+    private void beforeDeposit(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){
         log.info("결제 전 취소 로직 --------------");
-        long cancelPrice = infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice();
-
         OpPayInfoModel cancelCompleteData  = infoVo.getOpPayInfoModel();
         cancelCompleteData.setClmNo(paymentCancelRequestVo.getClmNo());
         cancelCompleteData.setPayCcd(OPT0010Code.CANCEL.getType());
@@ -143,6 +146,7 @@ public class InicisServiceImpl implements PaymentTypeService {
 
         inicisTrxMapper.insertPayinfo(cancelCompleteData);
 
+        long cancelPrice = infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice();
         if(cancelPrice > 0){
             log.info("입금 전 부분취소 로직 시작!");
             // 부분취소
@@ -163,73 +167,108 @@ public class InicisServiceImpl implements PaymentTypeService {
     }
 
     // 결제 후 취소
-    @Transactional
-    protected void afterDeposit(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){
+    private void afterDeposit(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo) throws Exception {
         long cancelPrice = infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice();
-        CancelRequestVo cancelRequestVo;
-        // TODO: 취소 실패일 경우 어떻게 처리 ?.?
-        StringBuilder sb = new StringBuilder();
-
         if(cancelPrice > 0){ // 부분환불
-            sb.append("ItEQKi3rY7uvDS8l");
-            sb.append("Vacct");
-            sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-            sb.append(clientIpCheck());
-            sb.append("INIpayTest");
-            sb.append("PartialRefund");
-            sb.append(paymentCancelRequestVo.getCancelPrice());
-            sb.append(cancelPrice);
-            sb.append(infoVo.getOpPayInfoModel().getVrAcct());
-
-            String hashData = SHA512(String.valueOf(sb));
-
-            cancelRequestVo = CancelRequestVo.builder()
-                    .type("PartialRefund")
-                    .paymethod("Vacct")
-                    .timestamp(LocalDateTime.now())
-                    .clientIp(clientIpCheck())
-                    .mid("INIpayTest")
-                    .price(paymentCancelRequestVo.getCancelPrice())
-                    .confirmPrice(cancelPrice)
-                    .refundAcctNum(infoVo.getRfndAcctNo())
-                    .refundBankCode(infoVo.getRfndBnkCk())
-                    .refundAcctName(infoVo.getRfndAcctOwnNm())
-                    .hashData(hashData)
-                    .build();
+            CancelRequestVo cancelRequestVo = createPartRefundVo(infoVo, paymentCancelRequestVo);
 
             RestTemplate restTemplate = new RestTemplate();
             PartCancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), PartCancelResponseVo.class).getBody();
-            log.info(responseVo + "값!!!!");
+
+            if("00".equals(Objects.requireNonNull(responseVo).getResultCode())){
+                insertRefund(infoVo, paymentCancelRequestVo, responseVo.getTid());
+            }else throw new Exception(responseVo.getResultMsg());
         }else{ // 전체 환불
-            sb.append("ItEQKi3rY7uvDS8l");
-            sb.append("Refund");
-            sb.append("Vacct");
-            sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-            sb.append(clientIpCheck());
-            sb.append("INIpayTest");
-            sb.append(infoVo.getOpPayInfoModel().getTrsnId());
-            sb.append(infoVo.getRfndAcctNo());
-
-            String hashData = SHA512(sb.toString());
-
-            cancelRequestVo = CancelRequestVo.builder()
-                    .type("Refund")
-                    .paymethod("Vacct")
-                    .timestamp(LocalDateTime.now())
-                    .clientIp(clientIpCheck())
-                    .mid("INIpayTest")
-                    .tid(infoVo.getOpPayInfoModel().getTrsnId())
-                    .refundAcctNum(infoVo.getRfndAcctNo())
-                    .refundBankCode(infoVo.getRfndBnkCk())
-                    .refundAcctName(infoVo.getRfndAcctOwnNm())
-                    .hashData(hashData)
-                    .build();
+            CancelRequestVo cancelRequestVo = createAllRefundVo(infoVo, paymentCancelRequestVo);
 
             RestTemplate restTemplate = new RestTemplate();
             CancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), CancelResponseVo.class).getBody();
-            log.info(responseVo + "값2222");
+
+            if("00".equals(Objects.requireNonNull(responseVo).getResultCode())){
+                insertRefund(infoVo, paymentCancelRequestVo, "");
+            }else throw new Exception(responseVo.getResultMsg());
         }
-//        inicisTrxMapper.insertPayinfo(infoVo.getOpPayInfoModel());
+    }
+
+    private void insertRefund(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo, String tid){
+        OpPayInfoModel opPayInfoModel = OpPayInfoModel.builder()
+                .payNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+                .ordNo(infoVo.getOpPayInfoModel().getOrdNo())
+                .clmNo(paymentCancelRequestVo.getClmNo())
+                .payCcd(OPT0009Code.VRACCOUNT.getType())
+                .payPrgsScd(OPT0011Code.CANCEL.getType())
+                .payMnCd(OPT0010Code.CANCEL.getType())
+                .vrAcct(infoVo.getOpPayInfoModel().getVrAcct())
+                .vrAcctNm(infoVo.getOpPayInfoModel().getVrAcctNm())
+                .vrBnkCd(infoVo.getOpPayInfoModel().getVrBnkCd())
+                .payAmt(paymentCancelRequestVo.getCancelPrice())
+                .orgPayNo(infoVo.getOpPayInfoModel().getPayNo())
+                .rfndAvlAmt(0L)
+                .cnclAmt(0L)
+                .build();
+        if(!tid.equals("")) opPayInfoModel.setTrsnId(tid);
+        inicisTrxMapper.insertPayinfo(opPayInfoModel);
+    }
+
+    private CancelRequestVo createPartRefundVo(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ItEQKi3rY7uvDS8l");
+        sb.append("PartialRefund");
+        sb.append("Vacct");
+        sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        sb.append(clientIpCheck());
+        sb.append("INIpayTest");
+        sb.append(infoVo.getOpPayInfoModel().getTrsnId());
+        sb.append(paymentCancelRequestVo.getCancelPrice());
+        sb.append(infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice());
+        AESUtil aesUtil = new AESUtil("ItEQKi3rY7uvDS8l", "HYb3yQ4f65QL89==");
+        sb.append(aesUtil.AesEncode(infoVo.getRfndAcctNo()));
+
+        String hashData = SHA512(sb.toString());
+
+        return CancelRequestVo.builder()
+                .type("PartialRefund")
+                .paymethod("Vacct")
+                .timestamp(LocalDateTime.now())
+                .clientIp(clientIpCheck())
+                .mid("INIpayTest")
+                .tid(infoVo.getOpPayInfoModel().getTrsnId())
+                .price(paymentCancelRequestVo.getCancelPrice())
+                .confirmPrice(infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice())
+                .refundAcctNum(aesUtil.AesEncode(infoVo.getRfndAcctNo()))
+                .refundBankCode(infoVo.getRfndBnkCk())
+                .refundAcctName(infoVo.getRfndAcctOwnNm())
+                .hashData(hashData)
+                .build();
+    }
+
+    private CancelRequestVo createAllRefundVo(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ItEQKi3rY7uvDS8l");
+        sb.append("Refund");
+        sb.append("Vacct");
+        sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        sb.append(clientIpCheck());
+        sb.append("INIpayTest");
+        sb.append(infoVo.getOpPayInfoModel().getTrsnId());
+
+        AESUtil aesUtil = new AESUtil("ItEQKi3rY7uvDS8l", "HYb3yQ4f65QL89==");
+        sb.append(aesUtil.AesEncode(infoVo.getRfndAcctNo()));
+
+        String hashData = SHA512(sb.toString());
+
+        return CancelRequestVo.builder()
+                .type("Refund")
+                .paymethod("Vacct")
+                .timestamp(LocalDateTime.now())
+                .clientIp(clientIpCheck())
+                .mid("INIpayTest")
+                .tid(infoVo.getOpPayInfoModel().getTrsnId())
+                .refundAcctNum(aesUtil.AesEncode(infoVo.getRfndAcctNo()))
+                .refundBankCode(infoVo.getRfndBnkCk())
+                .refundAcctName(infoVo.getRfndAcctOwnNm())
+                .hashData(hashData)
+                .build();
     }
 
     @Override
@@ -245,9 +284,6 @@ public class InicisServiceImpl implements PaymentTypeService {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         Map<String, Object> requestMap = objectMapper.convertValue(t, new TypeReference<Map<String, Object>>(){});
         body.setAll(requestMap);
-        
-        log.info(body.toString() + "값 내놔");
-
         return new HttpEntity<>(body, httpHeaders);
     }
 

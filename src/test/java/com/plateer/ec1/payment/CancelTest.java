@@ -42,7 +42,7 @@ public class CancelTest {
         PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
         vo.setPaymentType(PaymentType.INICIS);
         vo.setCancelPrice(10000L);
-        vo.setOrdNo("O20220712134703");
+        vo.setOrdNo("O20220712134700");
         vo.setClmNo("C1");
         paymentService.cancel(vo);
     }
@@ -52,7 +52,7 @@ public class CancelTest {
     void partCancel(){
         PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
         vo.setPaymentType(PaymentType.INICIS);
-        vo.setCancelPrice(1L);
+        vo.setCancelPrice(4500L);
         vo.setOrdNo("O20220712134701");
         vo.setClmNo("C1");
         paymentService.cancel(vo);
