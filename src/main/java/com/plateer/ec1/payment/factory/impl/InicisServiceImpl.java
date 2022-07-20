@@ -7,7 +7,7 @@ import com.plateer.ec1.common.code.order.OPT0010Code;
 import com.plateer.ec1.common.code.order.OPT0011Code;
 import com.plateer.ec1.common.model.order.OpPayInfoModel;
 import com.plateer.ec1.payment.common.AESUtil;
-import com.plateer.ec1.payment.enums.PaymentType;
+import com.plateer.ec1.payment.enums.*;
 import com.plateer.ec1.payment.factory.PaymentTypeService;
 import com.plateer.ec1.payment.mapper.PaymentInicisMapper;
 import com.plateer.ec1.payment.mapper.PaymentInicisTrxMapper;
@@ -36,7 +36,6 @@ import java.util.*;
 @Slf4j
 public class InicisServiceImpl implements PaymentTypeService {
 
-    private static final String URL = "https://iniapi.inicis.com/api/v1/formpay";
     private final PaymentInicisTrxMapper inicisTrxMapper;
     private final PaymentInicisMapper inicisMapper;
     private final ObjectMapper objectMapper;
@@ -58,7 +57,7 @@ public class InicisServiceImpl implements PaymentTypeService {
         log.info("-----------------Inicis approvePay start");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = inicisApiCall(vo);
         RestTemplate restTemplate = new RestTemplate();
-        AccountResponseVo response = restTemplate.postForEntity(URL, httpEntity, AccountResponseVo.class).getBody();
+        AccountResponseVo response = restTemplate.postForEntity(InicisUrlType.PAYMENT_URL.getUrl(), httpEntity, AccountResponseVo.class).getBody();
         if(Objects.requireNonNull(response).getResultCode().equals("00")){
             insertPayInfo(response, orderInfoVo);
         }
@@ -67,12 +66,12 @@ public class InicisServiceImpl implements PaymentTypeService {
 
     private AccountVo createVo(OrderInfoVo orderInfoVo, PayInfoVo payInfo){
         StringBuilder sb = new StringBuilder();
-        sb.append("ItEQKi3rY7uvDS8l");
-        sb.append("Pay");
-        sb.append("Vacct");
+        sb.append(InicisCommonType.KEY.getStr());
+        sb.append(PayRefundType.PAY.getType());
+        sb.append(InicisCommonType.VACCT.getStr());
         sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         sb.append(clientIpCheck());
-        sb.append("INIpayTest");
+        sb.append(InicisCommonType.MID.getStr());
         sb.append(orderInfoVo.getOrdNo());
         sb.append(payInfo.getPrice());
 
@@ -173,7 +172,7 @@ public class InicisServiceImpl implements PaymentTypeService {
             CancelRequestVo cancelRequestVo = createPartRefundVo(infoVo, paymentCancelRequestVo);
 
             RestTemplate restTemplate = new RestTemplate();
-            PartCancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), PartCancelResponseVo.class).getBody();
+            PartCancelResponseVo responseVo = restTemplate.postForEntity(InicisUrlType.REFUND_URL.getUrl(), inicisApiCall(cancelRequestVo), PartCancelResponseVo.class).getBody();
 
             if("00".equals(Objects.requireNonNull(responseVo).getResultCode())){
                 insertRefund(infoVo, paymentCancelRequestVo, responseVo.getTid());
@@ -182,7 +181,7 @@ public class InicisServiceImpl implements PaymentTypeService {
             CancelRequestVo cancelRequestVo = createAllRefundVo(infoVo, paymentCancelRequestVo);
 
             RestTemplate restTemplate = new RestTemplate();
-            CancelResponseVo responseVo = restTemplate.postForEntity("https://iniapi.inicis.com/api/v1/refund", inicisApiCall(cancelRequestVo), CancelResponseVo.class).getBody();
+            CancelResponseVo responseVo = restTemplate.postForEntity(InicisUrlType.REFUND_URL.getUrl(), inicisApiCall(cancelRequestVo), CancelResponseVo.class).getBody();
 
             if("00".equals(Objects.requireNonNull(responseVo).getResultCode())){
                 insertRefund(infoVo, paymentCancelRequestVo, "");
@@ -212,26 +211,26 @@ public class InicisServiceImpl implements PaymentTypeService {
 
     private CancelRequestVo createPartRefundVo(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("ItEQKi3rY7uvDS8l");
-        sb.append("PartialRefund");
-        sb.append("Vacct");
+        sb.append(InicisCommonType.KEY.getStr());
+        sb.append(PayRefundType.PARTREFUND.getType());
+        sb.append(InicisCommonType.VACCT.getStr());
         sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         sb.append(clientIpCheck());
-        sb.append("INIpayTest");
+        sb.append(InicisCommonType.MID.getStr());
         sb.append(infoVo.getOpPayInfoModel().getTrsnId());
         sb.append(paymentCancelRequestVo.getCancelPrice());
         sb.append(infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice());
-        AESUtil aesUtil = new AESUtil("ItEQKi3rY7uvDS8l", "HYb3yQ4f65QL89==");
+        AESUtil aesUtil = new AESUtil(AESType.SECRETKEY.getStr(), AESType.IV.getStr());
         sb.append(aesUtil.AesEncode(infoVo.getRfndAcctNo()));
 
         String hashData = SHA512(sb.toString());
 
         return CancelRequestVo.builder()
-                .type("PartialRefund")
-                .paymethod("Vacct")
+                .type(PayRefundType.PARTREFUND.getType())
+                .paymethod(InicisCommonType.VACCT.getStr())
                 .timestamp(LocalDateTime.now())
                 .clientIp(clientIpCheck())
-                .mid("INIpayTest")
+                .mid(InicisCommonType.VACCT.getStr())
                 .tid(infoVo.getOpPayInfoModel().getTrsnId())
                 .price(paymentCancelRequestVo.getCancelPrice())
                 .confirmPrice(infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice())
@@ -244,12 +243,12 @@ public class InicisServiceImpl implements PaymentTypeService {
 
     private CancelRequestVo createAllRefundVo(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("ItEQKi3rY7uvDS8l");
-        sb.append("Refund");
-        sb.append("Vacct");
+        sb.append(InicisCommonType.KEY.getStr());
+        sb.append(PayRefundType.REFUND.getType());
+        sb.append(InicisCommonType.VACCT.getStr());
         sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         sb.append(clientIpCheck());
-        sb.append("INIpayTest");
+        sb.append(InicisCommonType.MID.getStr());
         sb.append(infoVo.getOpPayInfoModel().getTrsnId());
 
         AESUtil aesUtil = new AESUtil("ItEQKi3rY7uvDS8l", "HYb3yQ4f65QL89==");
@@ -258,11 +257,11 @@ public class InicisServiceImpl implements PaymentTypeService {
         String hashData = SHA512(sb.toString());
 
         return CancelRequestVo.builder()
-                .type("Refund")
-                .paymethod("Vacct")
+                .type(PayRefundType.REFUND.getType())
+                .paymethod(InicisCommonType.VACCT.getStr())
                 .timestamp(LocalDateTime.now())
                 .clientIp(clientIpCheck())
-                .mid("INIpayTest")
+                .mid(InicisCommonType.MID.getStr())
                 .tid(infoVo.getOpPayInfoModel().getTrsnId())
                 .refundAcctNum(aesUtil.AesEncode(infoVo.getRfndAcctNo()))
                 .refundBankCode(infoVo.getRfndBnkCk())
