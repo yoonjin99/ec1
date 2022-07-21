@@ -8,4 +8,5 @@ import java.util.List;
 public class OrdDvpInfo {
     private int dvGrpNo;
     private List<GoodsInfoVo> goodsInfo;
+    private OrdCostInfo ordCostInfo;
 }
