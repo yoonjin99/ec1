@@ -53,8 +53,8 @@ public class InicisServiceImpl implements PaymentTypeService {
     @Override
     @Transactional
     public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
-        AccountVo vo = createVo(orderInfoVo, payInfo);
         log.info("-----------------Inicis approvePay start");
+        AccountVo vo = createVo(orderInfoVo, payInfo);
         HttpEntity<MultiValueMap<String, Object>> httpEntity = inicisApiCall(vo);
         RestTemplate restTemplate = new RestTemplate();
         AccountResponseVo response = restTemplate.postForEntity(InicisUrlType.PAYMENT_URL.getUrl(), httpEntity, AccountResponseVo.class).getBody();
@@ -122,14 +122,15 @@ public class InicisServiceImpl implements PaymentTypeService {
     public void cancelPay(PaymentCancelRequestVo paymentCancelRequestVo) {
         log.info("-----------------Inicis cancelPay start");
         CancelInfoVo info = inicisMapper.selectPayInfo(paymentCancelRequestVo);
-        // NULL 일 경우 환불 가능한 상품이 존재하지 않음.
-        if(info.getOpPayInfoModel().getPayPrgsScd().equals(OPT0011Code.REQUESTPAY.getType())){ // 결제 전
-            beforeDeposit(info, paymentCancelRequestVo);
-        }else{ // 결제 후
-            try {
-                afterDeposit(info, paymentCancelRequestVo);
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(!Objects.isNull(info)){
+            if(info.getOpPayInfoModel().getPayPrgsScd().equals(OPT0011Code.REQUESTPAY.getType())){ // 결제 전
+                beforeDeposit(info, paymentCancelRequestVo);
+            }else{ // 결제 후
+                try {
+                    afterDeposit(info, paymentCancelRequestVo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

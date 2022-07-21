@@ -1,0 +1,72 @@
+###
+POST localhost:8080/order
+Content-Type: application/json
+
+{
+  "ordNo": "O202206201000001",
+  "ordBaseVo": {
+    "mbrNo": "2020202",
+    "ordTpCd": "10",
+    "ordSysCcd": "10",
+    "ordNm": "홍길동",
+    "ordSellNo": "01012345678",
+    "ordAddr": "송파구 어쩌구 저쩌구",
+    "ordAddrDtl": "에이치비지니스파크 6층"
+  },
+  "ordGoodsInfoVo": [
+    {
+      "ordGoodsNo": "P111",
+      "ordItemNo": "I111",
+      "goodsSellTpCd": "10",
+      "ordCnt": 1,
+      "ordBnfInfoVo": [
+        {
+          "prmNo": "P123",
+          "cpnKndCd": "",
+          "cpnIssNo": "C123",
+          "degrCcd": 1
+        }
+      ]
+    }
+  ],
+  "ordBnfInfoVo": [
+    {
+      "prmNo": "P124",
+      "cpnKndCd": "",
+      "cpnIssNo": "C124",
+      "degrCcd": 3,
+      "bnfApplyGoods": [
+        {
+          "ordGoodsNo": "P111",
+          "ordItemNo": "I111"
+        }
+      ]
+    }
+  ],
+  "ordDvpAreaInfoVo": [
+    {
+      "dvpSeq": 1,
+      "rmtiNm": "홍길동",
+      "rmtiHpNo": "01011112222",
+      "rmtiAddr": "송파구 어쩌구 저쩌구",
+      "rmtiAddrDtl": "에이치비지니스파크 6층",
+      "ordDvpInfo": [
+        {
+          "dvGrpNo": 1,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P111",
+              "ordItemNo": "I111"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ordPayInfo": {
+    "paymentType": "INICIS",
+    "price": 50000,
+    "bankCode": "03",
+    "nmInput" : "배윤진"
+  }
+}

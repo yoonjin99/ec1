@@ -135,13 +135,4 @@ public class PaymentTest {
         test.add("no_req_tid", "INIAPIVBNKINIpayTest20220713150505264190");
         paymentVaccountService.INIPayNotice(test, "203.238.37.15");
     }
-
-    @Test
-    void paymentPoint(){
-        log.info("---------------point 결제 실행---------------------");
-        PayInfoVo info = new PayInfoVo();
-        info.setPaymentType(PaymentType.POINT);
-//        payService.approve(info);
-        log.info("---------------point 결제 종료---------------------");
-    }
 }
