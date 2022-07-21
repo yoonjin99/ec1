@@ -43,14 +43,14 @@ public class OrderContext {
 
             // 결제
             PayInfoVo payInfo = new PayInfoVo();
-            payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getPaymentType().toUpperCase(Locale.ROOT)));
+            payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getOrdPayInfoVo().getPaymentType()));
 //            paymentService.approve(payInfo);
 
             // 데이터 등록
             insertOrderData(dto);
 
             // 금액검증
-            amountValidation(orderRequest.getOrderNo());
+            amountValidation(orderRequest.getOrdNo());
 
             // 후처리
             afterStrategy.call(orderRequest, dto);

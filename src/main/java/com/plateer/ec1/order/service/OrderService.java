@@ -43,11 +43,11 @@ public class OrderService {
 
     private DataStrategy getDataStrategy(OrderRequestVo orderRequest){
         log.info("-----------GetDataStrategy start");
-        return dataStrategyMap.get(DataType.getDataType(orderRequest.getOrderType()));
+        return dataStrategyMap.get(DataType.getDataType(orderRequest.getOrdBaseVo().getOrdTpCd()));
     }
 
     private AfterStrategy getAfterStrategy(OrderRequestVo orderRequest){
         log.info("-----------GetAfterStrategy start");
-        return afterStrategyMap.get(AfterProcessType.valueOf(orderRequest.getSystemType()));
+        return afterStrategyMap.get(AfterProcessType.valueOf(orderRequest.getOrdBaseVo().getOrdSysCcd()));
     }
 }

@@ -27,7 +27,7 @@ public enum OrderType implements Predicate<OrderValidationVo> {
 
     public static OrderType get(OrderRequestVo orderRequest){
         return Arrays.stream(values())
-                    .filter((t) -> t.systemCode.equals(orderRequest.getSystemType()) && t.orderCode.equals(orderRequest.getOrderType()))
+                    .filter((t) -> t.systemCode.equals(orderRequest.getOrdBaseVo().getOrdSysCcd()) && t.orderCode.equals(orderRequest.getOrdBaseVo().getOrdTpCd()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(""));
     };
