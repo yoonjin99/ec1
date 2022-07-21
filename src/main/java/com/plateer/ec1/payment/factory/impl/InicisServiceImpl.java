@@ -138,13 +138,7 @@ public class InicisServiceImpl implements PaymentTypeService {
     // 결제 전 취소
     private void beforeDeposit(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){
         log.info("결제 전 취소 로직 --------------");
-        OpPayInfoModel cancelCompleteData  = infoVo.getOpPayInfoModel();
-        cancelCompleteData.setClmNo(paymentCancelRequestVo.getClmNo());
-        cancelCompleteData.setPayCcd(OPT0010Code.CANCEL.getType());
-        cancelCompleteData.setPayPrgsScd(OPT0011Code.CANCEL.getType());
-        cancelCompleteData.setPayNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-
-        inicisTrxMapper.insertPayinfo(cancelCompleteData);
+        OpPayInfoModel cancelCompleteData = insertCancelData(infoVo, paymentCancelRequestVo);
 
         long cancelPrice = infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice();
         if(cancelPrice > 0){
@@ -164,6 +158,18 @@ public class InicisServiceImpl implements PaymentTypeService {
         }
 //        paymentCancelRequestVo.setCancelPrice(opPayInfoModel.getPayAmt());
 //        inicisTrxMapper.updateCancelResult(paymentCancelRequestVo);
+    }
+
+    private OpPayInfoModel insertCancelData(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){
+        OpPayInfoModel cancelCompleteData  = infoVo.getOpPayInfoModel();
+        cancelCompleteData.setClmNo(paymentCancelRequestVo.getClmNo());
+        cancelCompleteData.setPayCcd(OPT0010Code.CANCEL.getType());
+        cancelCompleteData.setPayPrgsScd(OPT0011Code.CANCEL.getType());
+        cancelCompleteData.setPayNo("S" +  LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+
+        inicisTrxMapper.insertPayinfo(cancelCompleteData);
+
+        return cancelCompleteData;
     }
 
     // 결제 후 취소
