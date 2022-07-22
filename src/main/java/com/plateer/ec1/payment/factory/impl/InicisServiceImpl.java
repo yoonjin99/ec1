@@ -121,6 +121,7 @@ public class InicisServiceImpl implements PaymentTypeService {
     @Transactional
     public void cancelPay(PaymentCancelRequestVo paymentCancelRequestVo) {
         log.info("-----------------Inicis cancelPay start");
+        // 취소금액이랑 결제 금액이 같은지 다른지
         CancelInfoVo info = inicisMapper.selectPayInfo(paymentCancelRequestVo);
         if(!Objects.isNull(info)){
             if(info.getOpPayInfoModel().getPayPrgsScd().equals(OPT0011Code.REQUESTPAY.getType())){ // 결제 전
@@ -237,7 +238,7 @@ public class InicisServiceImpl implements PaymentTypeService {
                 .paymethod(InicisCommonType.VACCT.getStr())
                 .timestamp(LocalDateTime.now())
                 .clientIp(clientIpCheck())
-                .mid(InicisCommonType.VACCT.getStr())
+                .mid(InicisCommonType.MID.getStr())
                 .tid(infoVo.getOpPayInfoModel().getTrsnId())
                 .price(paymentCancelRequestVo.getCancelPrice())
                 .confirmPrice(infoVo.getOpPayInfoModel().getPayAmt() - paymentCancelRequestVo.getCancelPrice())

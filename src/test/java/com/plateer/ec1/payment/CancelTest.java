@@ -53,8 +53,8 @@ public class CancelTest {
         PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
         vo.setPaymentType(PaymentType.INICIS);
         vo.setCancelPrice(4500L);
-        vo.setOrdNo("O20220712134701");
-        vo.setClmNo("C1");
+        vo.setOrdNo("O20220712134711");
+        vo.setClmNo("C11");
         paymentService.cancel(vo);
     }
 
@@ -64,8 +64,8 @@ public class CancelTest {
         PaymentCancelRequestVo vo = new PaymentCancelRequestVo();
         vo.setPaymentType(PaymentType.INICIS);
         vo.setCancelPrice(4500L);
-        vo.setOrdNo("O20220712134701");
-        vo.setClmNo("C1");
+        vo.setOrdNo("O20220712134711");
+        vo.setClmNo("C10");
         paymentService.createCancelData(vo);
     }
 }

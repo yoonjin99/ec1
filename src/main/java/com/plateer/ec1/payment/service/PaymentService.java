@@ -26,12 +26,12 @@ public class PaymentService {
         return paymentTypeService.approvePay(orderInfoVo, payInfo);
     }
 
-    public void createCancelData(PaymentCancelRequestVo cancelRequestVo){
+    public void createCancelData(@Valid PaymentCancelRequestVo cancelRequestVo){
         log.info("---------------취소 api 호출하기 전에 금액 검증을 위해 미리 데이터 update 해놓음---------------------");
         inicisTrxMapper.updateCancelResult(cancelRequestVo);
     }
 
-    public void cancel(PaymentCancelRequestVo cancelRequestVo){
+    public void cancel(@Valid PaymentCancelRequestVo cancelRequestVo){
         log.info("---------------PayService cancel start---------------------");
         PaymentTypeService paymentTypeService = paymentServiceFactory.getPaymentService(cancelRequestVo.getPaymentType());
         paymentTypeService.cancelPay(cancelRequestVo);

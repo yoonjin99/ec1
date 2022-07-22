@@ -18,10 +18,10 @@ class OrderControllerTest {
     void orderFOGeneralInicis() {
         log.info("--------------------FO일반 이니시스 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("FO");
-        orderRequest.setOrderType("general");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("inicis");
+//        orderRequest.setSystemType("FO");
+//        orderRequest.setOrderType("general");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("inicis");
         orderService.order(orderRequest);
         log.info("--------------------FO일반 이니시스 결제 주문 종료---------------------");
     }
@@ -30,10 +30,10 @@ class OrderControllerTest {
     void orderBOGeneralInicis() {
         log.info("--------------------BO일반 이니시스 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("BO");
-        orderRequest.setOrderType("general");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("inicis");
+//        orderRequest.setSystemType("BO");
+//        orderRequest.setOrderType("general");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("inicis");
         orderService.order(orderRequest);
         log.info("--------------------BO일반 이니시스 결제 주문 종료---------------------");
     }
@@ -42,10 +42,10 @@ class OrderControllerTest {
     void orderFOGeneralPoint() {
         log.info("--------------------FO일반 포인트 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("FO");
-        orderRequest.setOrderType("general");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("point");
+//        orderRequest.setSystemType("FO");
+//        orderRequest.setOrderType("general");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("point");
         orderService.order(orderRequest);
         log.info("--------------------FO일반 포인트 결제 주문 종료---------------------");
     }
@@ -54,10 +54,10 @@ class OrderControllerTest {
     void orderBOGeneralPoint() {
         log.info("--------------------BO일반 포인트 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("BO");
-        orderRequest.setOrderType("general");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("point");
+//        orderRequest.setSystemType("BO");
+//        orderRequest.setOrderType("general");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("point");
         orderService.order(orderRequest);
         log.info("--------------------BO일반 포인트 결제 주문 종료---------------------");
     }
@@ -66,10 +66,10 @@ class OrderControllerTest {
     void orderFOCouponInicis() {
         log.info("--------------------FO쿠폰 이니시스 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("FO");
-        orderRequest.setOrderType("ecoupon");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("inicis");
+//        orderRequest.setSystemType("FO");
+//        orderRequest.setOrderType("ecoupon");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("inicis");
         orderService.order(orderRequest);
         log.info("--------------------FO쿠폰 이니시스 결제 주문 종료---------------------");
     }
@@ -78,10 +78,10 @@ class OrderControllerTest {
     void orderBOCouponInicis() {
         log.info("--------------------BO쿠폰 이니시스 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("BO");
-        orderRequest.setOrderType("ecoupon");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("inicis");
+//        orderRequest.setSystemType("BO");
+//        orderRequest.setOrderType("ecoupon");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("inicis");
         orderService.order(orderRequest);
         log.info("--------------------BO쿠폰 이니시스 결제 주문 종료---------------------");
     }
@@ -90,10 +90,10 @@ class OrderControllerTest {
     void orderFOCouponPoint() {
         log.info("--------------------FO쿠폰 포인트 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("FO");
-        orderRequest.setOrderType("ecoupon");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("point");
+//        orderRequest.setSystemType("FO");
+//        orderRequest.setOrderType("ecoupon");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("point");
         orderService.order(orderRequest);
         log.info("--------------------FO쿠폰 포인트 결제 주문 종료---------------------");
     }
@@ -102,10 +102,10 @@ class OrderControllerTest {
     void orderBOCouponPoint() {
         log.info("--------------------BO쿠폰 포인트 결제 주문 실행---------------------");
         OrderRequestVo orderRequest = new OrderRequestVo();
-        orderRequest.setSystemType("BO");
-        orderRequest.setOrderType("ecoupon");
-        orderRequest.setOrderNo("O1");
-        orderRequest.setPaymentType("point");
+//        orderRequest.setSystemType("BO");
+//        orderRequest.setOrderType("ecoupon");
+//        orderRequest.setOrderNo("O1");
+//        orderRequest.setPaymentType("point");
         orderService.order(orderRequest);
         log.info("--------------------BO쿠폰 포인트 결제 주문 종료---------------------");
     }
