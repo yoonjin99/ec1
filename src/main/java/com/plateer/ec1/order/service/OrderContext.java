@@ -29,7 +29,7 @@ public class OrderContext {
     public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
-        Long historyNo = orderHistoryService.insertOrderHistory(orderRequest);
+        int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
         OrderVo dto = null;
         try {
             // 유효성 검증

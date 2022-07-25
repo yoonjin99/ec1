@@ -23,11 +23,12 @@ public abstract class ClaimProcessor {
     }
 
     protected Long insertLog(String claimNo){
-        return orderHistoryService.insertOrderHistory(new OrderRequestVo());
+        return 1L;
+//        return orderHistoryService.insertOrderHistory(new OrderRequestVo());
     }
 
     protected void updateLog(Long monitoringLog, String claimNo){
-        orderHistoryService.updateOrderHistory(monitoringLog, new OrderVo());
+        orderHistoryService.updateOrderHistory(1, new OrderVo());
     }
 
     public abstract void doProcess(ClaimVo claimDto);
