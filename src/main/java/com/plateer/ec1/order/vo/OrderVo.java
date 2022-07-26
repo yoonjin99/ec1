@@ -1,7 +1,11 @@
 package com.plateer.ec1.order.vo;
 
-import lombok.Data;
+import com.plateer.ec1.order.enums.history.OPT0012Type;
+import lombok.*;
 
-@Data
+@Getter
+@ToString
+@Setter
 public class OrderVo {
+    private OPT0012Type procCcd;
 }

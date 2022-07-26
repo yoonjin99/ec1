@@ -1,0 +1,521 @@
+DROP TABLE IF EXISTS public.OP_ORD_BASE CASCADE;
+
+CREATE TABLE public.OP_ORD_BASE
+(
+    ORD_NO    character varying(16) NOT NULL,
+    MBR_NO    character varying(10) NOT NULL,
+    ORD_TP_CD    character varying(10) NOT NULL,
+    ORD_SYS_CCD    character varying(10) NOT NULL,
+    ORD_REQ_DTIME    timestamp without time zone NOT NULL,
+    ORD_CMT_DTIME    timestamp without time zone,
+    ORD_NM    character varying(50),
+    ORD_SELL_NO    character varying(11) NOT NULL,
+    ORD_ADDR    character varying(200),
+    ORD_ADDR_DTL    character varying(200),
+    RFND_BNK_CK    character varying(10),
+    RFND_ACCT_NO    character varying(20),
+    RFND_ACCT_OWN_NM    character varying(50),
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MODR_ID    timestamp without time zone NOT NULL,
+    SYS_MOD_DTIM    character varying(30) NOT NULL,
+    CONSTRAINT OP_ORD_BASE_pk PRIMARY KEY ( ORD_NO )
+);
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.MBR_NO IS '회원번호';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_TP_CD IS '주문유형코드(OPT0001)';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_SYS_CCD IS '시스템구분코드(OPT0002)';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_REQ_DTIME IS '주문요청일시';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_CMT_DTIME IS '주문완료일시';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_NM IS '주문자명';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_SELL_NO IS '주문자휴대전화번호';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_ADDR IS '주문자주소';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.ORD_ADDR_DTL IS '주문자상세주소';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.SYS_REGR_ID IS '시스템등록자ID';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.SYS_MODR_ID IS '시스템수정일시';
+
+COMMENT ON COLUMN public.OP_ORD_BASE.SYS_MOD_DTIM IS '시스템수정자ID';
+
+COMMENT ON TABLE public.OP_ORD_BASE IS '주문기본';
+
+
+DROP TABLE IF EXISTS public.OP_CLM_INFO CASCADE;
+
+CREATE TABLE public.OP_CLM_INFO
+(
+    ORD_NO    character varying(16) NOT NULL,
+    ORD_GOODS_NO    character varying(20) NOT NULL,
+    ORD_ITEM_NO    character varying(20) NOT NULL,
+    ORD_SEQ    integer NOT NULL,
+    PROC_SEQ    integer NOT NULL,
+    ORD_CLM_TP_CD    character varying(10) NOT NULL,
+    ORD_PRGS_SCD    character varying(10) NOT NULL,
+    DV_RVT_CCD    character varying(10) NOT NULL,
+    ORD_AMT    bigint NOT NULL,
+    ORD_CNT    integer NOT NULL,
+    CNCL_CNT    integer NOT NULL,
+    RTGS_CNT    integer NOT NULL,
+    DV_GRP_NO    integer NOT NULL,
+    ORD_CLM_REQ_DTIME    timestamp without time zone NOT NULL,
+    ORD_CLM_ACPT_DTIME    timestamp without time zone,
+    ORD_CLM_CMT_DTIME    timestamp without time zone,
+    CLM_RSN_CD    character varying(10),
+    CLM_DTL_RSN_TT    character varying(200),
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    CLM_NO    character varying(20),
+    ORG_PROC_SEQ integer NOT NULL,
+    CONSTRAINT OP_CLM_INFO_pk PRIMARY KEY ( ORD_NO,ORD_SEQ,PROC_SEQ )
+);
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_GOODS_NO IS '상품번호';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_ITEM_NO IS '단품번호';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_SEQ IS '주문순번';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.PROC_SEQ IS '처리순번';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_CLM_TP_CD IS '주문클레임유형코드(OPT0003)';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_PRGS_SCD IS '주문진행상태코드(OPT0004)';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.DV_RVT_CCD IS '배송회수구분코드';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_AMT IS '주문금액';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_CNT IS '주문수량';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.CNCL_CNT IS '취소수량';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.RTGS_CNT IS '반품수량';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.DV_GRP_NO IS '배송그룹번호';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_CLM_REQ_DTIME IS '주문클레임요청일시';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_CLM_ACPT_DTIME IS '주문클레임접수일시';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORD_CLM_CMT_DTIME IS '주문클레임완료일시';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.CLM_RSN_CD IS '클레임사유코드(OPT0007)';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.CLM_DTL_RSN_TT IS '클레임상세사유';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.CLM_NO IS '클레임번호';
+
+COMMENT ON COLUMN public.OP_CLM_INFO.ORG_PROC_SEQ IS '원처리순번';
+
+COMMENT ON TABLE public.OP_CLM_INFO IS '주문클레임';
+
+
+DROP TABLE IF EXISTS public.OP_DVP_AREA_INFO CASCADE;
+
+CREATE TABLE public.OP_DVP_AREA_INFO
+(
+    ORD_NO    character varying(16) NOT NULL,
+    DVP_SEQ    integer NOT NULL,
+    RMTI_NM    character varying(100),
+    RMTI_HP_NO    character varying(11) NOT NULL,
+    RMTI_ADDR    character varying(200),
+    RMTI_ADDR_DTL    character varying(100),
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    CONSTRAINT OP_DVP_AREA_INFO_pk PRIMARY KEY ( ORD_NO,DVP_SEQ )
+);
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.DVP_SEQ IS '배송지순번';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.RMTI_NM IS '수취인명';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.RMTI_HP_NO IS '수취인휴대폰번호';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.RMTI_ADDR IS '수취인주소';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.RMTI_ADDR_DTL IS '수취인주소상세';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.SYS_REGR_ID IS '시스템등록자ID';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN public.OP_DVP_AREA_INFO.SYS_MODR_ID IS '시스템수정자ID';
+
+COMMENT ON TABLE public.OP_DVP_AREA_INFO IS '주문배송지';
+
+
+DROP TABLE IF EXISTS public.OP_DVP_INFO CASCADE;
+
+CREATE TABLE public.OP_DVP_INFO
+(
+    DV_GRP_NO    integer NOT NULL,
+    ORD_NO    character varying(16) NOT NULL,
+    DVP_SEQ    integer NOT NULL,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    DV_MTHD_CD    character varying(20) NOT NULL,
+    CONSTRAINT OP_DVP_INFO_pk PRIMARY KEY ( DV_GRP_NO,ORD_NO )
+);
+
+COMMENT ON COLUMN public.OP_DVP_INFO.DV_GRP_NO IS '배송그룹번호';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.DVP_SEQ IS '배송지순번';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON COLUMN public.OP_DVP_INFO.DV_MTHD_CD IS '배송방법코드(DVP0001)';
+
+COMMENT ON TABLE public.OP_DVP_INFO IS '주문배송정보';
+
+
+DROP TABLE IF EXISTS public.OP_GOODS_INFO CASCADE;
+
+CREATE TABLE public.OP_GOODS_INFO
+(
+    ORD_NO    character varying(16) NOT NULL,
+    ORD_GOODS_NO    character varying(20) NOT NULL,
+    ORD_ITEM_NO    character varying(20) NOT NULL,
+    GOODS_SELL_TP_CD    character varying(10) NOT NULL,
+    GOODS_DLV_TP_CD    character varying(10) NOT NULL,
+    GOODS_NM    character varying(200),
+    ITEM_NM    character varying(100),
+    SELL_AMT    bigint,
+    SELL_DC_AMT    bigint,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    CONSTRAINT OP_GOODS_INFO_pk PRIMARY KEY ( ORD_NO,ORD_GOODS_NO,ORD_ITEM_NO )
+);
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.ORD_GOODS_NO IS '상품번호';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.ORD_ITEM_NO IS '단품번호';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.GOODS_SELL_TP_CD IS '상품판매유형코드(PRD0001)';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.GOODS_DLV_TP_CD IS '상품배송유형코드(PRD0002)';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.GOODS_NM IS '상품명';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.ITEM_NM IS '단품명';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SELL_AMT IS '판매가';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SELL_DC_AMT IS '할인가';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN public.OP_GOODS_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON TABLE public.OP_GOODS_INFO IS '주문상품';
+
+
+DROP TABLE IF EXISTS OP_ORD_BNF_INFO CASCADE;
+
+CREATE TABLE OP_ORD_BNF_INFO
+(
+    ORD_BNF_NO    character varying(16) NOT NULL,
+    ORD_BNF_AMT    integer NOT NULL,
+    PRM_NO    bigint NOT NULL,
+    CPN_ISS_NO    bigint,
+    ORD_CNCL_BNF_AMT    integer DEFAULT 0,
+    DEGR_CCD    integer,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    CPN_KND_CD    character varying(10) NOT NULL,
+    CONSTRAINT OP_ORD_BNF_INFO_pk PRIMARY KEY ( ORD_BNF_NO )
+);
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.ORD_BNF_NO IS '주문혜택번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.ORD_BNF_AMT IS '주문혜택금액';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.PRM_NO IS '프로모션번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.CPN_ISS_NO IS '쿠폰발급번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.ORD_CNCL_BNF_AMT IS '혜택취소금액';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.DEGR_CCD IS '차수구분코드(PRM0012)';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.SYS_REGR_ID IS '시스템등록자ID';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.SYS_MODR_ID IS '시스템수정자ID';
+
+COMMENT ON COLUMN OP_ORD_BNF_INFO.CPN_KND_CD IS '쿠폰종류코드(PRM0004)';
+
+COMMENT ON TABLE OP_ORD_BNF_INFO IS '주문혜택';
+
+
+DROP TABLE IF EXISTS OP_ORD_BNF_REL_INFO CASCADE;
+
+CREATE TABLE OP_ORD_BNF_REL_INFO
+(
+    ORD_NO    character varying(16),
+    ORD_SEQ    integer,
+    PROC_SEQ    integer,
+    ORD_BNF_NO    character varying(16) NOT NULL,
+    APLY_CNCL_CCD    character varying(10) NOT NULL,
+    APLY_AMT    bigint NOT NULL,
+    CLM_NO    character varying(20),
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    CONSTRAINT OP_ORD_BNF_REL_INFO_pk PRIMARY KEY ( ORD_BNF_NO, ORD_NO, ORD_SEQ, PROC_SEQ )
+);
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.ORD_SEQ IS '주문순번';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.PROC_SEQ IS '처리순번';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.ORD_BNF_NO IS '주문혜택번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.APLY_CNCL_CCD IS '적용취소구분코드(OPT0005)';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.APLY_AMT IS '적용금액';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.CLM_NO IS '클레임번호';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN OP_ORD_BNF_REL_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON TABLE OP_ORD_BNF_REL_INFO IS '주문혜택관계';
+
+
+DROP TABLE IF EXISTS OP_ORD_CLM_MNT_LOG CASCADE;
+
+CREATE TABLE OP_ORD_CLM_MNT_LOG
+(
+    LOG_SEQ    integer NOT NULL,
+    ORD_NO    character varying(16),
+    CLM_NO    character varying(16),
+    REQ_PRAM    json,
+    INS_DATA    json,
+    UPT_DATA    json,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    PROC_CCD character varying(10),
+    CONSTRAINT OP_ORD_CLM_MNT_LOG_pk PRIMARY KEY ( LOG_SEQ )
+);
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.LOG_SEQ IS '로그순번';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.CLM_NO IS '클레임번호';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.REQ_PRAM IS '요청파라메터';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.INS_DATA IS '입력데이터';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.UPT_DATA IS '수정데이터';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON COLUMN OP_ORD_CLM_MNT_LOG.PROC_CCD IS '처리구분코드(OPT0012)';
+
+COMMENT ON TABLE OP_ORD_CLM_MNT_LOG IS '주문클레임모니터링';
+
+
+DROP TABLE IF EXISTS OP_ORD_COST_INFO CASCADE;
+
+CREATE TABLE OP_ORD_COST_INFO
+(
+    ORD_CST_NO    character varying(16) NOT NULL,
+    DV_GRP_NO    integer NOT NULL,
+    APLY_CCD    character varying(10) NOT NULL,
+    ORG_ORD_CST_NO    character varying(16),
+    CLM_NO    character varying(16),
+    ORD_NO    character varying(16) NOT NULL,
+    DV_AMT_TP_CD    character varying(10),
+    ORG_DV_AMT    bigint DEFAULT 0,
+    DV_BNF_AMT    bigint DEFAULT 0,
+    APLY_DV_AMT    bigint NOT NULL,
+    IMTN_RSN_CCD    character varying(10) NOT NULL,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    DV_PLC_TP_CD    character varying(10),
+    CNCL_DV_AMT    bigint,
+    CONSTRAINT OP_ORD_COST_INFO_pk PRIMARY KEY ( ORD_CST_NO )
+);
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.ORD_CST_NO IS '주문비용번호';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.DV_GRP_NO IS '배송그룹번호';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.APLY_CCD IS '적용구분코드(OPT0005)';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.ORG_ORD_CST_NO IS '원주문비용번호';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.CLM_NO IS '클레임번호';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.DV_AMT_TP_CD IS '배송비구분코드(OPT0006)';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.ORG_DV_AMT IS '원배송비';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.DV_BNF_AMT IS '혜택배송비용';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.APLY_DV_AMT IS '적용배송비';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.IMTN_RSN_CCD IS '귀책구분코드(OPT0008)';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.DV_PLC_TP_CD IS '배송비정책구분코드';
+
+COMMENT ON COLUMN OP_ORD_COST_INFO.CNCL_DV_AMT IS '취소배송비';
+
+COMMENT ON TABLE OP_ORD_COST_INFO IS '주문비용';
+
+DROP TABLE IF EXISTS OP_PAY_INFO CASCADE;
+
+CREATE TABLE OP_PAY_INFO
+(
+    PAY_NO    character varying(16) NOT NULL,
+    ORD_NO    character varying(16) NOT NULL,
+    CLM_NO    character varying(16),
+    PAY_MN_CD    character varying(10) NOT NULL,
+    PAY_CCD    character varying(10) NOT NULL,
+    PAY_PRGS_SCD    character varying(10) NOT NULL,
+    PAY_AMT    bigint NOT NULL,
+    CNCL_AMT    bigint NOT NULL,
+    RFND_AVL_AMT    bigint NOT NULL,
+    TRSN_ID    character varying(100),
+    PAY_CMT_DTIME    timestamp without time zone NOT NULL,
+    SYS_REG_DTIME    timestamp without time zone NOT NULL,
+    SYS_REGR_ID    character varying(30) NOT NULL,
+    SYS_MOD_DTIME    timestamp without time zone NOT NULL,
+    SYS_MODR_ID    character varying(30) NOT NULL,
+    ORG_PAY_NO character varying(16),
+    VR_ACCT    character varying(20),
+    VR_ACCT_NM    character varying(50),
+    VR_BNK_CD    character varying(10),
+    VR_VAL_DT    character varying(8),
+    VR_VAL_TT    character varying(6),
+    CONSTRAINT OP_PAY_INFO_pk PRIMARY KEY ( PAY_NO )
+);
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_NO IS '결제번호';
+
+COMMENT ON COLUMN OP_PAY_INFO.ORD_NO IS '주문번호';
+
+COMMENT ON COLUMN OP_PAY_INFO.CLM_NO IS '클레임번호';
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_MN_CD IS '결제수단코드(OPT0009)';
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_CCD IS '결제구분코드(OPT0010)';
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_PRGS_SCD IS '결제진행상태코드(OPT0011)';
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_AMT IS '결제금액';
+
+COMMENT ON COLUMN OP_PAY_INFO.CNCL_AMT IS '취소금액';
+
+COMMENT ON COLUMN OP_PAY_INFO.RFND_AVL_AMT IS '환불가능금액';
+
+COMMENT ON COLUMN OP_PAY_INFO.TRSN_ID IS '트랜젝션ID';
+
+COMMENT ON COLUMN OP_PAY_INFO.PAY_CMT_DTIME IS '결제완료일시';
+
+COMMENT ON COLUMN OP_PAY_INFO.SYS_REG_DTIME IS '시스템등록일시';
+
+COMMENT ON COLUMN OP_PAY_INFO.SYS_REGR_ID IS '시스템등록자';
+
+COMMENT ON COLUMN OP_PAY_INFO.SYS_MOD_DTIME IS '시스템수정일시';
+
+COMMENT ON COLUMN OP_PAY_INFO.SYS_MODR_ID IS '시스템수정자';
+
+COMMENT ON COLUMN OP_PAY_INFO.ORG_PAY_NO IS '원결제번호';
+
+COMMENT ON COLUMN OP_PAY_INFO.VR_ACCT IS '계좌번호';
+
+COMMENT ON COLUMN OP_PAY_INFO.VR_ACCT_NM IS '예금주명';
+
+COMMENT ON COLUMN OP_PAY_INFO.VR_BNK_CD IS '은행코드';
+
+COMMENT ON COLUMN OP_PAY_INFO.VR_VAL_DT IS '입금예정일자';
+
+COMMENT ON COLUMN OP_PAY_INFO.VR_VAL_TT IS '입금예정시간';
+
+COMMENT ON TABLE OP_PAY_INFO IS '주문결제';
+

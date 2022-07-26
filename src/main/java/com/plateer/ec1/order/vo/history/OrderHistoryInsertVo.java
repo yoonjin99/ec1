@@ -1,25 +1,25 @@
 package com.plateer.ec1.order.vo.history;
 
-import com.plateer.ec1.order.enums.history.OPT0012Type;
 import com.plateer.ec1.order.vo.OrderRequestVo;
+import com.plateer.ec1.util.JsonFileReader;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @ToString
 @Builder
+@Slf4j
 public class OrderHistoryInsertVo {
-    private OrderRequestVo insData;
+    private String reqParam;
     private String ordNo;
     private String clmNo;
-    private String procCcd;
 
-    public static OrderHistoryInsertVo createData(OrderRequestVo orderRequest){
+    public static OrderHistoryInsertVo createData(OrderRequestVo orderRequest) {
         return OrderHistoryInsertVo.builder()
                 .ordNo(orderRequest.getOrdNo())
-                .insData(orderRequest)
-                .procCcd(OPT0012Type.S.name())
+                .reqParam(JsonFileReader.parseToJson(orderRequest))
                 .build();
     }
 }

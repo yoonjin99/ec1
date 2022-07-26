@@ -4,7 +4,6 @@ spring:
     url: jdbc:log4jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: 1111
-
 mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
   configuration:
@@ -23,4 +22,24 @@ logging:
       springframework:
         transaction:
           interceptor: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb:MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: 1111
+  sql:
+    init:
+      schema-locations: classpath:h2/initSchema.sql
 

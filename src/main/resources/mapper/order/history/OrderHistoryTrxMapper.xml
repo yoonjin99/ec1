@@ -18,7 +18,7 @@
     values (
       #{ordNo}
       , #{clmNo}
-      , #{reqParam}
+      , to_json(#{reqParam})
       , #{procCcd}
       , now()
       , 'admin'
@@ -31,7 +31,7 @@
     update
       op_ord_clm_mnt_log
     set
-        ins_data = #{insData}
+        ins_data = to_json(#{insData})
         , proc_ccd = #{procCcd}
         , sys_mod_dtime = now()
         , sys_modr_id = 'admin'

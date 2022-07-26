@@ -1,6 +1,7 @@
 package com.plateer.ec1.order.vo.history;
 
 import com.plateer.ec1.order.vo.OrderVo;
+import com.plateer.ec1.util.JsonFileReader;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,15 +10,15 @@ import lombok.ToString;
 @Builder
 @ToString
 public class OrderHistoryUpdateVo {
-    private OrderVo uptData;
+    private String insData;
     private int logSeq;
     private String procCcd;
 
     public static OrderHistoryUpdateVo createData(int historyNo, OrderVo orderVo){
         return OrderHistoryUpdateVo.builder()
-                .uptData(orderVo)
+                .insData(JsonFileReader.parseToJson(orderVo))
                 .logSeq(historyNo)
-                .procCcd("")
+                .procCcd(orderVo.getProcCcd().name())
                 .build();
     }
 }

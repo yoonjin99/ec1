@@ -1,5 +1,6 @@
 package com.plateer.ec1.order.service;
 
+import com.plateer.ec1.order.enums.history.OPT0012Type;
 import com.plateer.ec1.order.strategy.after.AfterStrategy;
 import com.plateer.ec1.order.strategy.data.DataStrategy;
 import com.plateer.ec1.order.enums.OrderType;
@@ -18,8 +19,8 @@ import java.util.Locale;
 @Slf4j
 @Component
 public class OrderContext {
-    private OrderHistoryService orderHistoryService;
-    private PaymentService paymentService;
+    private final OrderHistoryService orderHistoryService;
+    private final PaymentService paymentService;
 
     OrderContext(OrderHistoryService orderHistoryService, PaymentService paymentService){
         this.orderHistoryService = orderHistoryService;
@@ -37,13 +38,16 @@ public class OrderContext {
             validationDto.setOrderType("general");
             log.info("orderRequest : {}", orderRequest);
             OrderType.get(orderRequest).test(validationDto);
+            dto.setProcCcd(OPT0012Type.FV);
 
             // 데이터 생성
             dto = dataStrategy.create(orderRequest, new OrderProductViewVo());
-
+            dto.setProcCcd(OPT0012Type.FD);
+            ;
             // 결제
             PayInfoVo payInfo = new PayInfoVo();
             payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getOrdPayInfoVo().getPaymentType()));
+            dto.setProcCcd(OPT0012Type.FP);
 //            paymentService.approve(payInfo);
 
             // 데이터 등록
@@ -54,6 +58,8 @@ public class OrderContext {
 
             // 후처리
             afterStrategy.call(orderRequest, dto);
+
+            dto.setProcCcd(OPT0012Type.S);
 
         }catch (Exception e){
             log.error( "error : " + e);
