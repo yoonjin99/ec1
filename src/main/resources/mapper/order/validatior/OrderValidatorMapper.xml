@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper">
+  <select id="selectGoodsBase" parameterType="com.plateer.ec1.order.vo.OrderRequestVo" resultType="com.plateer.ec1.common.model.product.PrGoodsBaseModel">
+    select pgb.*
+    from
+        pr_goods_base pgb
+        inner join pr_item_info pii
+        on pgb.goods_no = pii.goods_no
+    <where>
+      <foreach collection="ordGoodsInfoVo" item="item" open="(" close=")" separator=",">
+        and pgb.goods_no = #{item.goodsNo}
+        and pii.item_no = #{item.itemNo}
+      </foreach>
+    </where>
+
+  </select>
+</mapper>

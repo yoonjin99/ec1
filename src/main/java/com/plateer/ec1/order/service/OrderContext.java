@@ -1,9 +1,13 @@
 package com.plateer.ec1.order.service;
 
+import com.plateer.ec1.common.model.product.PrGoodsBaseModel;
 import com.plateer.ec1.order.enums.history.OPT0012Type;
+import com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper;
 import com.plateer.ec1.order.strategy.after.AfterStrategy;
 import com.plateer.ec1.order.strategy.data.DataStrategy;
 import com.plateer.ec1.order.enums.OrderType;
+import com.plateer.ec1.order.validator.OrderPaymentValidators;
+import com.plateer.ec1.order.validator.OrderProductValidators;
 import com.plateer.ec1.order.vo.OrderVo;
 import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
@@ -14,6 +18,7 @@ import com.plateer.ec1.payment.vo.PayInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -21,6 +26,8 @@ import java.util.Locale;
 public class OrderContext {
     private final OrderHistoryService orderHistoryService;
     private final PaymentService paymentService;
+
+    private OrderValidatiorMapper validatiorMapper;
 
     OrderContext(OrderHistoryService orderHistoryService, PaymentService paymentService){
         this.orderHistoryService = orderHistoryService;
@@ -33,11 +40,9 @@ public class OrderContext {
         int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
         OrderVo dto = null;
         try {
-            // 유효성 검증
-            OrderValidationVo validationDto = new OrderValidationVo();
-            validationDto.setOrderType("general");
             log.info("orderRequest : {}", orderRequest);
-            OrderType.get(orderRequest).test(validationDto);
+            // 유효성 검증
+            validationCheck(orderRequest);
             dto.setProcCcd(OPT0012Type.FV);
 
             // 데이터 생성
@@ -70,6 +75,16 @@ public class OrderContext {
         log.info("--------------OrderContext execute end");
     }
 
+    private void validationCheck(OrderRequestVo orderRequest){
+        OrderValidationVo validationDto = OrderValidationVo.createVo(orderRequest, selectGoods(orderRequest));
+        boolean result = OrderType.get(orderRequest).test(validationDto);
+        if(!result) throw new IllegalArgumentException("유효성 검증에 실패하였습니다.");
+    }
+
+    private List<PrGoodsBaseModel> selectGoods(OrderRequestVo vo){
+        return validatiorMapper.selectGoodsBase(vo);
+    }
+
     private void amountValidation(String orderNo){
         log.info("--------------amountValidation start");
     }
@@ -77,5 +92,4 @@ public class OrderContext {
     private void insertOrderData(OrderVo orderDto){
         log.info("--------------insertOrderData start");
     }
-
 }

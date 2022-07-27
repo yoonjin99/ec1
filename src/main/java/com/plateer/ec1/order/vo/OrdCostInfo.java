@@ -2,6 +2,8 @@ package com.plateer.ec1.order.vo;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class OrdCostInfo {
     private String aplyCcd;
@@ -9,5 +11,6 @@ public class OrdCostInfo {
     private String dvPlcTpCd;
     private Long orgDvAmt;
     private Long dvBnfAmt;
+    @NotNull
     private Long aplyDvAmt;
 }
