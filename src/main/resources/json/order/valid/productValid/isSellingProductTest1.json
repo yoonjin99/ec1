@@ -1,0 +1,11 @@
+{
+  "prGoodsBaseModel" : [{
+  "goodsNm" : "라운드반팔티",
+  "goodsTpCd": "10",
+  "salePrc": 29900,
+  "prmPrc": 29000,
+  "prgsStatCd": "10",
+  "goodsDlvTpCd": "10",
+  "goodsNo": "P001"
+}]
+}

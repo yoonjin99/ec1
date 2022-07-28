@@ -16,7 +16,8 @@ public class OrderProductValidators {
 
     public static Predicate<OrderValidationVo> isExistProduct = (vo) -> {
         log.info("OrderProductValidators.isExistProduct");
-        return !Objects.isNull(vo.getPrGoodsBaseModel()) && vo.getPrGoodsBaseModel().size() == vo.getOrderRequestVo().getOrdGoodsInfoVo().size();
+        return !Objects.isNull(vo.getPrGoodsBaseModel())
+                && vo.getPrGoodsBaseModel().size() == vo.getOrderRequestVo().getOrdGoodsInfoVo().size();
     };
 
     public static Predicate<OrderValidationVo> isSellingProduct = (vo) -> {

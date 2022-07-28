@@ -38,7 +38,7 @@ public class OrderContext {
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
         int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
-        OrderVo dto = null;
+        OrderVo dto = new OrderVo();
         try {
             log.info("orderRequest : {}", orderRequest);
             // 유효성 검증
