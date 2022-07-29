@@ -1,18 +1,15 @@
 package com.plateer.ec1.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
+
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 
 public class JsonFileReader {
     private static final String PATH = "./src/main/resources/";
@@ -27,6 +24,20 @@ public class JsonFileReader {
         try {
             t = mapper.readValue(file.toFile(), value);
         }catch (IOException e){
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return t;
+    }
+
+    public static <T> T getObject(String fileName, TypeReference<T> typeReference) {
+        Path file = Paths.get(PATH + fileName);
+        ObjectMapper mapper = new ObjectMapper();
+
+        T t=null;
+        try {
+            t = mapper.readValue(file.toFile(), typeReference);
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
 

@@ -17,7 +17,7 @@ public class OrderPaymentValidators {
         // 환불계좌번호, 환불은행코드, 환불예금주명
         return CustomStringUtils.isNullOrEmpty(vo.getOrderRequestVo().getOrdBaseVo().getRfndAcctNo(),
                 vo.getOrderRequestVo().getOrdBaseVo().getRfndAcctOwnNm(),
-                vo.getOrderRequestVo().getOrdPayInfoVo().getBankCode());
+                vo.getOrderRequestVo().getOrdBaseVo().getRfndBnkCk());
     };
 
 }

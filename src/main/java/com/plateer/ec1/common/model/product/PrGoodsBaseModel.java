@@ -1,15 +1,13 @@
 package com.plateer.ec1.common.model.product;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class PrGoodsBaseModel {
     private String goodsNm;
     private String goodsTpCd;

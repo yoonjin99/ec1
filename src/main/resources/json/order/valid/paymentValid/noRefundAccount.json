@@ -1,0 +1,103 @@
+{
+  "ordNo": "O202206178000001",
+  "ordBaseVo": {
+    "mbrNo": "test01",
+    "ordTpCd": "10",
+    "ordSysCcd": "10",
+    "ordNm": "배윤진",
+    "ordSellNo": "01059101709",
+    "ordAddr": "서울시 노원구 동일로",
+    "ordAddrDtl": "에이치비지니스파크 6층",
+    "rfndBnkCk": "03",
+    "rfndAcctNo": "",
+    "rfndAcctOwnNm": "배윤진"
+  },
+  "ordGoodsInfoVo": [
+    {
+      "ordGoodsNo": "P001",
+      "ordItemNo": "1",
+      "goodsSellTpCd": "10",
+      "ordCnt": 2,
+      "ordBnfInfoVo": [
+        {
+          "prmNo": "1",
+          "cpnKndCd": "10",
+          "cpnIssNo": "39",
+          "degrCcd": 1
+        }
+      ]
+    },
+    {
+      "ordGoodsNo": "P002",
+      "ordItemNo": "1",
+      "goodsSellTpCd": "10",
+      "ordCnt": 3,
+      "ordBnfInfoVo": []
+    }
+  ],
+  "ordBnfInfoVo": [
+    {
+      "prmNo": "2",
+      "cpnKndCd": "30",
+      "cpnIssNo": "17",
+      "degrCcd": 3,
+      "bnfApplyGoods": [
+        {
+          "ordGoodsNo": "P002",
+          "ordItemNo": "1"
+        }
+      ]
+    }
+  ],
+  "ordDvpAreaInfoVo": [
+    {
+      "dvpSeq": 1,
+      "rmtiNm": "홍길동",
+      "rmtiHpNo": "01011112222",
+      "rmtiAddr": "송파구 어쩌구 저쩌구",
+      "rmtiAddrDtl": "에이치비지니스파크 6층",
+      "ordDvpInfo": [
+        {
+          "dvGrpNo": 1,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P001",
+              "ordItemNo": "1"
+            }
+          ],
+          "ordCostInfo" : {
+            "aplyCcd": "10",
+            "dvAmtTpCd": "10",
+            "dvPlcTpCd": "10",
+            "orgDvAmt": 0,
+            "dvBnfAmt": 0,
+            "aplyDvAmt": 0
+          }
+        },
+        {
+          "dvGrpNo": 2,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P002",
+              "ordItemNo": "1"
+            }
+          ],
+          "ordCostInfo" : {
+            "aplyCcd": "10",
+            "dvAmtTpCd": "10",
+            "dvPlcTpCd": "10",
+            "orgDvAmt": 0,
+            "dvBnfAmt": 0,
+            "aplyDvAmt": 0
+          }
+        }
+      ]
+    }
+  ],
+  "ordPayInfoVo": {
+    "paymentType": "INICIS",
+    "price": 86750,
+    "bankCode": "03",
+    "nmInput" : "배윤진"
+  }
+}

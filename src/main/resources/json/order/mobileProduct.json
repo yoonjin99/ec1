@@ -1,9 +1,9 @@
-{
-  "goodsNm" : "라운드반팔티",
-  "goodsTpCd": "10",
+[{
+  "goodsNm" : "스타벅스 아이스 카페 아메리카노",
+  "goodsTpCd": "20",
   "salePrc": 29900,
   "prmPrc": 29000,
   "prgsStatCd": "20",
-  "goodsDlvTpCd": "10",
-  "goodsNo": "P001"
-}
+  "goodsDlvTpCd": "20",
+  "goodsNo": "P003"
+}]

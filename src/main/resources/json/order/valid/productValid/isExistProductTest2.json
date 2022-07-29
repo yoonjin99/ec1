@@ -1,4 +1,5 @@
-{
+[
+  {
   "goodsNm" : "라운드반팔티",
   "goodsTpCd": "10",
   "salePrc": 29900,
@@ -6,4 +7,14 @@
   "prgsStatCd": "20",
   "goodsDlvTpCd": "10",
   "goodsNo": "P001"
-}
+  },
+  {
+    "goodsNm" : "뭐더라",
+    "goodsTpCd": "10",
+    "salePrc": 29900,
+    "prmPrc": 29000,
+    "prgsStatCd": "20",
+    "goodsDlvTpCd": "10",
+    "goodsNo": "P002"
+  }
+]
