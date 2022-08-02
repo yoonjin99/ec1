@@ -20,7 +20,7 @@ public class PaymentService {
     private final PaymentTypeServiceFactory paymentServiceFactory;
     private final PaymentInicisTrxMapper inicisTrxMapper;
 
-    public ApproveResVo approve(@Valid OrderInfoVo orderInfoVo,@Valid PayInfoVo payInfo) throws JsonProcessingException {
+    public ApproveResVo approve(@Valid OrderInfoVo orderInfoVo,@Valid PayInfoVo payInfo) {
         log.info("---------------PayService approve start---------------------");
         PaymentTypeService paymentTypeService = paymentServiceFactory.getPaymentService(payInfo.getPaymentType());
         return paymentTypeService.approvePay(orderInfoVo, payInfo);

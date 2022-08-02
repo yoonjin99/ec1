@@ -3,8 +3,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper">
-  <select id="selectGoodsBase" parameterType="com.plateer.ec1.order.vo.OrderRequestVo" resultType="com.plateer.ec1.common.model.product.PrGoodsBaseModel">
-    select pgb.*
+
+  <resultMap id="resultMap" type="com.plateer.ec1.order.vo.OrderProductViewVo">
+    <id column="goods_no"/>
+    <id column="item_no"/>
+    <association property="prGoodsBaseModel" autoMapping="true"/>
+    <association property="prItemInfoModel" autoMapping="true"/>
+  </resultMap>
+
+  <select id="selectGoodsBase" parameterType="com.plateer.ec1.order.vo.OrderRequestVo" resultMap="resultMap">
+    select
+           pgb.*,
+           pii.*
     from
         pr_goods_base pgb
         inner join pr_item_info pii

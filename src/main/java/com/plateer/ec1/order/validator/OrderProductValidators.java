@@ -22,6 +22,6 @@ public class OrderProductValidators {
 
     public static Predicate<OrderValidationVo> isSellingProduct = (vo) -> {
         log.info("OrderProductValidators.isSellingProduct");
-        return vo.getPrGoodsBaseModel().stream().allMatch(goodsBaseModel -> goodsBaseModel.getPrgsStatCd().equals("20"));
+        return vo.getPrGoodsBaseModel().stream().allMatch(goodsBaseModel -> goodsBaseModel.getPrGoodsBaseModel().getPrgsStatCd().equals("20"));
     };
 }

@@ -14,9 +14,9 @@ import java.util.List;
 public class OrderValidationVo {
     private String orderType;
     private OrderRequestVo orderRequestVo;
-    private List<PrGoodsBaseModel> prGoodsBaseModel;
+    private List<OrderProductViewVo> prGoodsBaseModel;
 
-    public static OrderValidationVo createVo(OrderRequestVo orderRequestVo, List<PrGoodsBaseModel> goodsBaseModel){
+    public static OrderValidationVo createVo(OrderRequestVo orderRequestVo, List<OrderProductViewVo> goodsBaseModel){
         return OrderValidationVo.builder()
                 .orderType(orderRequestVo.getOrdBaseVo().getOrdTpCd())
                 .orderRequestVo(orderRequestVo)

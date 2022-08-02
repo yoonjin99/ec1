@@ -15,12 +15,15 @@
       "ordItemNo": "1",
       "goodsSellTpCd": "10",
       "ordCnt": 2,
+      "prmPrc": 10000,
+      "salePrc": 13000,
       "ordBnfInfoVo": [
         {
           "prmNo": "1",
           "cpnKndCd": "10",
           "cpnIssNo": "39",
-          "degrCcd": 1
+          "degrCcd": 1,
+          "dcPrice": 500
         }
       ]
     },
@@ -29,6 +32,8 @@
       "ordItemNo": "1",
       "goodsSellTpCd": "10",
       "ordCnt": 3,
+      "prmPrc": 5000,
+      "salePrc": 5500,
       "ordBnfInfoVo": []
     }
   ],
@@ -38,6 +43,7 @@
       "cpnKndCd": "30",
       "cpnIssNo": "17",
       "degrCcd": 3,
+      "dcPrice": 1000,
       "bnfApplyGoods": [
         {
           "ordGoodsNo": "P002",

@@ -14,5 +14,7 @@ public class OrdGoodsInfoVo {
     private String goodsSellTpCd;
     @Min(0)
     private int ordCnt;
+    private Long prmPrc;
+    private Long salePrc;
     private List<OrdBnfInfoVo> ordBnfInfoVo;
 }

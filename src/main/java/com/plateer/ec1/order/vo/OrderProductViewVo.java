@@ -1,7 +1,14 @@
 package com.plateer.ec1.order.vo;
 
-import lombok.Data;
+import com.plateer.ec1.common.model.product.PrGoodsBaseModel;
+import com.plateer.ec1.common.model.product.PrItemInfoModel;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Getter
+@Setter
 public class OrderProductViewVo {
+    private PrGoodsBaseModel prGoodsBaseModel;
+    private PrItemInfoModel prItemInfoModel;
 }

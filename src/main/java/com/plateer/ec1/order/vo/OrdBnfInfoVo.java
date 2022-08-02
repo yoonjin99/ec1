@@ -10,5 +10,6 @@ public class OrdBnfInfoVo {
     private String cpnKndCd;
     private String cpnIssNo;
     private String degrCcd;
+    private Long dcPrice;
     private List<GoodsInfoVo> bnfApplyGoods;
 }

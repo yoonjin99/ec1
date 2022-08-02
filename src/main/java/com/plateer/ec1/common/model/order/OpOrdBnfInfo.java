@@ -1,10 +1,12 @@
 package com.plateer.ec1.common.model.order;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class OpOrdBnfInfo {
     private String ordBnfNo;
     private Integer ordBnfAmt;
