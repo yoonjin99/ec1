@@ -18,7 +18,7 @@ public class OrderTypeValidators {
     // 이쿠폰상품인지 확인
     public static Predicate<OrderValidationVo> isEcouponProduct = (vo) -> {
         log.info("OrderTypeValidators 모바일 쿠폰 상품확인 : {}", vo);
-        return vo.getPrGoodsBaseModel().stream().allMatch(goodsBaseModel -> goodsBaseModel.getPrGoodsBaseModel().getGoodsTpCd().equals(PRD0001Type.ECOUPON.getType()));
+        return vo.getPrGoodsBaseModel().stream().allMatch(goodsBaseModel -> goodsBaseModel.getGoodsTpCd().equals(PRD0001Type.ECOUPON.getType()));
     };
 
     // 모바일 쿠폰 필수 데이터 확인
@@ -41,8 +41,8 @@ public class OrderTypeValidators {
     public static Predicate<OrderValidationVo> isGeneralProduct = (vo) -> {
         log.info("OrderTypeValidator 일반주문 상품확인: {}", vo);
         return vo.getPrGoodsBaseModel().stream()
-                .allMatch(goodsBaseModel -> goodsBaseModel.getPrGoodsBaseModel().getGoodsTpCd().equals(PRD0001Type.GENERAL.getType())
-                && goodsBaseModel.getPrGoodsBaseModel().getGoodsDlvTpCd().equals(PRD0002Type.DIRECT.getType()));
+                .allMatch(goodsBaseModel -> goodsBaseModel.getGoodsTpCd().equals(PRD0001Type.GENERAL.getType())
+                && goodsBaseModel.getGoodsDlvTpCd().equals(PRD0002Type.DIRECT.getType()));
     };
 
     // 일반주문 필수 데이터 확인

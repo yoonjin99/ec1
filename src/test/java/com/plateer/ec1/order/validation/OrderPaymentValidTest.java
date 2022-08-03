@@ -1,7 +1,6 @@
-package com.plateer.ec1.controller.validation;
+package com.plateer.ec1.order.validation;
 
 import com.plateer.ec1.order.validator.OrderPaymentValidators;
-import com.plateer.ec1.order.validator.OrderTypeValidators;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import com.plateer.ec1.order.vo.OrderValidationVo;
 import com.plateer.ec1.util.JsonFileReader;

@@ -1,4 +1,4 @@
-package com.plateer.ec1.controller;
+package com.plateer.ec1.order;
 
 import com.plateer.ec1.order.service.OrderService;
 import com.plateer.ec1.order.vo.OrderRequestVo;

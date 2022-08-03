@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.ec1.order.mapper.data.OrderDataTrxMapper">
+  <insert id="insertOrderBase" parameterType="com.plateer.ec1.common.model.order.OpOrdBaseModel">
+    insert into op_ord_base(
+                            ord_no
+                            , mbr_no
+                            , ord_tp_cd
+                            , ord_sys_ccd
+                            , ord_req_dtime
+                            , ord_cmt_dtime
+                            , ord_nm
+                            , ord_sell_no
+                            , ord_addr
+                            , ord_addr_dtl
+                            , rfnd_bnk_ck
+                            , rfnd_acct_no
+                            , rfnd_acct_own_nm
+                            , sys_reg_dtime
+                            , sys_regr_id
+                            , sys_modr_id
+                            , sys_mod_dtime)
+    values (
+            #{ordNo}
+            , #{mbrNo}
+            , #{ordTpCd}
+            , #{ordSysCcd}
+            , #{ordReqDtime}
+            , #{ordCmtDtime}
+            , #{ordNm}
+            , #{ordSellNo}
+            , #{ordAddr}
+            , #{ordAddrDtl}
+            , #{rfndBnkCd}
+            , #{rfndAcctNo}
+            , #{rfndAcctOwnNm}
+            , now()
+            , 'admin'
+            , 'admin'
+            , now()
+           )
+  </insert>
+
+  <insert id="insertOrderGoods" parameterType="list">
+    insert into op_goods_info(
+                              ord_no
+                              , ord_goods_no
+                              , ord_item_no
+                              , goods_sell_tp_cd
+                              , goods_dlv_tp_cd
+                              , goods_nm
+                              , item_nm
+                              , sell_amt
+                              , sell_dc_amt
+                              , sys_reg_dtime
+                              , sys_regr_id
+                              , sys_mod_dtime
+                              , sys_modr_id
+                              )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+       #{item.ordNo}
+        , #{item.ordGoodsNo}
+        , #{item.ordItemNo}
+        , #{item.goodsSellTpCd}
+        , #{item.goodsDlvTpCd}
+        , #{item.goodsNm}
+        , #{item.itemNm}
+        , #{item.sellAmt}
+        , #{item.sellDcAmt}
+        , now()
+        , 'admin'
+        , now()
+        , 'admin'
+      )
+    </foreach>
+  </insert>
+
+  <!-- 클레임 -->
+  <insert id="insertOrderClaim" parameterType="list">
+    insert into op_clm_info(
+                            ord_no
+                            , ord_goods_no
+                            , ord_item_no
+                            , ord_seq
+                            , proc_seq
+                            , ord_clm_tp_cd
+                            , ord_prgs_scd
+                            , dv_rvt_ccd
+                            , ord_amt
+                            , ord_cnt
+                            , cncl_cnt
+                            , rtgs_cnt
+                            , dv_grp_no
+                            , ord_clm_req_dtime
+                            , ord_clm_acpt_dtime
+                            , ord_clm_cmt_dtime
+                            , clm_rsn_cd
+                            , clm_dtl_rsn_tt
+                            , sys_reg_dtime
+                            , sys_regr_id
+                            , sys_mod_dtime
+                            , sys_modr_id
+                            , clm_no
+                            , org_proc_seq
+                            )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (
+       #{item.ordNo}
+       , #{item.ordGoodsNo}
+       , #{item.ordItemNo}
+       , #{item.ordSeq}
+       , #{item.procSeq}
+       , #{item.ordClmTpCd}
+       , #{item.ordPrgsScd}
+       , #{item.dvRvtCcd}
+       , #{item.ordAmt}
+       , #{item.ordCnt}
+       , #{item.cnclCnt}
+       , #{item.rtgsCnt}
+       , #{item.dvGrpNo}
+       , #{item.ordClmReqDtime}
+       , #{item.ordClmAcptDtime}
+       , #{item.ordClmCmtDtime}
+       , #{item.clmRsnCd}
+       , #{item.clmDtlRsnTt}
+       , now()
+       , 'admin'
+       , now()
+       , 'admin'
+       , #{item.clmNo}
+       , #{item.orgProcSeq}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 배송지 -->
+  <insert id="insertOrderAreaInfo" parameterType="list">
+    insert into op_dvp_area_info(
+                                 ord_no
+                                 , dvp_seq
+                                 , rmti_nm
+                                 , rmti_hp_no
+                                 , rmti_addr
+                                 , rmti_addr_dtl
+                                 , sys_reg_dtime
+                                 , sys_regr_id
+                                 , sys_mod_dtime
+                                 , sys_modr_id
+                                 )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (
+        #{item.ordNo}
+        , #{item.dvpSeq}
+        , #{item.rmtiNm}
+        , #{item.rmtiHpNo}
+        , #{item.rmtiAddr}
+        , #{item.rmtiAddrDtl}
+        , now()
+        , 'admin'
+        , now()
+        , 'admin'
+      )
+    </foreach>
+  </insert>
+
+  <!-- 배송정보 -->
+  <insert id="insertOrderDvpInfo" parameterType="list">
+    insert into op_dvp_info(
+                            dv_grp_no
+                            , ord_no
+                            , dvp_seq
+                            , sys_reg_dtime
+                            , sys_regr_id
+                            , sys_mod_dtime
+                            , sys_modr_id
+                            , dv_mthd_cd
+                            )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (
+       #{item.dvGrpNo}
+       , #{item.ordNo}
+       , #{item.dvpSeq}
+       , now()
+       , 'admin'
+       , now()
+       , 'admin'
+       , #{item.dvMthdCd}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 혜택 -->
+  <insert id="insertOrderBnf" parameterType="list">
+    <selectKey resultType="int" order="BEFORE" keyProperty="no">
+      select nextval(ord_bnf_no) from op_ord_bnf_info;
+    </selectKey>
+    insert into op_ord_bnf_info(
+                                ord_bnf_no
+                                , ord_bnf_amt
+                                , prm_no
+                                , cpn_iss_no
+                                , degr_ccd
+                                , sys_reg_dtime
+                                , sys_regr_id
+                                , sys_mod_dtime
+                                , sys_modr_id
+                                , cpn_knd_cd
+                                )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (
+        'B' + #{no}
+       , #{item.ordBnfAmt}
+       , #{item.prmNo}
+       , #{item.cpnIssNo}
+       , #{item.degrCcd}
+       , now()
+       , 'admin'
+       , now()
+       , 'admin'
+       , #{item.cpnKndCd}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 혜택관계 -->
+  <insert id="insertOrderBnfRel" parameterType="list">
+    insert into op_ord_bnf_rel_info
+        (
+          ord_no
+          , ord_seq
+          , proc_seq
+          , ord_bnf_no
+          , aply_cncl_ccd
+          , aply_amt
+          , clm_no
+          , sys_reg_dtime
+          , sys_regr_id
+          , sys_mod_dtime
+          , sys_modr_id
+        )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (
+       #{item.ordNo}
+       , #{item.ordSeq}
+       , #{item.procSeq}
+       , #{item.ordBnfNo}
+       , #{item.aplyCnclCcd}
+       , #{item.aplyAmt}
+       , #{item.clmNo}
+       , now()
+       , 'admin'
+       , now()
+       , 'admin'
+      )
+    </foreach>
+  </insert>
+
+  <!-- 비용 -->
+  <insert id="insertOrderCost" parameterType="list">
+    insert into op_ord_cost_info(
+                                  dv_grp_no
+                                 , aply_ccd
+                                 , org_ord_cst_no
+                                 , clm_no
+                                 , ord_no
+                                 , dv_amt_tp_cd
+                                 , aply_dv_amt
+                                 , imtn_rsn_ccd
+                                 , sys_reg_dtime
+                                 , sys_regr_id
+                                 , sys_mod_dtime
+                                 , sys_modr_id
+                                 , dv_plc_tp_cd
+                                 , cncl_dv_amt
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+        #{item.dvGrpNo}
+       , #{item.aplyCcd}
+       , #{item.orgOrdCstNo}
+       , #{item.clmNo}
+       , #{item.ordNo}
+       , #{item.dvAmtTpCd}
+       , #{item.aplyDvAmt}
+       , #{item.imtnRsnCcd}
+       , now()
+       , 'admin'
+       , now()
+       , 'admin'
+       , #{item.dvPlcTpCd}
+       , #{item.cnclDvAmt}
+      )
+    </foreach>
+  </insert>
+</mapper>

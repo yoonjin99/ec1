@@ -2,6 +2,8 @@ package com.plateer.ec1.order.service;
 
 import com.plateer.ec1.order.enums.AfterProcessType;
 import com.plateer.ec1.order.enums.DataType;
+import com.plateer.ec1.order.mapper.data.OrderDataTrxMapper;
+import com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper;
 import com.plateer.ec1.order.strategy.after.AfterStrategy;
 import com.plateer.ec1.order.strategy.after.impl.BoAfterStrategy;
 import com.plateer.ec1.order.strategy.after.impl.FoAfterStrategy;
@@ -24,20 +26,25 @@ public class OrderService {
 
     private final OrderHistoryService orderHistoryService;
     private final PaymentService paymentService;
+    private final OrderValidatiorMapper validatiorMapper;
+    private final OrderDataTrxMapper orderDataTrxMapper;
 
     private final Map<DataType, DataStrategy> dataStrategyMap = new HashMap<>();
     private final Map<AfterProcessType, AfterStrategy> afterStrategyMap = new HashMap<>();
 
-    public OrderService(OrderHistoryService orderHistoryService, PaymentService paymentService, List<DataStrategy> dataStrategies, List<AfterStrategy> afterStrategies) {
+
+    public OrderService(OrderHistoryService orderHistoryService, PaymentService paymentService, List<DataStrategy> dataStrategies, List<AfterStrategy> afterStrategies, OrderValidatiorMapper validatiorMapper, OrderDataTrxMapper orderDataTrxMapper) {
         this.orderHistoryService = orderHistoryService;
         this.paymentService = paymentService;
+        this.validatiorMapper = validatiorMapper;
+        this.orderDataTrxMapper = orderDataTrxMapper;
         dataStrategies.forEach(dataStrategy -> dataStrategyMap.put(dataStrategy.getType(), dataStrategy));
         afterStrategies.forEach(afterStrategy -> afterStrategyMap.put(afterStrategy.getType(), afterStrategy));
     }
 
     public void order(OrderRequestVo orderRequest){
         log.info("-----------OrderService order start");
-        OrderContext orderContext = new OrderContext(orderHistoryService, paymentService);
+        OrderContext orderContext = new OrderContext(orderHistoryService, paymentService, validatiorMapper, orderDataTrxMapper);
         orderContext.execute(getDataStrategy(orderRequest), getAfterStrategy(orderRequest), orderRequest);
     }
 

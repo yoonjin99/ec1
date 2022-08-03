@@ -7,7 +7,10 @@
     "ordNm": "배윤진",
     "ordSellNo": "01059101709",
     "ordAddr": "서울시 노원구 동일로",
-    "ordAddrDtl": "에이치비지니스파크 6층"
+    "ordAddrDtl": "에이치비지니스파크 6층",
+    "rfndBnkCk": "03",
+    "rfndAcctNo": "01000000000",
+    "rfndAcctOwnNm": "배윤진"
   },
   "ordGoodsInfoVo": [
     {
@@ -16,14 +19,14 @@
       "goodsSellTpCd": "10",
       "ordCnt": 2,
       "prmPrc": 10000,
-      "salePrc": 13000,
+      "salePrc": 12000,
       "ordBnfInfoVo": [
         {
           "prmNo": "1",
           "cpnKndCd": "10",
           "cpnIssNo": "39",
           "degrCcd": 1,
-          "dcPrice": 500
+          "dcPrice": 1000
         }
       ]
     },
@@ -43,7 +46,7 @@
       "cpnKndCd": "30",
       "cpnIssNo": "17",
       "degrCcd": 3,
-      "dcPrice": 1000,
+      "dcPrice": 1800,
       "bnfApplyGoods": [
         {
           "ordGoodsNo": "P002",

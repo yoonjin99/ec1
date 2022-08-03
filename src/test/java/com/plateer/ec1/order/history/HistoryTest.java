@@ -1,4 +1,4 @@
-package com.plateer.ec1.controller.history;
+package com.plateer.ec1.order.history;
 
 import com.plateer.ec1.order.enums.history.OPT0012Type;
 import com.plateer.ec1.order.service.OrderHistoryService;
@@ -26,7 +26,7 @@ public class HistoryTest {
     @Test
     @DisplayName("모니터링 로그 업데이트 테스트")
     void updateTest(){
-        OrderVo vo = new OrderVo();
+        OrderVo vo = OrderVo.builder().build();
         vo.setProcCcd(OPT0012Type.FP);
         orderHistoryService.updateOrderHistory(1, vo);
     }

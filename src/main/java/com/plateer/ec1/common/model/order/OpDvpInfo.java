@@ -28,6 +28,8 @@ public class OpDvpInfo {
             for(OrdDvpInfo ordDvpInfo : ordDvpAreaInfoVo.getOrdDvpInfo()){
                 OpDvpInfo opDvpInfo = OpDvpInfo.builder()
                         .ordNo(orderRequest.getOrdNo())
+                        .dvGrpNo(ordDvpInfo.getDvGrpNo())
+                        .dvpSeq(ordDvpAreaInfoVo.getDvpSeq())
                         .dvMthdCd("10")
                         .build();
                 opDvpInfos.add(opDvpInfo);

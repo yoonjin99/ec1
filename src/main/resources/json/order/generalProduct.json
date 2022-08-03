@@ -6,4 +6,14 @@
   "prgsStatCd": "20",
   "goodsDlvTpCd": "10",
   "goodsNo": "P001"
-}]
+},
+  {
+    "goodsNm" : "뭐였찌",
+    "goodsTpCd": "10",
+    "salePrc": 10000,
+    "prmPrc": 5000,
+    "prgsStatCd": "20",
+    "goodsDlvTpCd": "10",
+    "goodsNo": "P002"
+  }
+]

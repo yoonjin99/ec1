@@ -20,5 +20,4 @@ public class PrGoodsBaseModel {
     private String sysModrId;
     private String goodsDlvTpCd;
     private String goodsNo;
-
 }

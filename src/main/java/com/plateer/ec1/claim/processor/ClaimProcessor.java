@@ -28,7 +28,7 @@ public abstract class ClaimProcessor {
     }
 
     protected void updateLog(Long monitoringLog, String claimNo){
-        orderHistoryService.updateOrderHistory(1, new OrderVo());
+        orderHistoryService.updateOrderHistory(1, null);
     }
 
     public abstract void doProcess(ClaimVo claimDto);

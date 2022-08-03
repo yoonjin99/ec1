@@ -9,6 +9,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderProductViewVo {
-    private PrGoodsBaseModel prGoodsBaseModel;
-    private PrItemInfoModel prItemInfoModel;
+    private String goodsNm;
+    private String goodsTpCd;
+    private Long salePrc;
+    private Long prmPrc;
+    private String prgsStatCd;
+    private String goodsDlvTpCd;
+    private String goodsNo;
+    private String itemNo;
+    private String itemNm;
 }

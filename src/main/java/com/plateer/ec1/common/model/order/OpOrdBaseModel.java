@@ -29,7 +29,13 @@ public class OpOrdBaseModel {
 
     public static OpOrdBaseModel createGeneralData(OrderRequestVo orderRequest){
         return OpOrdBaseModel.builder()
+                .ordNo(orderRequest.getOrdNo())
+                .mbrNo(orderRequest.getOrdBaseVo().getMbrNo())
                 .ordTpCd(orderRequest.getOrdBaseVo().getOrdTpCd())
+                .ordNm(orderRequest.getOrdBaseVo().getOrdNm())
+                .ordSellNo(orderRequest.getOrdBaseVo().getOrdSellNo())
+                .ordAddr(orderRequest.getOrdBaseVo().getOrdAddr())
+                .ordAddrDtl(orderRequest.getOrdBaseVo().getOrdAddrDtl())
                 .ordSysCcd(orderRequest.getOrdBaseVo().getOrdSysCcd())
                 .ordReqDtime(LocalDateTime.now())
                 .rfndBnkCk(orderRequest.getOrdBaseVo().getRfndBnkCk())

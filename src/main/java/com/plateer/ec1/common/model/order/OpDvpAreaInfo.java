@@ -27,6 +27,8 @@ public class OpDvpAreaInfo {
     public static List<OpDvpAreaInfo> createGeneralData(OrderRequestVo orderRequest){
         return orderRequest.getOrdDvpAreaInfoVo().stream()
                 .map(infoVo -> OpDvpAreaInfo.builder()
+                                            .ordNo(orderRequest.getOrdNo())
+                                            .dvpSeq(infoVo.getDvpSeq())
                                             .rmtiHpNo(infoVo.getRmtiHpNo())
                                             .rmtiNm(infoVo.getRmtiNm())
                                             .rmtiAddrDtl(infoVo.getRmtiAddrDtl())

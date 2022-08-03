@@ -1,7 +1,6 @@
-package com.plateer.ec1.controller.history.dao;
+package com.plateer.ec1.order.history.dao;
 
 import com.plateer.ec1.order.mapper.history.OrderHistoryTrxMapper;
-import com.plateer.ec1.order.vo.OrderRequestVo;
 import com.plateer.ec1.order.vo.history.OrderHistoryInsertVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

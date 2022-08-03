@@ -4,27 +4,29 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper">
 
-  <resultMap id="resultMap" type="com.plateer.ec1.order.vo.OrderProductViewVo">
-    <id column="goods_no"/>
-    <id column="item_no"/>
-    <association property="prGoodsBaseModel" autoMapping="true"/>
-    <association property="prItemInfoModel" autoMapping="true"/>
-  </resultMap>
-
-  <select id="selectGoodsBase" parameterType="com.plateer.ec1.order.vo.OrderRequestVo" resultMap="resultMap">
+  <select id="selectGoodsBase" parameterType="list" resultType="com.plateer.ec1.order.vo.OrderProductViewVo">
+    with goods_info as (
+    <foreach collection="list" item="item" separator="union all">
+      select #{item.ordGoodsNo} as goods_no
+      , #{item.ordItemNo} as item_no
+    </foreach>
+    )
     select
-           pgb.*,
-           pii.*
+           pgb.goods_nm,
+           pgb.goods_tp_cd,
+           pgb.sale_prc,
+           pgb.prm_prc,
+           pgb.prgs_stat_cd,
+           pgb.goods_dlv_tp_cd,
+           pgb.goods_no,
+           pii.item_no,
+           pii.item_nm
     from
         pr_goods_base pgb
         inner join pr_item_info pii
         on pgb.goods_no = pii.goods_no
-    <where>
-      <foreach collection="ordGoodsInfoVo" item="item" open="(" close=")" separator=",">
-        and pgb.goods_no = #{item.goodsNo}
-        and pii.item_no = #{item.itemNo}
-      </foreach>
-    </where>
-
+        inner join goods_info gi
+        on pii.goods_no = gi.goods_no
+        and pii.item_no = gi.item_no
   </select>
 </mapper>

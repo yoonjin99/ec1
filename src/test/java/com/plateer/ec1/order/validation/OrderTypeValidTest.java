@@ -1,4 +1,4 @@
-package com.plateer.ec1.controller.validation;
+package com.plateer.ec1.order.validation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.plateer.ec1.common.model.product.PrGoodsBaseModel;
@@ -22,18 +22,18 @@ public class OrderTypeValidTest {
         // 1. ecoupon 상품이 아님
         List<PrGoodsBaseModel> listPrdGoods = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
 
-        OrderValidationVo vo = OrderValidationVo.builder()
-                .prGoodsBaseModel(listPrdGoods)
-                .build();
-        Assertions.assertFalse(OrderTypeValidators.isEcouponProduct.test(vo));
+//        OrderValidationVo vo = OrderValidationVo.builder()
+//                .prGoodsBaseModel(listPrdGoods)
+//                .build();
+//        Assertions.assertFalse(OrderTypeValidators.isEcouponProduct.test(vo));
 
         // 2. ecoupon 상품이 맞음
         List<PrGoodsBaseModel> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
 
-        OrderValidationVo vo2 = OrderValidationVo.builder()
-                .prGoodsBaseModel(listPrdGoods2)
-                .build();
-        Assertions.assertTrue(OrderTypeValidators.isEcouponProduct.test(vo2));
+//        OrderValidationVo vo2 = OrderValidationVo.builder()
+//                .prGoodsBaseModel(listPrdGoods2)
+//                .build();
+//        Assertions.assertTrue(OrderTypeValidators.isEcouponProduct.test(vo2));
     }
 
     @Test
@@ -87,26 +87,26 @@ public class OrderTypeValidTest {
         // 1. 일반상품이 아님
         List<PrGoodsBaseModel> listPrdGoods = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
 
-        OrderValidationVo vo = OrderValidationVo.builder()
-                .prGoodsBaseModel(listPrdGoods)
-                .build();
-        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo));
+//        OrderValidationVo vo = OrderValidationVo.builder()
+//                .prGoodsBaseModel(listPrdGoods)
+//                .build();
+//        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo));
 
         // 2. 직배송이 아님
         List<PrGoodsBaseModel> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
 
-        OrderValidationVo vo2 = OrderValidationVo.builder()
-                .prGoodsBaseModel(listPrdGoods2)
-                .build();
-        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo2));
+//        OrderValidationVo vo2 = OrderValidationVo.builder()
+//                .prGoodsBaseModel(listPrdGoods2)
+//                .build();
+//        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo2));
 
         // 3. 1,2 해당함
         List<PrGoodsBaseModel> listPrdGoods3 = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
 
-        OrderValidationVo vo3 = OrderValidationVo.builder()
-                .prGoodsBaseModel(listPrdGoods3)
-                .build();
-        Assertions.assertTrue(OrderTypeValidators.isGeneralProduct.test(vo3));
+//        OrderValidationVo vo3 = OrderValidationVo.builder()
+//                .prGoodsBaseModel(listPrdGoods3)
+//                .build();
+//        Assertions.assertTrue(OrderTypeValidators.isGeneralProduct.test(vo3));
     }
 
     @Test
