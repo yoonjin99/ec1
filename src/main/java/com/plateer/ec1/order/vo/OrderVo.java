@@ -27,5 +27,5 @@ public class OrderVo {
     // 주문혜택 테이블
     private List<OpOrdBnfInfoModel> opOrdBnfInfoModelList;
     // 주문혜택 관계 테이블
-    private List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModelList;
+    private List<OrderBenefitRelVo> opOrdBnfRelInfoModelList;
 }

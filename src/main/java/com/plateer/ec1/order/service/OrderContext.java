@@ -8,10 +8,7 @@ import com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper;
 import com.plateer.ec1.order.strategy.after.AfterStrategy;
 import com.plateer.ec1.order.strategy.data.DataStrategy;
 import com.plateer.ec1.order.enums.OrderType;
-import com.plateer.ec1.order.vo.OrderVo;
-import com.plateer.ec1.order.vo.OrderProductViewVo;
-import com.plateer.ec1.order.vo.OrderRequestVo;
-import com.plateer.ec1.order.vo.OrderValidationVo;
+import com.plateer.ec1.order.vo.*;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.service.PaymentService;
 import com.plateer.ec1.payment.vo.OrderInfoVo;
@@ -55,8 +52,8 @@ public class OrderContext {
 //            paymentCall(orderRequest);
 //            dto.setProcCcd(OPT0012Type.FP);
 //
-//            // 데이터 등록
-//            insertOrderData(dto);
+            // 데이터 등록
+            insertOrderData(dto);
 //
 //            // 금액검증
 //            amountValidation(orderRequest.getOrdNo());
@@ -111,8 +108,8 @@ public class OrderContext {
         log.info("--------------amountValidation start");
     }
 
-    @Transactional
-    protected void insertOrderData(OrderVo vo){
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    public void insertOrderData(OrderVo vo){
         log.info("--------------insertOrderData start");
         orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
         orderDataTrxMapper.insertOrderGoods(vo.getOpGoodsInfoList());
@@ -120,14 +117,16 @@ public class OrderContext {
         orderDataTrxMapper.insertOrderAreaInfo(vo.getOpDvpAreaInfo());
         orderDataTrxMapper.insertOrderDvpInfo(vo.getOpDvpInfoList());
 
-//        for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
-//            String key = orderDataTrxMapper.insertOrderBnf(vo.getOpOrdBnfInfoModelList());
-//
-//            for(OpOrdBnfRelInfoModel rel : vo.getOpOrdBnfRelInfoModelList()){
-//                if()
-//                orderDataTrxMapper.insertOrderBnfRel(vo.getOpOrdBnfRelInfoModelList());
-//            }
-//        }
+        for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
+            String key = orderDataTrxMapper.insertOrderBnf(bnf);
+
+            for(OrderBenefitRelVo rel : vo.getOpOrdBnfRelInfoModelList()){
+                if(bnf.getPrmNo().equals(rel.getPrmNo()) && bnf.getOrdNo().equals(rel.getOrdNo())){
+                    rel.setOrdBnfNo(key);
+                    orderDataTrxMapper.insertOrderBnfRel(rel);
+                }
+            }
+        }
 
         orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
     }

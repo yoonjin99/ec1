@@ -6,10 +6,10 @@ import java.util.List;
 
 @Data
 public class OrdBnfInfoVo {
-    private String prmNo;
+    private Long prmNo;
     private String cpnKndCd;
     private String cpnIssNo;
-    private String degrCcd;
+    private int degrCcd;
     private Long dcPrice;
     private List<GoodsInfoVo> bnfApplyGoods;
 }

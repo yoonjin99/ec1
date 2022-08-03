@@ -17,22 +17,23 @@ import java.util.List;
 public class OpOrdBnfInfoModel {
     private String ordBnfNo;
     private Long ordBnfAmt;
-    private String prmNo;
+    private Long prmNo;
     private Long cpnIssNo;
     private Long ordCnclBnfAmt;
-    private String degrCcd;
+    private int degrCcd;
     private LocalDateTime sysRegDtime;
     private String sysRegrId;
     private LocalDateTime sysModDtime;
     private String sysModrId;
     private String cpnKndCd;
+    private String ordNo;
 
-    // TODO : 주문혜택 배분처리 다시!!!
     public static List<OpOrdBnfInfoModel> createGeneralData(OrderRequestVo orderRequest){
         List<OpOrdBnfInfoModel> ordBnfInfoModels = new ArrayList<>();
         for(OrdGoodsInfoVo goods : orderRequest.getOrdGoodsInfoVo()){
             for(OrdBnfInfoVo bnf : goods.getOrdBnfInfoVo()){
                 OpOrdBnfInfoModel model = OpOrdBnfInfoModel.builder()
+                        .ordNo(orderRequest.getOrdNo())
                         .prmNo(bnf.getPrmNo())
                         .cpnKndCd(bnf.getCpnKndCd())
                         .degrCcd(bnf.getDegrCcd())
@@ -46,6 +47,7 @@ public class OpOrdBnfInfoModel {
         for(OrdBnfInfoVo bnfInfoVo : orderRequest.getOrdBnfInfoVo()){
             OpOrdBnfInfoModel model = OpOrdBnfInfoModel.builder()
                     .prmNo(bnfInfoVo.getPrmNo())
+                    .ordNo(orderRequest.getOrdNo())
                     .cpnKndCd(bnfInfoVo.getCpnKndCd())
                     .degrCcd(bnfInfoVo.getDegrCcd())
                     .ordBnfAmt(bnfInfoVo.getDcPrice())

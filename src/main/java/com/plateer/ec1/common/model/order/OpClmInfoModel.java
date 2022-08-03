@@ -62,6 +62,8 @@ public class OpClmInfoModel {
                             .ordGoodsNo(viewVo.getGoodsNo())
                             .ordItemNo(viewVo.getItemNo())
                             .ordSeq(cnt)
+                            .cnclCnt(0)
+                            .rtgsCnt(0)
                             .procSeq(1)
                             .dvGrpNo(dvGrpNo)
                             .ordClmTpCd("O") // 주문클레임유형코드
@@ -69,7 +71,7 @@ public class OpClmInfoModel {
                             .ordCnt(goodsInfoVo.getOrdCnt()) // 주문수량
                             .ordAmt(viewVo.getPrmPrc() > 0 ? viewVo.getPrmPrc() : viewVo.getSalePrc()) // 주문금액
                             .ordPrgsScd("10") //주문진행상태코드
-                            .ordClmAcptDtime(LocalDateTime.now())
+                            .ordClmReqDtime(LocalDateTime.now())
                             .ordClmAcptDtime(LocalDateTime.now())
                             .build();
                     clmInfoModels.add(clmInfoModel);

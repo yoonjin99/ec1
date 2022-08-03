@@ -33,7 +33,7 @@
             , #{ordSellNo}
             , #{ordAddr}
             , #{ordAddrDtl}
-            , #{rfndBnkCd}
+            , #{rfndBnkCk}
             , #{rfndAcctNo}
             , #{rfndAcctOwnNm}
             , now()
@@ -197,10 +197,7 @@
   </insert>
 
   <!-- 혜택 -->
-  <insert id="insertOrderBnf" parameterType="list">
-    <selectKey resultType="int" order="BEFORE" keyProperty="no">
-      select nextval(ord_bnf_no) from op_ord_bnf_info;
-    </selectKey>
+  <select  id="insertOrderBnf" parameterType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" resultType="string">
     insert into op_ord_bnf_info(
                                 ord_bnf_no
                                 , ord_bnf_amt
@@ -214,24 +211,23 @@
                                 , cpn_knd_cd
                                 )
     VALUES
-    <foreach collection="list" item="item" separator=",">
       (
-        'B' + #{no}
-       , #{item.ordBnfAmt}
-       , #{item.prmNo}
-       , #{item.cpnIssNo}
-       , #{item.degrCcd}
+        'B' || NEXTVAL('ord_bnf_no')
+       , #{ordBnfAmt}
+       , #{prmNo}
+       , #{cpnIssNo}
+       , #{degrCcd}
        , now()
        , 'admin'
        , now()
        , 'admin'
-       , #{item.cpnKndCd}
+       , #{cpnKndCd}
       )
-    </foreach>
-  </insert>
+      returning ord_bnf_no
+  </select>
 
   <!-- 혜택관계 -->
-  <insert id="insertOrderBnfRel" parameterType="list">
+  <insert id="insertOrderBnfRel" parameterType="com.plateer.ec1.order.vo.OrderBenefitRelVo">
     insert into op_ord_bnf_rel_info
         (
           ord_no
@@ -247,21 +243,19 @@
           , sys_modr_id
         )
     VALUES
-    <foreach collection="list" item="item" separator=",">
       (
-       #{item.ordNo}
-       , #{item.ordSeq}
-       , #{item.procSeq}
-       , #{item.ordBnfNo}
-       , #{item.aplyCnclCcd}
-       , #{item.aplyAmt}
-       , #{item.clmNo}
+       #{ordNo}
+       , #{ordSeq}
+       , #{procSeq}
+       , #{ordBnfNo}
+       , #{aplyCnclCcd}
+       , #{aplyAmt}
+       , #{clmNo}
        , now()
        , 'admin'
        , now()
        , 'admin'
       )
-    </foreach>
   </insert>
 
   <!-- 비용 -->

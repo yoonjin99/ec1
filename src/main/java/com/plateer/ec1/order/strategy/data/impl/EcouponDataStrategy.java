@@ -3,6 +3,7 @@ package com.plateer.ec1.order.strategy.data.impl;
 import com.plateer.ec1.common.model.order.*;
 import com.plateer.ec1.order.enums.DataType;
 import com.plateer.ec1.order.strategy.data.DataStrategy;
+import com.plateer.ec1.order.vo.OrderBenefitRelVo;
 import com.plateer.ec1.order.vo.OrderVo;
 import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
@@ -24,7 +25,7 @@ public class EcouponDataStrategy implements DataStrategy {
                 .opDvpAreaInfo(OpDvpAreaInfo.createGeneralData(orderRequest))
                 .opDvpInfoList(OpDvpInfo.createGeneralData(orderRequest))
                 .opOrdCostInfoModelList(OpOrdCostInfoModel.createGeneralData(orderRequest))
-                .opOrdBnfRelInfoModelList(OpOrdBnfRelInfoModel.createGeneralData(orderRequest))
+                .opOrdBnfRelInfoModelList(OrderBenefitRelVo.createGeneralData(orderRequest))
                 .opOrdBnfInfoModelList(OpOrdBnfInfoModel.createGeneralData(orderRequest))
                 .build();
     }

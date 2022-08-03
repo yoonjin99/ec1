@@ -25,7 +25,7 @@ public class GeneralDataStrategy implements DataStrategy {
                 .opDvpAreaInfo(OpDvpAreaInfo.createGeneralData(orderRequest))
                 .opDvpInfoList(OpDvpInfo.createGeneralData(orderRequest))
                 .opOrdCostInfoModelList(OpOrdCostInfoModel.createGeneralData(orderRequest))
-                .opOrdBnfRelInfoModelList(OpOrdBnfRelInfoModel.createGeneralData(orderRequest))
+                .opOrdBnfRelInfoModelList(OrderBenefitRelVo.createGeneralData(orderRequest))
                 .opOrdBnfInfoModelList(OpOrdBnfInfoModel.createGeneralData(orderRequest))
                 .build();
     }
