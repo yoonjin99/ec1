@@ -17,13 +17,13 @@ public class OrderTypeValidators {
 
     // 이쿠폰상품인지 확인
     public static Predicate<OrderValidationVo> isEcouponProduct = (vo) -> {
-        log.info("OrderTypeValidators 모바일 쿠폰 상품확인 : {}", vo);
+        log.info("isEcouponProduct 모바일 쿠폰 상품확인 : {}", vo);
         return vo.getPrGoodsBaseModel().stream().allMatch(goodsBaseModel -> goodsBaseModel.getGoodsTpCd().equals(PRD0001Type.ECOUPON.getType()));
     };
 
     // 모바일 쿠폰 필수 데이터 확인
     public static Predicate<OrderValidationVo> isEcouponValid = (vo) -> {
-        log.info("OrderTypeValidators 모바일 쿠폰 필수 데이터 확인: {}", vo);
+        log.info("isEcouponValid 모바일 쿠폰 필수 데이터 확인: {}", vo);
         // 휴대폰 번호가 있는지
         return vo.getOrderRequestVo().getOrdDvpAreaInfoVo()
                 .stream()
@@ -32,9 +32,9 @@ public class OrderTypeValidators {
     };
 
     public static Predicate<OrderValidationVo> isEcouponOrdDvpValid = (vo) -> {
-        log.info("OrderTypeValidators 모바일 쿠폰 필수 데이터 확인: {}", vo);
+        log.info("isEcouponOrdDvpValid 모바일 쿠폰 배송지 데이터 확인: {}", vo);
         return vo.getOrderRequestVo().getOrdDvpAreaInfoVo().size() == 1
-                || vo.getOrderRequestVo().getOrdDvpAreaInfoVo().size() == vo.getOrderRequestVo().getOrdGoodsInfoVo().size();
+                || vo.getOrderRequestVo().getOrdDvpAreaInfoVo().size() == vo.getOrderRequestVo().getOrdGoodsInfoVo().get(0).getOrdCnt();
     };
 
     // 일반 상품에 일반 배송 상품인지 확인

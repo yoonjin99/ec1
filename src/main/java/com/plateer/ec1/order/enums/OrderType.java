@@ -28,8 +28,8 @@ public enum OrderType implements Predicate<OrderValidationVo> {
             OrderProductValidators.isExistProduct.and(OrderProductValidators.isSellingProduct)
                     .and(OrderTypeValidators.isEcouponProduct).and(OrderTypeValidators.isEcouponValid).and(OrderTypeValidators.isEcouponOrdDvpValid));
 
-    private OPT0001 systemCode;
-    private OPT0002 orderCode;
+    private OPT0001 orderCode;
+    private OPT0002 systemCode;
     private final Predicate<OrderValidationVo> validCheck;
 
     @Override

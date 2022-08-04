@@ -1,0 +1,113 @@
+{
+  "ordNo": "O20220804103000",
+  "ordBaseVo": {
+    "mbrNo": "test01",
+    "ordTpCd": "20",
+    "ordSysCcd": "10",
+    "ordNm": "배윤진",
+    "ordSellNo": "01059101709",
+    "ordAddr": "서울시 노원구 동일로",
+    "ordAddrDtl": "에이치비지니스파크 6층",
+    "rfndBnkCk": "",
+    "rfndAcctNo": "",
+    "rfndAcctOwnNm": ""
+  },
+  "ordGoodsInfoVo": [
+    {
+      "ordGoodsNo": "P003",
+      "ordItemNo": "0",
+      "goodsSellTpCd": "20",
+      "ordCnt": 3,
+      "prmPrc": 29000,
+      "salePrc": 29900
+    }
+  ],
+  "ordBnfInfoVo": [
+  ],
+  "ordDvpAreaInfoVo": [
+    {
+      "dvpSeq": 1,
+      "rmtiNm": "홍길동",
+      "rmtiHpNo": "01011112222",
+      "rmtiAddr": "",
+      "rmtiAddrDtl": "",
+      "ordDvpInfo": [
+        {
+          "dvGrpNo": 1,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P003",
+              "ordItemNo": "0"
+            }
+          ],
+          "ordCostInfo" : {
+            "aplyCcd": "10",
+            "dvAmtTpCd": "10",
+            "dvPlcTpCd": "10",
+            "orgDvAmt": 0,
+            "dvBnfAmt": 0,
+            "aplyDvAmt": 0
+          }
+        }
+      ]
+    },
+    {
+      "dvpSeq": 2,
+      "rmtiNm": "배윤진",
+      "rmtiHpNo": "01059101709",
+      "rmtiAddr": "",
+      "rmtiAddrDtl": "",
+      "ordDvpInfo": [
+        {
+          "dvGrpNo": 2,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P003",
+              "ordItemNo": "0"
+            }
+          ],
+          "ordCostInfo" : {
+            "aplyCcd": "10",
+            "dvAmtTpCd": "10",
+            "dvPlcTpCd": "10",
+            "orgDvAmt": 0,
+            "dvBnfAmt": 0,
+            "aplyDvAmt": 0
+          }
+        }
+      ]
+    },
+    {
+      "dvpSeq": 3,
+      "rmtiNm": "김길동",
+      "rmtiHpNo": "01059012222",
+      "rmtiAddr": "",
+      "rmtiAddrDtl": "",
+      "ordDvpInfo": [
+        {
+          "dvGrpNo": 3,
+          "goodsInfo": [
+            {
+              "ordGoodsNo": "P003",
+              "ordItemNo": "0"
+            }
+          ],
+          "ordCostInfo" : {
+            "aplyCcd": "10",
+            "dvAmtTpCd": "10",
+            "dvPlcTpCd": "10",
+            "orgDvAmt": 0,
+            "dvBnfAmt": 0,
+            "aplyDvAmt": 0
+          }
+        }
+      ]
+    }
+  ],
+  "ordPayInfoVo": {
+    "paymentType": "POINT",
+    "price": 1000,
+    "bankCode": "",
+    "nmInput" : ""
+  }
+}

@@ -10,6 +10,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -29,34 +30,26 @@ public class OpOrdBnfInfoModel {
     private String ordNo;
 
     public static List<OpOrdBnfInfoModel> createGeneralData(OrderRequestVo orderRequest){
-        List<OpOrdBnfInfoModel> ordBnfInfoModels = new ArrayList<>();
-        for(OrdGoodsInfoVo goods : orderRequest.getOrdGoodsInfoVo()){
-            for(OrdBnfInfoVo bnf : goods.getOrdBnfInfoVo()){
-                OpOrdBnfInfoModel model = OpOrdBnfInfoModel.builder()
-                        .ordNo(orderRequest.getOrdNo())
-                        .prmNo(bnf.getPrmNo())
-                        .cpnKndCd(bnf.getCpnKndCd())
-                        .degrCcd(bnf.getDegrCcd())
-                        .ordBnfAmt(bnf.getDcPrice())
-                        .ordCnclBnfAmt(0L)
-                        .build();
-                ordBnfInfoModels.add(model);
-            }
-        }
+        List<OpOrdBnfInfoModel> ordBnfInfoModels
+                = orderRequest.getOrdGoodsInfoVo().stream()
+                .flatMap(goods -> goods.getOrdBnfInfoVo().stream())
+                .map(bnf -> createModel(bnf, orderRequest.getOrdNo()))
+                .collect(Collectors.toList());
 
-        for(OrdBnfInfoVo bnfInfoVo : orderRequest.getOrdBnfInfoVo()){
-            OpOrdBnfInfoModel model = OpOrdBnfInfoModel.builder()
-                    .prmNo(bnfInfoVo.getPrmNo())
-                    .ordNo(orderRequest.getOrdNo())
-                    .cpnKndCd(bnfInfoVo.getCpnKndCd())
-                    .degrCcd(bnfInfoVo.getDegrCcd())
-                    .ordBnfAmt(bnfInfoVo.getDcPrice())
-                    .ordCnclBnfAmt(0L)
-                    .build();
-            ordBnfInfoModels.add(model);
-        }
-
+        orderRequest.getOrdBnfInfoVo().stream()
+                .map(bnf -> createModel(bnf, orderRequest.getOrdNo()))
+                .forEach(ordBnfInfoModels::add);
         return ordBnfInfoModels;
     }
 
+    private static OpOrdBnfInfoModel createModel(OrdBnfInfoVo bnfInfoVo, String ordNo){
+        return OpOrdBnfInfoModel.builder()
+                .prmNo(bnfInfoVo.getPrmNo())
+                .ordNo(ordNo)
+                .cpnKndCd(bnfInfoVo.getCpnKndCd())
+                .degrCcd(bnfInfoVo.getDegrCcd())
+                .ordBnfAmt(bnfInfoVo.getDcPrice())
+                .ordCnclBnfAmt(0L)
+                .build();
+    }
 }

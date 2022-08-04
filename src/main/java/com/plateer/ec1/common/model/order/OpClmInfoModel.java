@@ -3,6 +3,7 @@ package com.plateer.ec1.common.model.order;
 import com.plateer.ec1.order.vo.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Builder
 @ToString
 @Getter
+@Setter
 public class OpClmInfoModel {
     private String ordNo;
     private String ordGoodsNo;

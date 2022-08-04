@@ -1,7 +1,6 @@
 package com.plateer.ec1.order.service;
 
-import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
-import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
+import com.plateer.ec1.common.model.order.*;
 import com.plateer.ec1.order.enums.history.OPT0012Type;
 import com.plateer.ec1.order.mapper.data.OrderDataTrxMapper;
 import com.plateer.ec1.order.mapper.validator.OrderValidatiorMapper;
@@ -34,7 +33,7 @@ public class OrderContext {
     public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
-//        int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
+        int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
         OrderVo dto = OrderVo.builder().build();
         try {
             log.info("orderRequest : {}", orderRequest);
@@ -46,11 +45,18 @@ public class OrderContext {
             dto = dataStrategy.create(orderRequest, prd);
             dto.setProcCcd(OPT0012Type.FD);
 
-            log.info(dto.toString() + "값!!!!!!!!");
+            log.info("orderVo : {}", dto.toString());
 
             // 결제
 //            paymentCall(orderRequest);
 //            dto.setProcCcd(OPT0012Type.FP);
+//            if(orderRequest.getOrdPayInfoVo().getPaymentType().equals("POINT")){ // 포인트 결제
+//                dto.getOpOrdBaseModel().setOrdCmtDtime(LocalDateTime.now());
+//                for(OpClmInfoModel model : dto.getOpClmInfoModelList()){
+//                    model.setOrdPrgsScd("20");
+//                    model.setOrdClmCmtDtime(LocalDateTime.now());
+//                }
+//            }
 //
             // 데이터 등록
             insertOrderData(dto);
@@ -67,7 +73,7 @@ public class OrderContext {
             throw e;
         } finally {
             // 주문 모니터링 업데이트
-//            orderHistoryService.updateOrderHistory(historyNo, dto);
+            orderHistoryService.updateOrderHistory(historyNo, dto);
         }
         log.info("--------------OrderContext execute end");
     }
@@ -104,11 +110,8 @@ public class OrderContext {
         paymentService.approve(orderInfoVo, payInfo);
     }
 
-    private void amountValidation(String orderNo){
-        log.info("--------------amountValidation start");
-    }
-
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    // todo : 개선 필요 및 트랜잭션 오류 수정
     public void insertOrderData(OrderVo vo){
         log.info("--------------insertOrderData start");
         orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
@@ -129,5 +132,13 @@ public class OrderContext {
         }
 
         orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
+    }
+
+    private void amountValidation(OrderVo vo){
+        log.info("--------------금액 검증 로직 시작 ---------");
+        // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
+        // 주문상품금액 합산
+        // 혜택 합산
+        // 결제 금액이랑 같은지 비교
     }
 }

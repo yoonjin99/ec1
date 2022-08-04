@@ -27,9 +27,7 @@ public class OrderBenefitRelVo {
     private Long prmNo;
 
     public static List<OrderBenefitRelVo> createGeneralData(OrderRequestVo orderRequest){
-
         List<OrderBenefitRelVo> opOrdBnfRelInfoModelList = new ArrayList<>();
-
         Pair<Map<String, Long>, List<OrderBenefitRelVo>> prdCouponList = prdCoupon(orderRequest);
 
         opOrdBnfRelInfoModelList.addAll(prdCouponList.getSecond());

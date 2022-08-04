@@ -29,18 +29,22 @@ public class OpGoodsInfo {
 
     public static List<OpGoodsInfo> createGeneralData(OrderRequestVo orderRequest, List<OrderProductViewVo> orderProductView){
         return orderProductView.stream()
-                .map(viewVo -> OpGoodsInfo.builder()
-                                            .ordNo(orderRequest.getOrdNo())
-                                            .ordGoodsNo(viewVo.getGoodsNo())
-                                            .ordItemNo(viewVo.getItemNo())
-                                            .goodsNm(viewVo.getGoodsNm())
-                                            .itemNm(viewVo.getItemNm())
-                                            .goodsSellTpCd(viewVo.getGoodsTpCd())
-                                            .goodsDlvTpCd(viewVo.getPrgsStatCd())
-                                            .sellAmt(viewVo.getSalePrc())
-                                            .sellDcAmt(viewVo.getPrmPrc())
-                                            .build())
+                .map(viewVo -> createModel(orderRequest.getOrdNo(), viewVo))
                 .collect(Collectors.toList());
+    }
+
+    private static OpGoodsInfo createModel(String ordNo, OrderProductViewVo viewVo){
+        return OpGoodsInfo.builder()
+                .ordNo(ordNo)
+                .ordGoodsNo(viewVo.getGoodsNo())
+                .ordItemNo(viewVo.getItemNo())
+                .goodsNm(viewVo.getGoodsNm())
+                .itemNm(viewVo.getItemNm())
+                .goodsSellTpCd(viewVo.getGoodsTpCd())
+                .goodsDlvTpCd(viewVo.getPrgsStatCd())
+                .sellAmt(viewVo.getSalePrc())
+                .sellDcAmt(viewVo.getPrmPrc())
+                .build();
     }
 
 }
