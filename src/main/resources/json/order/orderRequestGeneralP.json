@@ -1,5 +1,5 @@
 {
-  "ordNo": "O202206178000001",
+  "ordNo": "O20220805162300",
   "ordBaseVo": {
     "mbrNo": "test01",
     "ordTpCd": "10",
@@ -18,15 +18,15 @@
       "ordItemNo": "1",
       "goodsSellTpCd": "10",
       "ordCnt": 2,
-      "prmPrc": 10000,
-      "salePrc": 12000,
+      "prmPrc": 29000,
+      "salePrc": 29900,
       "ordBnfInfoVo": [
         {
           "prmNo": "1",
           "cpnKndCd": "10",
           "cpnIssNo": "39",
           "degrCcd": 1,
-          "dcPrice": 1000
+          "dcPrice": 2000
         }
       ]
     },
@@ -35,8 +35,8 @@
       "ordItemNo": "1",
       "goodsSellTpCd": "10",
       "ordCnt": 3,
-      "prmPrc": 5000,
-      "salePrc": 5500,
+      "prmPrc": 10250,
+      "salePrc": 10900,
       "ordBnfInfoVo": []
     }
   ],
@@ -102,7 +102,7 @@
   ],
   "ordPayInfoVo": {
     "paymentType": "POINT",
-    "price": 500,
+    "price": 84950,
     "bankCode": "",
     "nmInput" : ""
   }

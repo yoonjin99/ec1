@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -51,7 +52,7 @@ public class InicisServiceImpl implements PaymentTypeService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
     public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
         log.info("-----------------Inicis approvePay start");
         AccountVo vo = createVo(orderInfoVo, payInfo);
@@ -61,7 +62,7 @@ public class InicisServiceImpl implements PaymentTypeService {
         if(Objects.requireNonNull(response).getResultCode().equals("00")){
             insertPayInfo(response, orderInfoVo);
         }
-        return new ApproveResVo();
+        return ApproveResVo.create(response.getPrice());
     }
 
     private AccountVo createVo(OrderInfoVo orderInfoVo, PayInfoVo payInfo){
@@ -157,8 +158,6 @@ public class InicisServiceImpl implements PaymentTypeService {
             payInfo.setNmInput(infoVo.getRfndAcctOwnNm());
             approvePay(orderInfoVo, payInfo);
         }
-//        paymentCancelRequestVo.setCancelPrice(opPayInfoModel.getPayAmt());
-//        inicisTrxMapper.updateCancelResult(paymentCancelRequestVo);
     }
 
     private OpPayInfoModel insertCancelData(CancelInfoVo infoVo, PaymentCancelRequestVo paymentCancelRequestVo){

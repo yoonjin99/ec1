@@ -10,13 +10,16 @@ import com.plateer.ec1.order.enums.OrderType;
 import com.plateer.ec1.order.vo.*;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.service.PaymentService;
+import com.plateer.ec1.payment.vo.ApproveResVo;
 import com.plateer.ec1.payment.vo.OrderInfoVo;
 import com.plateer.ec1.payment.vo.PayInfoVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +33,7 @@ public class OrderContext {
     private final OrderDataTrxMapper orderDataTrxMapper;
 
 
+    @Transactional(rollbackFor=Exception.class)
     public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
@@ -48,29 +52,29 @@ public class OrderContext {
             log.info("orderVo : {}", dto.toString());
 
             // 결제
-//            paymentCall(orderRequest);
-//            dto.setProcCcd(OPT0012Type.FP);
-//            if(orderRequest.getOrdPayInfoVo().getPaymentType().equals("POINT")){ // 포인트 결제
-//                dto.getOpOrdBaseModel().setOrdCmtDtime(LocalDateTime.now());
-//                for(OpClmInfoModel model : dto.getOpClmInfoModelList()){
-//                    model.setOrdPrgsScd("20");
-//                    model.setOrdClmCmtDtime(LocalDateTime.now());
-//                }
-//            }
-//
+            ApproveResVo approveResVo = paymentCall(orderRequest);
+            dto.setProcCcd(OPT0012Type.FP);
+
+            if(orderRequest.getOrdPayInfoVo().getPaymentType().equals("POINT")){ // 포인트 결제
+                dto.getOpOrdBaseModel().setOrdCmtDtime(LocalDateTime.now());
+                for(OpClmInfoModel model : dto.getOpClmInfoModelList()){
+                    model.setOrdPrgsScd("20");
+                    model.setOrdClmCmtDtime(LocalDateTime.now());
+                }
+            }
+
             // 데이터 등록
             insertOrderData(dto);
-//
-//            // 금액검증
-//            amountValidation(orderRequest.getOrdNo());
-//
-//            // 후처리
-//            afterStrategy.call(orderRequest, dto);
-//            dto.setProcCcd(OPT0012Type.S);
+
+            // 금액검증
+            amountValidation(approveResVo);
+
+            // 후처리
+            afterStrategy.call(orderRequest, dto);
+            dto.setProcCcd(OPT0012Type.S);
 
         }catch (Exception e){
             log.error( "error : " + e);
-            throw e;
         } finally {
             // 주문 모니터링 업데이트
             orderHistoryService.updateOrderHistory(historyNo, dto);
@@ -94,7 +98,7 @@ public class OrderContext {
         return validatiorMapper.selectGoodsBase(vo.getOrdGoodsInfoVo());
     }
 
-    private void paymentCall(OrderRequestVo orderRequest){
+    private ApproveResVo paymentCall(OrderRequestVo orderRequest){
         PayInfoVo payInfo = new PayInfoVo();
         payInfo.setPaymentType(PaymentType.valueOf(orderRequest.getOrdPayInfoVo().getPaymentType()));
         payInfo.setPrice(orderRequest.getOrdPayInfoVo().getPrice());
@@ -107,38 +111,40 @@ public class OrderContext {
         orderInfoVo.setBuyerEmail("dbswls1999@naver.com");
         orderInfoVo.setBuyerName(orderRequest.getOrdPayInfoVo().getNmInput());
 
-        paymentService.approve(orderInfoVo, payInfo);
+        return paymentService.approve(orderInfoVo, payInfo);
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    // todo : 개선 필요 및 트랜잭션 오류 수정
+    @Transactional(propagation= Propagation.REQUIRES_NEW, rollbackFor=Exception.class)
     public void insertOrderData(OrderVo vo){
-        log.info("--------------insertOrderData start");
-        orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
-        orderDataTrxMapper.insertOrderGoods(vo.getOpGoodsInfoList());
-        orderDataTrxMapper.insertOrderClaim(vo.getOpClmInfoModelList());
-        orderDataTrxMapper.insertOrderAreaInfo(vo.getOpDvpAreaInfo());
-        orderDataTrxMapper.insertOrderDvpInfo(vo.getOpDvpInfoList());
+        try {
+            log.info("--------------insertOrderData start");
+            orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
+            orderDataTrxMapper.insertOrderGoods(vo.getOpGoodsInfoList());
+            orderDataTrxMapper.insertOrderClaim(vo.getOpClmInfoModelList());
+            orderDataTrxMapper.insertOrderAreaInfo(vo.getOpDvpAreaInfo());
+            orderDataTrxMapper.insertOrderDvpInfo(vo.getOpDvpInfoList());
 
-        for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
-            String key = orderDataTrxMapper.insertOrderBnf(bnf);
+            for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
+                String key = orderDataTrxMapper.insertOrderBnf(bnf);
 
-            for(OrderBenefitRelVo rel : vo.getOpOrdBnfRelInfoModelList()){
-                if(bnf.getPrmNo().equals(rel.getPrmNo()) && bnf.getOrdNo().equals(rel.getOrdNo())){
-                    rel.setOrdBnfNo(key);
-                    orderDataTrxMapper.insertOrderBnfRel(rel);
+                for(OrderBenefitRelVo rel : vo.getOpOrdBnfRelInfoModelList()){
+                    if(bnf.getCpnIssNo().equals(rel.getCpnIssNo()) && bnf.getOrdNo().equals(rel.getOrdNo())){
+                        rel.setOrdBnfNo(key);
+                        orderDataTrxMapper.insertOrderBnfRel(rel);
+                    }
                 }
             }
+            orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
+        }catch (Exception e){
+            log.info(e + "exception >");
         }
-
-        orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
     }
 
-    private void amountValidation(OrderVo vo){
+    private void amountValidation(ApproveResVo vo){
         log.info("--------------금액 검증 로직 시작 ---------");
         // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
-        // 주문상품금액 합산
-        // 혜택 합산
-        // 결제 금액이랑 같은지 비교
+        if(!validatiorMapper.paymentCheck(vo.getPayPrice())){
+            throw new RuntimeException("금액 검증 실패");
+        }
     }
 }

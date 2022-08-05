@@ -24,61 +24,60 @@ public class OrderBenefitRelVo {
     private String aplyCnclCcd;
     private Long aplyAmt;
     private String clmNo;
-    private Long prmNo;
+    private Long cpnIssNo;
 
-    public static List<OrderBenefitRelVo> createGeneralData(OrderRequestVo orderRequest){
+    public static List<OrderBenefitRelVo> createGeneralData(OrdGoodsInfoVo goodsInfoVo, OrderRequestVo orderRequest, int cnt){
         List<OrderBenefitRelVo> opOrdBnfRelInfoModelList = new ArrayList<>();
-        Pair<Map<String, Long>, List<OrderBenefitRelVo>> prdCouponList = prdCoupon(orderRequest);
+        Pair<Map<String, Long>, List<OrderBenefitRelVo>> prdCouponList = prdCoupon(goodsInfoVo, orderRequest.getOrdNo(), cnt);
 
         opOrdBnfRelInfoModelList.addAll(prdCouponList.getSecond());
-        opOrdBnfRelInfoModelList.addAll(cartCoupon(orderRequest, prdCouponList.getFirst()));
+        opOrdBnfRelInfoModelList.addAll(cartCoupon(orderRequest, goodsInfoVo, prdCouponList.getFirst(), cnt));
 
         return opOrdBnfRelInfoModelList;
     }
 
-    private static Pair<Map<String, Long>,List<OrderBenefitRelVo>> prdCoupon(OrderRequestVo orderRequest){
+    private static Pair<Map<String, Long>,List<OrderBenefitRelVo>> prdCoupon(OrdGoodsInfoVo goodsInfoVo, String ordNo, int cnt){
         Map<String, Long> priceMap = new HashMap<>();
         List<OrderBenefitRelVo> opOrdBnfRelInfoModelList = new ArrayList<>();
 
-        for(OrdGoodsInfoVo goods : orderRequest.getOrdGoodsInfoVo()){ // 상품쿠폰
-            Long price = goods.getPrmPrc() > 0 ? goods.getPrmPrc() : goods.getSalePrc();
-            for(OrdBnfInfoVo bnf : goods.getOrdBnfInfoVo()){
-                opOrdBnfRelInfoModelList.add(builderData(orderRequest, bnf.getPrmNo() ,bnf.getDcPrice(), 1));
-                priceMap.put(goods.getOrdGoodsNo() + goods.getOrdItemNo(), price - bnf.getDcPrice()); // 상품결제금액
-            }
+        Long price = goodsInfoVo.getPrmPrc() > 0 ? goodsInfoVo.getPrmPrc() : goodsInfoVo.getSalePrc();
 
-            if(goods.getOrdBnfInfoVo().size() < 1){
-                priceMap.put(goods.getOrdGoodsNo() + goods.getOrdItemNo(), price); // 상품결제금액
-            }
+        priceMap.put(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo(), price);
+
+        for(OrdBnfInfoVo bnf : goodsInfoVo.getOrdBnfInfoVo()){
+            opOrdBnfRelInfoModelList.add(OrderBenefitRelVo.builderData(ordNo, bnf.getCpnIssNo() ,bnf.getDcPrice(), cnt));
+            priceMap.put(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo(), price - bnf.getDcPrice()); // 상품결제금액
         }
+
         return Pair.of(priceMap, opOrdBnfRelInfoModelList);
     }
 
-    private static List<OrderBenefitRelVo> cartCoupon(OrderRequestVo orderRequest, Map<String, Long> priceMap){
+    private static List<OrderBenefitRelVo> cartCoupon(OrderRequestVo orderRequest, OrdGoodsInfoVo goodsInfoVo, Map<String, Long> priceMap, int cnt){
         List<OrderBenefitRelVo> opOrdBnfRelInfoModelList = new ArrayList<>();
-        int ordSeq = 1;
-        for(OrdBnfInfoVo bnfInfoVo : orderRequest.getOrdBnfInfoVo()){ // 장바구니 쿠폰
+        for(OrdBnfInfoVo bnfInfoVo : orderRequest.getOrdBnfInfoVo()){
+            // 장바구니 쿠폰
             Long totalPrice = 0L;
-            for(GoodsInfoVo goodsInfoVo : bnfInfoVo.getBnfApplyGoods()){ // 장바구니 쿠폰에 해당하는 상품 금액 총합
-                if(priceMap.containsKey(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo())){
-                    totalPrice += priceMap.get(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo());
+            for(GoodsInfoVo bnfGoods : bnfInfoVo.getBnfApplyGoods()){ // 장바구니 쿠폰에 해당하는 상품 금액 총합
+                if(priceMap.containsKey(bnfGoods.getOrdGoodsNo() + bnfGoods.getOrdItemNo())){
+                    totalPrice += priceMap.get(bnfGoods.getOrdGoodsNo() + bnfGoods.getOrdItemNo());
                 }
             }
 
-            for(GoodsInfoVo goodsInfoVo : bnfInfoVo.getBnfApplyGoods()){
-                if(priceMap.containsKey(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo())){
-                    opOrdBnfRelInfoModelList.add(builderData(orderRequest, bnfInfoVo.getPrmNo(),bnfInfoVo.getDcPrice() * (priceMap.get(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo()) / totalPrice), ordSeq)); // 총혜택금액 * (상품결제금액 / 총결제금액)
+            for(GoodsInfoVo vo : bnfInfoVo.getBnfApplyGoods()){
+                if(vo.getOrdGoodsNo().equals(goodsInfoVo.getOrdGoodsNo()) && vo.getOrdItemNo().equals(goodsInfoVo.getOrdItemNo())){
+                    if(priceMap.containsKey(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo())){
+                        opOrdBnfRelInfoModelList.add(OrderBenefitRelVo.builderData(orderRequest.getOrdNo(), bnfInfoVo.getCpnIssNo(),bnfInfoVo.getDcPrice() * (priceMap.get(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo()) / totalPrice), cnt)); // 총혜택금액 * (상품결제금액 / 총결제금액)
+                    }
                 }
             }
-            ordSeq++;
         }
         return opOrdBnfRelInfoModelList;
     }
 
-    private static OrderBenefitRelVo builderData(OrderRequestVo vo,Long prmNo, Long price, int ordSeq){
+    public static OrderBenefitRelVo builderData(String ordNo, Long cpnIssNo, Long price, int ordSeq){
         return OrderBenefitRelVo.builder()
-                .ordNo(vo.getOrdNo())
-                .prmNo(prmNo)
+                .ordNo(ordNo)
+                .cpnIssNo(cpnIssNo)
                 .ordSeq(ordSeq)
                 .procSeq(1)
                 .aplyCnclCcd("10")

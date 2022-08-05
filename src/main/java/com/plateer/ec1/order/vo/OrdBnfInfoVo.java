@@ -8,7 +8,7 @@ import java.util.List;
 public class OrdBnfInfoVo {
     private Long prmNo;
     private String cpnKndCd;
-    private String cpnIssNo;
+    private Long cpnIssNo;
     private int degrCcd;
     private Long dcPrice;
     private List<GoodsInfoVo> bnfApplyGoods;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class JsonFileReader {
     public static String parseToJson(Object obj) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.writeValueAsString(obj);
+            return objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(obj);
         }catch (JsonProcessingException e){
             throw new RuntimeException(e.getMessage());
         }

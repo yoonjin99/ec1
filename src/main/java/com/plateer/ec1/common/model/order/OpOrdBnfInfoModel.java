@@ -46,6 +46,7 @@ public class OpOrdBnfInfoModel {
         return OpOrdBnfInfoModel.builder()
                 .prmNo(bnfInfoVo.getPrmNo())
                 .ordNo(ordNo)
+                .cpnIssNo(bnfInfoVo.getCpnIssNo())
                 .cpnKndCd(bnfInfoVo.getCpnKndCd())
                 .degrCcd(bnfInfoVo.getDegrCcd())
                 .ordBnfAmt(bnfInfoVo.getDcPrice())

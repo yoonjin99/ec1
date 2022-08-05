@@ -11,4 +11,5 @@ import java.util.List;
 @Mapper
 public interface OrderValidatiorMapper {
     List<OrderProductViewVo> selectGoodsBase(List<OrdGoodsInfoVo> ordGoodsInfoVo);
+    boolean paymentCheck(Long totalPirce);
 }

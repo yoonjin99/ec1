@@ -15,6 +15,7 @@ import com.plateer.ec1.promotion.vo.PointRequestVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -34,12 +35,12 @@ public class PayPointServiceImpl implements PaymentTypeService {
     public void validateAuth(PayInfoVo payInfo) {}
 
     @Override
-    @Transactional
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
     public ApproveResVo approvePay(OrderInfoVo orderInfoVo, PayInfoVo payInfo) {
         log.info("-----------------Point approvePay start");
         Long pntSeq = usePointCall(payInfo.getPrice());
         insertUsePoint(orderInfoVo, payInfo, pntSeq);
-        return new ApproveResVo();
+        return ApproveResVo.create(payInfo.getPrice());
     }
 
     private Long usePointCall(Long price){

@@ -15,6 +15,7 @@ public class OrderHistoryInsertVo {
     private String reqParam;
     private String ordNo;
     private String clmNo;
+    private String procCcd;
 
     public static OrderHistoryInsertVo createData(OrderRequestVo orderRequest) {
         return OrderHistoryInsertVo.builder()
