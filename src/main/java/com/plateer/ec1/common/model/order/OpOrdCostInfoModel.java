@@ -10,6 +10,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -33,27 +34,18 @@ public class OpOrdCostInfoModel {
     private String dvPlcTpCd;
     private Long cnclDvAmt;
 
-    public static List<OpOrdCostInfoModel> createGeneralData(OrderRequestVo orderRequest){
-        List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
-        for(OrdDvpAreaInfoVo ordDvpAreaInfoVo : orderRequest.getOrdDvpAreaInfoVo()){
-            for(OrdDvpInfo ordDvpInfo : ordDvpAreaInfoVo.getOrdDvpInfo()){
-                OpOrdCostInfoModel opOrdCostInfoModel = OpOrdCostInfoModel.builder()
-                        .ordNo(orderRequest.getOrdNo())
-                        .aplyCcd("10")
-                        .dvGrpNo(ordDvpInfo.getDvGrpNo())
-                        .dvAmtTpCd("10")
-                        .dvPlcTpCd("10")
-                        .dvAmtTpCd("10")
-                        .orgDvAmt(0L)
-                        .dvBnfAmt(0L)
-                        .aplyDvAmt(0L)
-                        .build();
-                opOrdCostInfoModelList.add(opOrdCostInfoModel);
-            }
-        }
-//    TODO : dvamttcCd - 배송비구분코드, dvPlcTpCd  -배송비정책구분코드 db에 추가 및 enum 생성
-
-        return opOrdCostInfoModelList;
+    public static OpOrdCostInfoModel createModel(String ordNo, int dvGrpNo){
+        return OpOrdCostInfoModel.builder()
+                .ordNo(ordNo)
+                .aplyCcd("10")
+                .dvGrpNo(dvGrpNo)
+                .dvAmtTpCd("10")
+                .dvPlcTpCd("10")
+                .dvAmtTpCd("10")
+                .orgDvAmt(0L)
+                .dvBnfAmt(0L)
+                .aplyDvAmt(0L)
+                .build();
     }
 
 }

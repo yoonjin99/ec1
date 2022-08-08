@@ -4,13 +4,17 @@ import com.plateer.ec1.order.vo.OrdDvpAreaInfoVo;
 import com.plateer.ec1.order.vo.OrdDvpInfo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 public class OpDvpInfo {
     private Integer dvGrpNo;
@@ -22,19 +26,12 @@ public class OpDvpInfo {
     private String sysModrId;
     private String dvMthdCd;
 
-    public static List<OpDvpInfo> createGeneralData(OrderRequestVo orderRequest){
-        List<OpDvpInfo> opDvpInfos = new ArrayList<>();
-        for(OrdDvpAreaInfoVo ordDvpAreaInfoVo : orderRequest.getOrdDvpAreaInfoVo()){
-            for(OrdDvpInfo ordDvpInfo : ordDvpAreaInfoVo.getOrdDvpInfo()){
-                OpDvpInfo opDvpInfo = OpDvpInfo.builder()
-                        .ordNo(orderRequest.getOrdNo())
-                        .dvGrpNo(ordDvpInfo.getDvGrpNo())
-                        .dvpSeq(ordDvpAreaInfoVo.getDvpSeq())
-                        .dvMthdCd("10")
-                        .build();
-                opDvpInfos.add(opDvpInfo);
-            }
-        }
-        return opDvpInfos;
+    public static OpDvpInfo createModel(String ordNo, int dvpGrpNo, int dvpSeq){
+        return OpDvpInfo.builder()
+                .ordNo(ordNo)
+                .dvGrpNo(dvpGrpNo)
+                .dvpSeq(dvpSeq)
+                .dvMthdCd("10")
+                .build();
     }
 }

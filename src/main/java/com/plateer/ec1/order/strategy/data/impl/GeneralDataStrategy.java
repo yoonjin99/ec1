@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.plateer.ec1.order.service.OrderModelCreators.*;
+
 @Slf4j
 @Component
 public class GeneralDataStrategy implements DataStrategy {
@@ -22,13 +24,13 @@ public class GeneralDataStrategy implements DataStrategy {
 
         return OrderVo.builder()
                 .opOrdBaseModel(OpOrdBaseModel.createGeneralData(orderRequest))
-                .opGoodsInfoList(OpGoodsInfo.createGeneralData(orderRequest,orderProductView))
+                .opGoodsInfoList(commonOpGoodsInfo(orderRequest,orderProductView))
                 .opClmInfoModelList(clmBnfRel.getFirst())
-                .opDvpAreaInfo(OpDvpAreaInfo.createGeneralData(orderRequest))
-                .opDvpInfoList(OpDvpInfo.createGeneralData(orderRequest))
-                .opOrdCostInfoModelList(OpOrdCostInfoModel.createGeneralData(orderRequest))
+                .opDvpAreaInfo(commonOpDvpAreaInfo(orderRequest))
+                .opDvpInfoList(commonOpDvpInfo(orderRequest))
+                .opOrdCostInfoModelList(commonOpOrdCostInfoModel(orderRequest))
                 .opOrdBnfRelInfoModelList(clmBnfRel.getSecond())
-                .opOrdBnfInfoModelList(OpOrdBnfInfoModel.createGeneralData(orderRequest))
+                .opOrdBnfInfoModelList(commonOpOrdBnfInfoModel(orderRequest))
                 .build();
     }
 
@@ -44,7 +46,9 @@ public class GeneralDataStrategy implements DataStrategy {
         int cnt = 1;
         for(OrdGoodsInfoVo goodsInfoVo : orderRequest.getOrdGoodsInfoVo()){
             int dvGrpNo = getDvpGrp(orderRequest).get(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo());
-            clmInfoModels.add(OpClmInfoModel.createModel(orderRequest.getOrdNo(), dvGrpNo, cnt, goodsInfoVo));
+            // 클레임
+            clmInfoModels.add(OpClmInfoModel.createModel(orderRequest.getOrdNo(), dvGrpNo, cnt, goodsInfoVo, goodsInfoVo.getOrdCnt()));
+            // 주문혜택관계
             opOrdBnfRelInfoModelList.addAll(OrderBenefitRelVo.createGeneralData(goodsInfoVo, orderRequest, cnt));
             cnt++;
         }

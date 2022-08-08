@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.plateer.ec1.order.service.OrderModelCreators.*;
+
 @Slf4j
 @Component
 public class EcouponDataStrategy implements DataStrategy {
@@ -23,13 +25,13 @@ public class EcouponDataStrategy implements DataStrategy {
 
         return OrderVo.builder()
                 .opOrdBaseModel(OpOrdBaseModel.createGeneralData(orderRequest))
-                .opGoodsInfoList(OpGoodsInfo.createGeneralData(orderRequest,orderProductView))
+                .opGoodsInfoList(commonOpGoodsInfo(orderRequest,orderProductView))
                 .opClmInfoModelList(clmBnfRel.getFirst())
-                .opDvpAreaInfo(OpDvpAreaInfo.createGeneralData(orderRequest))
-                .opDvpInfoList(OpDvpInfo.createGeneralData(orderRequest))
-                .opOrdCostInfoModelList(OpOrdCostInfoModel.createGeneralData(orderRequest))
+                .opDvpAreaInfo(commonOpDvpAreaInfo(orderRequest))
+                .opDvpInfoList(commonOpDvpInfo(orderRequest))
+                .opOrdCostInfoModelList(commonOpOrdCostInfoModel(orderRequest))
                 .opOrdBnfRelInfoModelList(clmBnfRel.getSecond())
-                .opOrdBnfInfoModelList(OpOrdBnfInfoModel.createGeneralData(orderRequest))
+                .opOrdBnfInfoModelList(commonOpOrdBnfInfoModel(orderRequest))
                 .build();
     }
 
@@ -46,7 +48,7 @@ public class EcouponDataStrategy implements DataStrategy {
         for(OrdGoodsInfoVo goodsInfoVo : orderRequest.getOrdGoodsInfoVo()){
             for(int i=0; i < goodsInfoVo.getOrdCnt(); i++){
                 int dvGrpNo = getDvpGrp(orderRequest).get(goodsInfoVo.getOrdGoodsNo() + goodsInfoVo.getOrdItemNo() + i);
-                clmInfoModels.add(OpClmInfoModel.createModel(orderRequest.getOrdNo(), dvGrpNo, cnt, goodsInfoVo));
+                clmInfoModels.add(OpClmInfoModel.createModel(orderRequest.getOrdNo(), dvGrpNo, cnt, goodsInfoVo, 1));
                 opOrdBnfRelInfoModelList.addAll(OrderBenefitRelVo.createGeneralData(goodsInfoVo, orderRequest, cnt));
                 cnt++;
             }

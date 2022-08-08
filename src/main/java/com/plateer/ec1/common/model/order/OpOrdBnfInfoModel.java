@@ -29,20 +29,7 @@ public class OpOrdBnfInfoModel {
     private String cpnKndCd;
     private String ordNo;
 
-    public static List<OpOrdBnfInfoModel> createGeneralData(OrderRequestVo orderRequest){
-        List<OpOrdBnfInfoModel> ordBnfInfoModels
-                = orderRequest.getOrdGoodsInfoVo().stream()
-                .flatMap(goods -> goods.getOrdBnfInfoVo().stream())
-                .map(bnf -> createModel(bnf, orderRequest.getOrdNo()))
-                .collect(Collectors.toList());
-
-        orderRequest.getOrdBnfInfoVo().stream()
-                .map(bnf -> createModel(bnf, orderRequest.getOrdNo()))
-                .forEach(ordBnfInfoModels::add);
-        return ordBnfInfoModels;
-    }
-
-    private static OpOrdBnfInfoModel createModel(OrdBnfInfoVo bnfInfoVo, String ordNo){
+    public static OpOrdBnfInfoModel createModel(OrdBnfInfoVo bnfInfoVo, String ordNo){
         return OpOrdBnfInfoModel.builder()
                 .prmNo(bnfInfoVo.getPrmNo())
                 .ordNo(ordNo)

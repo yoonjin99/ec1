@@ -5,11 +5,12 @@ import com.plateer.ec1.order.vo.OrdGoodsInfoVo;
 import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
 public interface OrderValidatiorMapper {
     List<OrderProductViewVo> selectGoodsBase(List<OrdGoodsInfoVo> ordGoodsInfoVo);
-    boolean paymentCheck(Long totalPirce);
+    boolean paymentCheck(@Param("ordNo") String ordNo);
 }

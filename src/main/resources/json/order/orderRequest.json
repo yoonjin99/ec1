@@ -1,5 +1,5 @@
 {
-  "ordNo": "O202206178000001",
+  "ordNo": "O20220808103004",
   "ordBaseVo": {
     "mbrNo": "test01",
     "ordTpCd": "10",
@@ -102,7 +102,7 @@
   ],
   "ordPayInfoVo": {
     "paymentType": "INICIS",
-    "price": 84950,
+    "price": 1000,
     "bankCode": "03",
     "nmInput" : "배윤진"
   }

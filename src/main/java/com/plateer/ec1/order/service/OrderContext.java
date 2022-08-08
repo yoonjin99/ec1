@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,8 +34,8 @@ public class OrderContext {
     private final OrderDataTrxMapper orderDataTrxMapper;
 
 
-    @Transactional(rollbackFor=Exception.class)
-    public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
+    @Transactional(rollbackFor={Exception.class, RuntimeException.class})
+    public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest) {
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
         int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
@@ -55,6 +56,7 @@ public class OrderContext {
             ApproveResVo approveResVo = paymentCall(orderRequest);
             dto.setProcCcd(OPT0012Type.FP);
 
+            // TODO : 개선하기
             if(orderRequest.getOrdPayInfoVo().getPaymentType().equals("POINT")){ // 포인트 결제
                 dto.getOpOrdBaseModel().setOrdCmtDtime(LocalDateTime.now());
                 for(OpClmInfoModel model : dto.getOpClmInfoModelList()){
@@ -67,14 +69,14 @@ public class OrderContext {
             insertOrderData(dto);
 
             // 금액검증
-            amountValidation(approveResVo);
+            amountValidation(orderRequest.getOrdNo());
 
             // 후처리
             afterStrategy.call(orderRequest, dto);
             dto.setProcCcd(OPT0012Type.S);
 
         }catch (Exception e){
-            log.error( "error : " + e);
+            e.printStackTrace();
         } finally {
             // 주문 모니터링 업데이트
             orderHistoryService.updateOrderHistory(historyNo, dto);
@@ -114,7 +116,6 @@ public class OrderContext {
         return paymentService.approve(orderInfoVo, payInfo);
     }
 
-    @Transactional(propagation= Propagation.REQUIRES_NEW, rollbackFor=Exception.class)
     public void insertOrderData(OrderVo vo){
         try {
             log.info("--------------insertOrderData start");
@@ -124,6 +125,7 @@ public class OrderContext {
             orderDataTrxMapper.insertOrderAreaInfo(vo.getOpDvpAreaInfo());
             orderDataTrxMapper.insertOrderDvpInfo(vo.getOpDvpInfoList());
 
+            // TODO : 개선하기
             for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
                 String key = orderDataTrxMapper.insertOrderBnf(bnf);
 
@@ -136,15 +138,15 @@ public class OrderContext {
             }
             orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
         }catch (Exception e){
-            log.info(e + "exception >");
+            e.printStackTrace();
         }
     }
 
-    private void amountValidation(ApproveResVo vo){
+    private void amountValidation(String ordNo) throws Exception{
         log.info("--------------금액 검증 로직 시작 ---------");
         // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
-        if(!validatiorMapper.paymentCheck(vo.getPayPrice())){
-            throw new RuntimeException("금액 검증 실패");
+        if(!validatiorMapper.paymentCheck(ordNo)){
+            throw new Exception("금액 검증 실패"); // 데이터 롤백 해줘야함
         }
     }
 }

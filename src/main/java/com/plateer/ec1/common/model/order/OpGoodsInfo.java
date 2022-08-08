@@ -1,16 +1,16 @@
 package com.plateer.ec1.common.model.order;
 
 import com.plateer.ec1.order.vo.OrderProductViewVo;
-import com.plateer.ec1.order.vo.OrderRequestVo;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 public class OpGoodsInfo {
     private String ordNo;
@@ -27,13 +27,7 @@ public class OpGoodsInfo {
     private LocalDateTime sysModDtime;
     private String sysModrId;
 
-    public static List<OpGoodsInfo> createGeneralData(OrderRequestVo orderRequest, List<OrderProductViewVo> orderProductView){
-        return orderProductView.stream()
-                .map(viewVo -> createModel(orderRequest.getOrdNo(), viewVo))
-                .collect(Collectors.toList());
-    }
-
-    private static OpGoodsInfo createModel(String ordNo, OrderProductViewVo viewVo){
+    public static OpGoodsInfo createModel(String ordNo, OrderProductViewVo viewVo){
         return OpGoodsInfo.builder()
                 .ordNo(ordNo)
                 .ordGoodsNo(viewVo.getGoodsNo())

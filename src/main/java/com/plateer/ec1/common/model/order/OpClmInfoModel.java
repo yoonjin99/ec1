@@ -7,10 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Builder
 @ToString
@@ -42,7 +39,7 @@ public class OpClmInfoModel {
     private String clmNo;
     private Integer orgProcSeq;
 
-    public static OpClmInfoModel createModel(String ordNo, int dvGrpNo, int cnt, OrdGoodsInfoVo viewVo){
+    public static OpClmInfoModel createModel(String ordNo, int dvGrpNo, int cnt, OrdGoodsInfoVo viewVo, int ordCnt){
         return OpClmInfoModel.builder()
                 .ordNo(ordNo)
                 .ordGoodsNo(viewVo.getOrdGoodsNo())
@@ -54,7 +51,7 @@ public class OpClmInfoModel {
                 .dvGrpNo(dvGrpNo)
                 .ordClmTpCd("O") // 주문클레임유형코드
                 .dvRvtCcd("10") //  배송회수구분코드
-                .ordCnt(viewVo.getOrdCnt()) // 주문수량
+                .ordCnt(ordCnt) // 주문수량
                 .ordAmt(viewVo.getPrmPrc() > 0 ? viewVo.getPrmPrc() : viewVo.getSalePrc()) // 주문금액
                 .ordPrgsScd("10") //주문진행상태코드
                 .ordClmReqDtime(LocalDateTime.now())
