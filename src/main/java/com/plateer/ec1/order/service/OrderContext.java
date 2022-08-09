@@ -29,13 +29,15 @@ import java.util.List;
 public class OrderContext {
     private final OrderHistoryService orderHistoryService;
     private final PaymentService paymentService;
+//    private final OrderTransactionalService orderTransactionalService;
+
+
 
     private final OrderValidatiorMapper validatiorMapper;
     private final OrderDataTrxMapper orderDataTrxMapper;
 
-
-    @Transactional(rollbackFor={Exception.class, RuntimeException.class})
-    public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest) {
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
         int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
@@ -77,6 +79,7 @@ public class OrderContext {
 
         }catch (Exception e){
             e.printStackTrace();
+            throw new RuntimeException();
         } finally {
             // 주문 모니터링 업데이트
             orderHistoryService.updateOrderHistory(historyNo, dto);
@@ -116,8 +119,8 @@ public class OrderContext {
         return paymentService.approve(orderInfoVo, payInfo);
     }
 
-    public void insertOrderData(OrderVo vo){
-        try {
+    public void insertOrderData(OrderVo vo) throws Exception{
+//        try {
             log.info("--------------insertOrderData start");
             orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
             orderDataTrxMapper.insertOrderGoods(vo.getOpGoodsInfoList());
@@ -137,15 +140,17 @@ public class OrderContext {
                 }
             }
             orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            throw new Exception("데이터 등록 오류 발생");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     private void amountValidation(String ordNo) throws Exception{
         log.info("--------------금액 검증 로직 시작 ---------");
         // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
         if(!validatiorMapper.paymentCheck(ordNo)){
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             throw new Exception("금액 검증 실패"); // 데이터 롤백 해줘야함
         }
     }

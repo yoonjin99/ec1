@@ -102,7 +102,7 @@
   ],
   "ordPayInfoVo": {
     "paymentType": "INICIS",
-    "price": 1000,
+    "price": 84950,
     "bankCode": "03",
     "nmInput" : "배윤진"
   }

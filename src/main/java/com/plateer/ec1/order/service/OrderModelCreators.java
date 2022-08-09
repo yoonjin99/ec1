@@ -41,10 +41,14 @@ public class OrderModelCreators {
     }
 
     public static List<OpOrdCostInfoModel> commonOpOrdCostInfoModel(OrderRequestVo orderRequest){
-        return orderRequest.getOrdDvpAreaInfoVo().stream()
-                .flatMap(ordDvpAreaInfoVo -> ordDvpAreaInfoVo.getOrdDvpInfo().stream())
-                .map(ordDvpInfo -> OpOrdCostInfoModel.createModel(orderRequest.getOrdNo(), ordDvpInfo.getDvGrpNo()))
-                .collect(Collectors.toList());
+        List<OpOrdCostInfoModel> list = new ArrayList<>();
+        for (OrdDvpAreaInfoVo ordDvpAreaInfoVo : orderRequest.getOrdDvpAreaInfoVo()) {
+            for (OrdDvpInfo ordDvpInfo : ordDvpAreaInfoVo.getOrdDvpInfo()) {
+                OpOrdCostInfoModel model = OpOrdCostInfoModel.createModel(orderRequest.getOrdNo(), ordDvpInfo.getDvGrpNo());
+                list.add(model);
+            }
+        }
+        return list;
     }
 
     public static List<OpOrdBnfInfoModel> commonOpOrdBnfInfoModel(OrderRequestVo orderRequest){

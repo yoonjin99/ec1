@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -20,7 +21,7 @@ public class OrderHistoryService {
 
     private final OrderHistoryTrxMapper orderHistoryTrxMapper;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int insertOrderHistory(OrderRequestVo orderRequest) {
         log.info("------------------insertOrderHistory start");
         try {
@@ -32,7 +33,7 @@ public class OrderHistoryService {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateOrderHistory(int historyNo, OrderVo orderDto){
         log.info("------------------updateOrderHistory start");
         try {

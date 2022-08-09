@@ -58,7 +58,7 @@ public class OrderBenefitRelVo {
         if(!Objects.isNull(orderRequest.getOrdBnfInfoVo())){
             for(OrdBnfInfoVo bnfInfoVo : orderRequest.getOrdBnfInfoVo()){
                 // 장바구니 쿠폰
-                Long totalPrice = 0L;
+                Long totalPrice = 0L; // todo :  long type x
                 for(GoodsInfoVo bnfGoods : bnfInfoVo.getBnfApplyGoods()){ // 장바구니 쿠폰에 해당하는 상품 금액 총합
                     if(priceMap.containsKey(bnfGoods.getOrdGoodsNo() + bnfGoods.getOrdItemNo())){
                         totalPrice += priceMap.get(bnfGoods.getOrdGoodsNo() + bnfGoods.getOrdItemNo());

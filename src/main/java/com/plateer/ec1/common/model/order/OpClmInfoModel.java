@@ -52,7 +52,7 @@ public class OpClmInfoModel {
                 .ordClmTpCd("O") // 주문클레임유형코드
                 .dvRvtCcd("10") //  배송회수구분코드
                 .ordCnt(ordCnt) // 주문수량
-                .ordAmt(viewVo.getPrmPrc() > 0 ? viewVo.getPrmPrc() : viewVo.getSalePrc()) // 주문금액
+                .ordAmt(viewVo.getPrmPrc() > 0 ? viewVo.getPrmPrc() : viewVo.getSalePrc()) // 주문금액 -> 수정하기
                 .ordPrgsScd("10") //주문진행상태코드
                 .ordClmReqDtime(LocalDateTime.now())
                 .ordClmAcptDtime(LocalDateTime.now())

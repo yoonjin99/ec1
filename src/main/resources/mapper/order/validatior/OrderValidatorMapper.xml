@@ -58,5 +58,5 @@
          ) payment ,  op_pay_info opi
     where
         opi.ord_no = #{ordNo}
-  </select>
+  </select><!-- 주문 테이블도 필요 -->
 </mapper>
