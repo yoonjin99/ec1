@@ -38,7 +38,7 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
             // 클레임 번호 채번
             claimNo = claimDataCreator.getClaimNo(claimDto);
             // 주문 모니터링 로그 등록
-            monitoringLog = insertLog(claimNo);
+            monitoringLog = insertLog(claimDto, claimDto.getClaimNo());
             // 유효성 검증
             doValidationProcess(claimDto);
 
@@ -49,10 +49,10 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
             // 데이터 저장
             claimDataCreator.saveClaimData(insertData, updateData);
         }catch (Exception e){
-            log.error("error : {}", e);
+            log.error("error : {}", e.getMessage());
         }finally {
             // 주문 모니터링 update
-            updateLog(monitoringLog, claimNo);
+            updateLog(monitoringLog, claimDto);
         }
     }
 }

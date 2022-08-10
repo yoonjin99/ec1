@@ -17,9 +17,10 @@ public class OrderHistoryInsertVo {
     private String clmNo;
     private String procCcd;
 
-    public static OrderHistoryInsertVo createData(OrderRequestVo orderRequest) {
+    public static <T> OrderHistoryInsertVo createData(T orderRequest, String ordNo, String clmNo) {
         return OrderHistoryInsertVo.builder()
-                .ordNo(orderRequest.getOrdNo())
+                .ordNo(ordNo)
+                .clmNo(clmNo)
                 .reqParam(JsonFileReader.parseToJson(orderRequest))
                 .build();
     }

@@ -22,10 +22,10 @@ public class OrderHistoryService {
     private final OrderHistoryTrxMapper orderHistoryTrxMapper;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public int insertOrderHistory(OrderRequestVo orderRequest) {
+    public <T> Long insertOrderHistory(T orderRequest, String ordNo, String clmNo) {
         log.info("------------------insertOrderHistory start");
         try {
-            OrderHistoryInsertVo vo = OrderHistoryInsertVo.createData(orderRequest);
+            OrderHistoryInsertVo vo = OrderHistoryInsertVo.createData(orderRequest, ordNo, clmNo);
             return orderHistoryTrxMapper.insertHistoryLog(vo);
         }catch (Exception e){
             log.info("orderHistory insert error : {}", e.getMessage());
@@ -34,7 +34,7 @@ public class OrderHistoryService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateOrderHistory(int historyNo, OrderVo orderDto){
+    public <T> void updateOrderHistory(Long historyNo, T orderDto){
         log.info("------------------updateOrderHistory start");
         try {
             OrderHistoryUpdateVo vo = OrderHistoryUpdateVo.createData(historyNo, orderDto);

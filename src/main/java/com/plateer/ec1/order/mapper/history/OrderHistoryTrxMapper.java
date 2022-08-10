@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface OrderHistoryTrxMapper {
-    int insertHistoryLog(OrderHistoryInsertVo insertVo);
-    int updateHistoryLog(OrderHistoryUpdateVo updateVo);
+    Long insertHistoryLog(OrderHistoryInsertVo insertVo);
+    Long updateHistoryLog(OrderHistoryUpdateVo updateVo);
 }

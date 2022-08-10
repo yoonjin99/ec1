@@ -43,7 +43,7 @@ public class CompleteProcessor extends ClaimProcessor {
 //             클레임 번호 채번
             claimNo = claimDataCreator.getClaimNo(claimDto);
 //             주문 모니터링 로그 등록
-            monitoringLog = insertLog(claimNo);
+            monitoringLog = insertLog(claimDto, claimDto.getClaimNo());
 //             유효성 검증
             doValidationProcess(claimDto);
 //             update 대상 데이터 생성
@@ -57,7 +57,7 @@ public class CompleteProcessor extends ClaimProcessor {
             log.error( "error : " + e);
         }finally {
             // 주문 모니터링 update
-            updateLog(monitoringLog, claimNo);
+            updateLog(monitoringLog, claimDto);
         }
     }
 

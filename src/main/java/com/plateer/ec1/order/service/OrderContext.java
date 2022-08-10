@@ -29,9 +29,6 @@ import java.util.List;
 public class OrderContext {
     private final OrderHistoryService orderHistoryService;
     private final PaymentService paymentService;
-//    private final OrderTransactionalService orderTransactionalService;
-
-
 
     private final OrderValidatiorMapper validatiorMapper;
     private final OrderDataTrxMapper orderDataTrxMapper;
@@ -40,7 +37,7 @@ public class OrderContext {
     public void execute(DataStrategy dataStrategy, AfterStrategy afterStrategy, OrderRequestVo orderRequest){
         log.info("--------------OrderContext execute start");
         // 주문 모니터링 등록
-        int historyNo = orderHistoryService.insertOrderHistory(orderRequest);
+        Long historyNo = orderHistoryService.insertOrderHistory(orderRequest, orderRequest.getOrdNo(), "");
         OrderVo dto = OrderVo.builder().build();
         try {
             log.info("orderRequest : {}", orderRequest);

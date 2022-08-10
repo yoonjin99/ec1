@@ -11,14 +11,13 @@ import lombok.ToString;
 @ToString
 public class OrderHistoryUpdateVo {
     private String insData;
-    private int logSeq;
+    private Long logSeq;
     private String procCcd;
 
-    public static OrderHistoryUpdateVo createData(int historyNo, OrderVo orderVo){
+    public static <T> OrderHistoryUpdateVo createData(Long historyNo, T orderVo){
         return OrderHistoryUpdateVo.builder()
                 .insData(JsonFileReader.parseToJson(orderVo))
                 .logSeq(historyNo)
-                .procCcd(orderVo.getProcCcd().name())
                 .build();
     }
 }
