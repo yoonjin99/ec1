@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class CancelDataCreatorImpl extends ClaimDataCreator {
     @Override
     public CreatorType getType() {
-        return CreatorType.CANCEL;
+        return CreatorType.C;
     }
 
     @Override

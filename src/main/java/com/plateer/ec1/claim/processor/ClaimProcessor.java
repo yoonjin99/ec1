@@ -1,5 +1,6 @@
 package com.plateer.ec1.claim.processor;
 
+import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.ProcessorType;
 import com.plateer.ec1.claim.validator.ClaimValidator;
 import com.plateer.ec1.claim.vo.ClaimVo;
@@ -19,7 +20,7 @@ public abstract class ClaimProcessor {
 
     protected void doValidationProcess(ClaimVo claimDto){
         log.info("-------------- ClaimProcessor 유효성 검사 실행 --------------------");
-        claimValidator.verifyAmount(claimDto);
+        claimValidator.isValidStatus(claimDto);
     }
 
     protected Long insertLog(ClaimVo claimVo, String clmNo){

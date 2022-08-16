@@ -1,0 +1,73 @@
+{
+  "althOrrN": "O20220812601088",
+  "althOrrSmnSn": 1,
+  "typeCd": "C",
+  "althClamN": "",
+  "althClamNcd": "02",
+  "althClamRnTt": "",
+  "orrClaimInfoList": [
+    {
+      "id": 1,
+      "thumbSrc": "https://allthatcdn.aws.shinhancard.com/product_image/product/31/91/02/PD200029131_1_064.jpg",
+      "thumbAlt": "매일두유 99.89/식이섬유/초코 190ml*24팩중 택1",
+      "brandName": "",
+      "title": "매일두유 99.89/식이섬유/초코 190ml*24팩중 택1",
+      "originalPrice": 11800,
+      "salePrice": 11800,
+      "option": [
+        "1개",
+        "99.89190ml*24팩"
+      ],
+      "count": 1,
+      "althOrrN": "O20220812601088",
+      "althOrrPdSn": 1,
+      "althOrrPsSn": 1,
+      "althPdN": "PD200029131",
+      "althFimN": 21339,
+      "prdRsultAmt": 11210,
+      "prdFvrAt": 590,
+      "ordFvrAt": 0,
+      "althOrrCn": 1,
+      "althOrrAt": 11800,
+      "althOrrSmnSn": 1,
+      "althPdLiTcd": "10",
+      "althPdOptSn": 1,
+      "selected": true
+    }
+  ],
+  "isAllGrpChecked": false,
+  "cuzChrg": "C",
+  "deliveryInfo": [
+    {
+      "auditInfo": null,
+      "mask": false,
+      "loginId": null,
+      "althOrrAtN": "E20220812614102",
+      "althOrrN": "O20220812601088",
+      "althOrrSmnSn": 1,
+      "althEfCeCcd": "CNCL",
+      "althClamN": null,
+      "althSmnEpTcd": "01",
+      "althSmnAt": 0,
+      "althEfSmnAt": 0,
+      "althMveOrrEpN": "E20220812614101",
+      "althOrSmnAt": 0,
+      "althSmnBnfAt": 0,
+      "althSmnAtFreNcd": null,
+      "althSmnEpCcd": "3",
+      "althSmnTaAt": 0,
+      "althSmnEpBlwAt": 0,
+      "althSmnEpAbAt": 0,
+      "althNiRgkId": "pc",
+      "niRgDt": "2022-08-12 09:38",
+      "althLsAltKId": "pc",
+      "lsAltDt": "2022-08-12 09:38"
+    }
+  ],
+  "prodAmt": 11800,
+  "rfndAmt": 11210,
+  "smnGrpN": "",
+  "dlvAmt": 0,
+  "boniDlvAmt": 0,
+  "althPdLiTcd": "10"
+}

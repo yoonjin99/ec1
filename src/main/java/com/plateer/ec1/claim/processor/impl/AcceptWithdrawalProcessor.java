@@ -10,6 +10,7 @@ import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.order.service.OrderHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -28,6 +29,7 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
     }
 
     @Override
+    @Transactional
     public void doProcess(ClaimVo claimDto) {
         log.info("----------AcceptWithdrawalProcessor doProcess 실행--------");
         Long monitoringLog = null;
@@ -49,7 +51,7 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
             // 데이터 저장
             claimDataCreator.saveClaimData(insertData, updateData);
         }catch (Exception e){
-            log.error("error : {}", e.getMessage());
+            e.printStackTrace();
         }finally {
             // 주문 모니터링 update
             updateLog(monitoringLog, claimDto);

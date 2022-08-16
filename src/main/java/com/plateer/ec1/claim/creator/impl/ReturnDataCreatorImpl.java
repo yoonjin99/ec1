@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ReturnDataCreatorImpl extends ClaimDataCreator {
     @Override
     public CreatorType getType() {
-        return CreatorType.RETURN;
+        return CreatorType.R;
     }
 
     @Override

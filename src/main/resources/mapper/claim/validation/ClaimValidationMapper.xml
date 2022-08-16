@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.ec1.order.mapper.history.OrderHistoryTrxMapper">
+  <select id="statusCheck" parameterType="com.plateer.ec1.claim.vo.OrdClaimInfoVo" resultType="com.plateer.ec1.claim.vo.ClaimStatusVo">
+    with goods_info as (
+    <foreach collection="list" item="item" separator="union all">
+      select #{item.ordGoodsNo} as goods_no
+          , #{item.ordItemNo} as item_no
+          , #{item.ordNo} as ord_no
+          , #{item.dvGrpNo} as dv_grp_no
+    </foreach>
+    )
+    select
+        oci.ord_prgs_scd
+        , oci.ord_no
+        , oci.ord_goods_no
+        , oci.ord_item_no
+        , oci.dv_grp_no
+    from
+        op_clm_info oci
+        inner join goods_info gi
+        on oci.ord_no = gi.ord_no
+        and oci.ord_goods_no = gi.goods_no
+        and oci.ord_item_no = gi.item_no
+        and oci.dv_grp_no = gi.dv_grp_no
+    where
+        oci.ord_clm_tp_cd = 'O'
+        and oci.cncl_cnt <![CDATA[ < ]]> 1
+        and oci.rtgs_cnt <![CDATA[ < ]]> 1
+  </select>
+</mapper>
