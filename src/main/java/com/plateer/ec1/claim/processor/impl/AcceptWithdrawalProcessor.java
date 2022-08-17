@@ -38,13 +38,13 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
             // 데이터 생성
             ClaimDataCreator claimDataCreator = dataCreatorFactory.getClaimDataCreator(claimDto.getClaimType().getCreatorType());
             // 클레임 번호 채번
-            claimNo = claimDataCreator.getClaimNo(claimDto);
+            claimNo = claimDataCreator.getClaimNo();
             // 주문 모니터링 로그 등록
             monitoringLog = insertLog(claimDto, claimDto.getClaimNo());
             // 유효성 검증
             doValidationProcess(claimDto);
 
-            ClaimProcessVo vo = claimDataCreator.getClaimData(); // 원주문 데이터 select
+            ClaimProcessVo vo = claimDataCreator.getClaimData(claimDto.getOrdNo()); // 원주문 데이터 select
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(vo);
             // update 대상 데이터 생성
             ClaimProcessVo updateData = claimDataCreator.getUpdateClaimData(vo);

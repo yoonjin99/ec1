@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ClaimProcessVo {
     private String clmNo;
-    private Long trNo;
+    private String ordNo;
 
     private List<OpClmInfoModel> opClmInfoModels;
     private List<OpOrdCostInfoModel> opOrdCostInfoModels;

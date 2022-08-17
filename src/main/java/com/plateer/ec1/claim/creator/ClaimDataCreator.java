@@ -2,12 +2,11 @@ package com.plateer.ec1.claim.creator;
 
 import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
+import com.plateer.ec1.claim.mapper.validation.ClaimValidationMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.claim.vo.ClaimVo;
-import com.plateer.ec1.common.model.order.OpClmInfoModel;
-import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
-import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
-import com.plateer.ec1.common.model.order.OpOrdCostInfoModel;
+import com.plateer.ec1.common.model.order.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +14,20 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public abstract class ClaimDataCreator {
+
+    private final ClaimValidationMapper claimValidationMapper;
 
     public abstract CreatorType getType();
 
-    public String getClaimNo(ClaimVo claimDto){
-        return "C1";
+    public String getClaimNo(){
+        return claimValidationMapper.selectClaimNo();
     }
 
-    public ClaimProcessVo getClaimData(){
-        ClaimProcessVo claimProcessVo = new ClaimProcessVo();
+    public ClaimProcessVo getClaimData(String ordNo){
         // 원주문 데이터 select
-        return claimProcessVo;
+        return claimValidationMapper.selectClaimProcess(ordNo);
     }
 
     public ClaimProcessVo getInsertClaimData(ClaimProcessVo claimProcessVo){
@@ -46,17 +47,31 @@ public abstract class ClaimDataCreator {
     public abstract ClaimProcessVo updateDataCreator(ClaimProcessVo vo);
     public abstract ClaimProcessVo insertDataCreator(ClaimProcessVo vo);
 
+    public abstract List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo);
 
-//    public abstract List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo);
-//
-//    public abstract List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo);
-//
-//    public abstract List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo);
+    public abstract List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo);
 
-//    public abstract List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo);
-//
-//    public abstract List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo);
-//
-//    public abstract List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo);
+    public abstract List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo);
+
+    public abstract List<OpPayInfoModel> updatePayInfo(ClaimProcessVo vo);
+
+    public abstract List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo);
+
+    public abstract List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo);
+
+    public abstract List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo);
+
+    public abstract List<OpPayInfoModel> insertPayInfo(ClaimProcessVo vo);
+
+    // insert table
+    // 1. 클레임
+    // 2. 주문비용
+    // 3. 주문혜택관계
+    // 4. 주문결제
+
+    // update table
+    // 1. 클레임
+    // 2. 혜택
+    // 3. 결제
 
 }

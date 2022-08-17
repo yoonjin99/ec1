@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.plateer.ec1.order.mapper.history.OrderHistoryTrxMapper">
+<mapper namespace="com.plateer.ec1.claim.mapper.validation.ClaimValidationMapper">
   <select id="statusCheck" parameterType="com.plateer.ec1.claim.vo.OrdClaimInfoVo" resultType="com.plateer.ec1.claim.vo.ClaimStatusVo">
     with goods_info as (
     <foreach collection="list" item="item" separator="union all">
@@ -29,5 +29,43 @@
         oci.ord_clm_tp_cd = 'O'
         and oci.cncl_cnt <![CDATA[ < ]]> 1
         and oci.rtgs_cnt <![CDATA[ < ]]> 1
+  </select>
+
+  <select id="selectClaimNo" resultType="string">
+    select nextval('clm_no') as claim_no
+  </select>
+
+  <resultMap id="orgClaimInfo" type="com.plateer.ec1.claim.vo.ClaimProcessVo">
+    <result column="ord_no" property="ordNo"/>
+    <collection property="opClmInfoModels" ofType="com.plateer.ec1.common.model.order.OpClmInfoModel" autoMapping="true"/>
+    <collection property="opOrdCostInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" autoMapping="true"/>
+    <collection property="opOrdBnfRelInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" autoMapping="true"/>
+    <collection property="opOrdBnfInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" autoMapping="true"/>
+    <collection property="opPayInfoModels" ofType="com.plateer.ec1.common.model.order.OpPayInfoModel" autoMapping="true"/>
+  </resultMap>
+
+  <select id="selectClaimProcess" resultMap="orgClaimInfo" parameterType="string">
+    select
+        #{ordNo} as ord_no,
+        oci.*,
+        ooci.*,
+        oobri.*,
+        oobi.*,
+        ooci.*,
+        opi.*
+    from
+        op_clm_info oci
+        left outer join op_ord_bnf_rel_info oobri
+        on oci.ord_no = oobri.ord_no
+        inner join op_ord_bnf_info oobi
+        on oobri.ord_bnf_no = oobi.ord_bnf_no
+        inner join op_ord_cost_info ooci
+        on oci.ord_no = ooci.ord_no , op_pay_info opi
+    where
+        oci.ord_no = #{ordNo}
+        and oci.ord_clm_tp_cd = 'O'
+        and oci.cncl_cnt = 0
+        and oci.rtgs_cnt = 0
+        and opi.ord_no = #{ordNo}
   </select>
 </mapper>

@@ -32,7 +32,6 @@ public class CompleteProcessor extends ClaimProcessor {
     }
 
     @Override
-    @EventListener
     public void doProcess(ClaimVo claimDto) {
         log.info("----------CompleteProcessor doProcess 실행--------");
         Long monitoringLog = null;
@@ -41,16 +40,16 @@ public class CompleteProcessor extends ClaimProcessor {
             // 데이터 생성
             ClaimDataCreator claimDataCreator = dataCreatorFactory.getClaimDataCreator(claimDto.getClaimType().getCreatorType());
 //             클레임 번호 채번
-            claimNo = claimDataCreator.getClaimNo(claimDto);
+            claimNo = claimDataCreator.getClaimNo();
 //             주문 모니터링 로그 등록
             monitoringLog = insertLog(claimDto, claimDto.getClaimNo());
 //             유효성 검증
             doValidationProcess(claimDto);
 //             update 대상 데이터 생성
-            ClaimProcessVo vo = claimDataCreator.getClaimData(); // 원주문 데이터 select
+            ClaimProcessVo vo = claimDataCreator.getClaimData(claimDto.getOrdNo()); // 원주문 데이터 select
             ClaimProcessVo updateData = claimDataCreator.getUpdateClaimData(vo);
 //             데이터 저장
-            claimDataCreator.saveClaimData(null, updateData);
+            claimDataCreator.saveClaimData(null, updateData);  // 상품 개수만큼 반복해야함.
 //             결제 IF 호출
             ifCallHelper.callPaymentIF();
         }catch (Exception e){
