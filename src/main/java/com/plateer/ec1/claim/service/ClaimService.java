@@ -15,6 +15,6 @@ public class ClaimService {
 
     public void claim(ClaimVo claimDto){
         log.info("-------------ClaimService claim method 실행--------------" + claimDto.getClaimType().name() + "----" + claimDto);
-        processorFactory.getClaimProcessor(claimDto.getClaimType().getProcessor()).doProcess(claimDto);
+        processorFactory.getClaimProcessor(claimDto.getClaimType().getProcessorType()).doProcess(claimDto);
     }
 }

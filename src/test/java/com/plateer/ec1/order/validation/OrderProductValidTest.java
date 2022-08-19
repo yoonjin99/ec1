@@ -1,4 +1,4 @@
-//package com.plateer.ec1.order.validation;
+//package com.plateer.ec1.order.ValidationTest;
 //
 //import com.fasterxml.jackson.core.type.TypeReference;
 //import com.plateer.ec1.common.model.product.PrGoodsBaseModel;

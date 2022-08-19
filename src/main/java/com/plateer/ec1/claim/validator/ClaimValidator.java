@@ -2,7 +2,7 @@ package com.plateer.ec1.claim.validator;
 
 import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
-import com.plateer.ec1.claim.mapper.validation.ClaimValidationMapper;
+import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.vo.ClaimStatusVo;
 import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.common.code.order.OPT0004Type;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClaimValidator {
 
-    private final ClaimValidationMapper claimValidationMapper;
+    private final ClaimMapper claimValidationMapper;
 
     public void isValidStatus(ClaimVo claimDto) {
 

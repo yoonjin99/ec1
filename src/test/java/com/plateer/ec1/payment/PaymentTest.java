@@ -55,7 +55,7 @@ public class PaymentTest {
     @Test
     @DisplayName("가상계좌 유효성 검증 테스트")
     void inicisValidationTest() throws JsonProcessingException {
-        log.info("validation test -------------------");
+        log.info("ValidationTest test -------------------");
         Throwable exception = Assertions.assertThrows(Exception.class, () ->{
             PayInfoVo info = new PayInfoVo();
             info.setNmInput("배윤진");

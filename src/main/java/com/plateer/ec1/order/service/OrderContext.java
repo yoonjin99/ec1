@@ -117,7 +117,7 @@ public class OrderContext {
     }
 
     public void insertOrderData(OrderVo vo) throws Exception{
-//        try {
+        try {
             log.info("--------------insertOrderData start");
             orderDataTrxMapper.insertOrderBase(vo.getOpOrdBaseModel());
             orderDataTrxMapper.insertOrderGoods(vo.getOpGoodsInfoList());
@@ -137,18 +137,17 @@ public class OrderContext {
                 }
             }
             orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
-            throw new Exception("데이터 등록 오류 발생");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+//            throw new Exception("데이터 등록 오류 발생");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void amountValidation(String ordNo) throws Exception{
         log.info("--------------금액 검증 로직 시작 ---------");
         // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
         if(!validatiorMapper.paymentCheck(ordNo)){
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            throw new Exception("금액 검증 실패"); // 데이터 롤백 해줘야함
+            throw new Exception("금액 검증 실패");
         }
     }
 }

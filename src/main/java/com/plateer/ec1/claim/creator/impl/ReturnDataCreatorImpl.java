@@ -2,7 +2,8 @@ package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
 import com.plateer.ec1.claim.enums.CreatorType;
-import com.plateer.ec1.claim.mapper.validation.ClaimValidationMapper;
+import com.plateer.ec1.claim.mapper.ClaimMapper;
+import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.common.model.order.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,9 @@ import java.util.List;
 @Slf4j
 @Component
 public class ReturnDataCreatorImpl extends ClaimDataCreator {
-    public ReturnDataCreatorImpl(ClaimValidationMapper claimValidationMapper) {
-        super(claimValidationMapper);
+
+    public ReturnDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
+        super(claimMapper, claimTrxMapper);
     }
 
     @Override
@@ -50,11 +52,6 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
     }
 
     @Override
-    public List<OpPayInfoModel> updatePayInfo(ClaimProcessVo vo) {
-        return null;
-    }
-
-    @Override
     public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo) {
         return null;
     }
@@ -68,12 +65,6 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
     public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo) {
         return null;
     }
-
-    @Override
-    public List<OpPayInfoModel> insertPayInfo(ClaimProcessVo vo) {
-        return null;
-    }
-
 }
 
 // ecoupon과 일반주문이 데이터가 같음

@@ -7,5 +7,5 @@ public class OrdClaimInfoVo {
     private String ordGoodsNo;
     private String ordItemNo;
     private String ordNo;
-    private String dvGrpNo;
+    private Integer dvGrpNo;
 }

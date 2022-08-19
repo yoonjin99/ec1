@@ -5,6 +5,7 @@ import com.plateer.ec1.order.vo.OrdGoodsInfoVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @Builder
 @ToString
 public class OpOrdBnfInfoModel {

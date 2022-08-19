@@ -1,10 +1,9 @@
 package com.plateer.ec1.claim.creator;
 
-import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
-import com.plateer.ec1.claim.mapper.validation.ClaimValidationMapper;
+import com.plateer.ec1.claim.mapper.ClaimMapper;
+import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
-import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.common.model.order.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class ClaimDataCreator {
 
-    private final ClaimValidationMapper claimValidationMapper;
+    private final ClaimMapper claimMapper;
+    private final ClaimTrxMapper claimTrxMapper;
+
 
     public abstract CreatorType getType();
 
     public String getClaimNo(){
-        return claimValidationMapper.selectClaimNo();
+        return claimMapper.selectClaimNo();
     }
 
     public ClaimProcessVo getClaimData(String ordNo){
-        // 원주문 데이터 select
-        return claimValidationMapper.selectClaimProcess(ordNo);
+        return claimMapper.selectClaimProcess(ordNo);
     }
 
     public ClaimProcessVo getInsertClaimData(ClaimProcessVo claimProcessVo){
@@ -42,6 +42,11 @@ public abstract class ClaimDataCreator {
 
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
+        claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
+        claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
+        claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
+        claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
+        claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
     }
 
     public abstract ClaimProcessVo updateDataCreator(ClaimProcessVo vo);
@@ -53,25 +58,9 @@ public abstract class ClaimDataCreator {
 
     public abstract List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo);
 
-    public abstract List<OpPayInfoModel> updatePayInfo(ClaimProcessVo vo);
-
     public abstract List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo);
 
     public abstract List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo);
 
     public abstract List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo);
-
-    public abstract List<OpPayInfoModel> insertPayInfo(ClaimProcessVo vo);
-
-    // insert table
-    // 1. 클레임
-    // 2. 주문비용
-    // 3. 주문혜택관계
-    // 4. 주문결제
-
-    // update table
-    // 1. 클레임
-    // 2. 혜택
-    // 3. 결제
-
 }

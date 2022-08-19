@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plateer.ec1.claim.mapper.ClaimTrxMapper">
+  <insert id="insertOpClmInfo" parameterType="list">
+    insert into op_clm_info(ord_no
+                          , ord_goods_no
+                          , ord_item_no
+                          , ord_seq
+                          , proc_seq
+                          , ord_clm_tp_cd
+                          , ord_prgs_scd
+                          , dv_rvt_ccd
+                          , ord_amt
+                          , ord_cnt
+                          , cncl_cnt
+                          , rtgs_cnt
+                          , dv_grp_no
+                          , ord_clm_req_dtime
+                          , ord_clm_acpt_dtime
+                          , ord_clm_cmt_dtime
+                          , clm_rsn_cd
+                          , clm_dtl_rsn_tt
+                          , sys_reg_dtime
+                          , sys_regr_id
+                          , sys_mod_dtime
+                          , sys_modr_id
+                          , clm_no
+                          , org_proc_seq)
+    values
+        <foreach collection="list" item="t" separator=",">
+          (
+           #{t.ordNo}
+           , #{t.ordGoodsNo}
+           , #{t.ordItemNo}
+           , #{t.ordSeq}
+           , #{t.procSeq}
+           , #{t.ordClmTpCd}
+           , #{t.ordPrgsScd}
+           , #{t.dvRvtCcd}
+           , #{t.ordAmt}
+           , #{t.ordCnt}
+           , #{t.cnclCnt}
+           , #{t.rtgsCnt}
+           , #{t.dvGrpNo}
+           , #{t.ordClmReqDtime}
+           , #{t.ordClmAcptDtime}
+           , #{t.ordClmCmtDtime}
+           , #{t.clmRsnCd}
+           , #{t.clmDtlRsnTt}
+           , now()
+           , 'admin'
+           , now()
+           , 'admin'
+           , #{t.clmNo}
+           , #{t.orgProcSeq}
+          )
+        </foreach>
+  </insert>
+
+  <insert id="insertOpOrdBnfRelInfo" parameterType="list">
+    insert into op_ord_bnf_rel_info
+    (
+        ord_no
+      , ord_seq
+      , proc_seq
+      , ord_bnf_no
+      , aply_cncl_ccd
+      , aply_amt
+      , clm_no
+      , sys_reg_dtime
+      , sys_regr_id
+      , sys_mod_dtime
+      , sys_modr_id
+    )
+    VALUES
+    <foreach collection="list" item="t" separator=",">
+      (
+      #{t.ordNo}
+      , #{t.ordSeq}
+      , #{t.procSeq}
+      , #{t.ordBnfNo}
+      , #{t.aplyCnclCcd}
+      , #{t.aplyAmt}
+      , #{t.clmNo}
+      , now()
+      , 'admin'
+      , now()
+      , 'admin'
+      )
+    </foreach>
+  </insert>
+
+  <insert id="insertOpOrdCostInfo" parameterType="list">
+    insert into op_ord_cost_info(
+      dv_grp_no
+      , aply_ccd
+      , org_ord_cst_no
+      , clm_no
+      , ord_no
+      , dv_amt_tp_cd
+      , aply_dv_amt
+      , imtn_rsn_ccd
+      , sys_reg_dtime
+      , sys_regr_id
+      , sys_mod_dtime
+      , sys_modr_id
+      , dv_plc_tp_cd
+      , cncl_dv_amt
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      #{item.dvGrpNo}
+      , #{item.aplyCcd}
+      , #{item.orgOrdCstNo}
+      , #{item.clmNo}
+      , #{item.ordNo}
+      , #{item.dvAmtTpCd}
+      , #{item.aplyDvAmt}
+      , #{item.imtnRsnCcd}
+      , now()
+      , 'admin'
+      , now()
+      , 'admin'
+      , #{item.dvPlcTpCd}
+      , #{item.cnclDvAmt}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateOpClmInfo" parameterType="list">
+    <foreach collection="list" item="t" separator=",">
+      update
+        op_clm_info
+      set
+        cncl_cnt = #{t.cnclCnt}
+      where
+        ord_no = #{t.ordNo}
+        and ord_goods_no = #{t.ordGoodsNo}
+        and ord_item_no = #{t.ordItemNo}
+        and ord_clm_tp_cd = 'C'
+    </foreach>
+  </update>
+
+  <update id="updateOpOrdBnfInfo" parameterType="list">
+    <foreach collection="list" item="t" separator=",">
+      update
+        op_ord_bnf_info
+      set
+        ord_cncl_bnf_amt = #{t.ordCnclBnfAmt}
+      where
+        ord_bnf_no = #{t.ordBnfNo}
+    </foreach>
+  </update>
+
+<!--  <update id="updateOpOrdCostInfo" parameterType="list">-->
+
+<!--  </update>-->
+</mapper>
