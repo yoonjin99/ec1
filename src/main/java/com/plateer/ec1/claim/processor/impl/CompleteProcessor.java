@@ -40,6 +40,7 @@ public class CompleteProcessor extends ClaimProcessor {
             ClaimDataCreator claimDataCreator = dataCreatorFactory.getClaimDataCreator(claimDto.getClaimType().getCreatorType());
 //             클레임 번호 채번
             claimNo = claimDataCreator.getClaimNo();
+            claimDto.setClaimNo(claimNo);
 //             주문 모니터링 로그 등록
             monitoringLog = insertLog(claimDto, claimDto.getClaimNo());
 //             유효성 검증
@@ -49,9 +50,9 @@ public class CompleteProcessor extends ClaimProcessor {
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(orgData);
             ClaimProcessVo updateData = claimDataCreator.getUpdateClaimData(orgData);
 //             데이터 저장
-//            claimDataCreator.saveClaimData(insertData, updateData);
+            claimDataCreator.saveClaimData(insertData, updateData);
 //             결제 IF 호출
-//            ifCallHelper.callPaymentIF(); // 결제 취소 인터페이스 호출하는 부분
+            ifCallHelper.callPaymentIF(claimDto, claimNo); // 결제 취소 인터페이스 호출하는 부분
         }catch (Exception e){
             e.printStackTrace();
         }finally {

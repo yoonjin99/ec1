@@ -131,7 +131,7 @@
   </insert>
 
   <update id="updateOpClmInfo" parameterType="list">
-    <foreach collection="list" item="t" separator=",">
+    <foreach collection="list" item="t" separator=";">
       update
         op_clm_info
       set
@@ -145,7 +145,7 @@
   </update>
 
   <update id="updateOpOrdBnfInfo" parameterType="list">
-    <foreach collection="list" item="t" separator=",">
+    <foreach collection="list" item="t" separator=";">
       update
         op_ord_bnf_info
       set

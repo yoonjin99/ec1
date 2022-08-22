@@ -50,7 +50,23 @@ public class CreatorTest {
     @Test
     @DisplayName("부분 취소 데이터 생성 테스트")
     void partCancelTest(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.GCC);
+        vo.setOrdNo("O20220808103004");
 
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
     }
 
 }

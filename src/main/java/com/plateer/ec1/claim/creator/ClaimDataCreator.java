@@ -8,6 +8,7 @@ import com.plateer.ec1.common.model.order.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public abstract class ClaimDataCreator {
     public abstract CreatorType getType();
 
     public String getClaimNo(){
-        return claimMapper.selectClaimNo();
+        return "C" + claimMapper.selectClaimNo();
     }
 
     public ClaimProcessVo getClaimData(String ordNo){
@@ -40,13 +41,14 @@ public abstract class ClaimDataCreator {
         return updateDataCreator(claimProcessVo);
     }
 
+    @Transactional
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
-        claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
-        claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
-        claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
-        claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
-        claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
+        if(!insertData.getOpClmInfoModels().isEmpty()) claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
+        if(!insertData.getOpOrdBnfRelInfoModels().isEmpty()) claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
+        if(!insertData.getOpOrdCostInfoModels().isEmpty()) claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
+        if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
+        if(!updateData.getOpOrdBnfInfoModels().isEmpty()) claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
     }
 
     public abstract ClaimProcessVo updateDataCreator(ClaimProcessVo vo);

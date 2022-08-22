@@ -37,8 +37,8 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         List<OpClmInfoModel> clm = updateOrderClaim(vo);
 
         ClaimProcessVo processVo = new ClaimProcessVo();
-        processVo.getOpOrdBnfInfoModels().addAll(bnf);
-        processVo.getOpClmInfoModels().addAll(clm);
+        processVo.setOpOrdBnfInfoModels(bnf);
+        processVo.setOpClmInfoModels(clm);
         return processVo;
     }
 
@@ -50,9 +50,10 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         List<OpOrdCostInfoModel> cost = insertOrderCost(vo);
 
         ClaimProcessVo processVo = new ClaimProcessVo();
-        processVo.getOpClmInfoModels().addAll(clm);
-        processVo.getOpOrdBnfRelInfoModels().addAll(rel);
-        processVo.getOpOrdCostInfoModels().addAll(cost);
+        processVo.setOpClmInfoModels(clm);
+        processVo.setOpOrdBnfRelInfoModels(rel);
+        processVo.setOpOrdCostInfoModels(cost);
+
         return processVo;
     }
 
@@ -105,6 +106,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
                 opClmInfoModelList.add(clm);
             }
         }
+
         return opClmInfoModelList;
     }
 

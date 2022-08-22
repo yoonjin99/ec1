@@ -37,35 +37,55 @@
 
   <resultMap id="orgClaimInfo" type="com.plateer.ec1.claim.vo.ClaimProcessVo">
     <result column="ord_no" property="ordNo"/>
-    <collection property="opClmInfoModels" ofType="com.plateer.ec1.common.model.order.OpClmInfoModel" autoMapping="true"/>
-    <collection property="opOrdCostInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" autoMapping="true"/>
-    <collection property="opOrdBnfRelInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" autoMapping="true"/>
-    <collection property="opOrdBnfInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" autoMapping="true"/>
-    <collection property="opPayInfoModels" ofType="com.plateer.ec1.common.model.order.OpPayInfoModel" autoMapping="true"/>
+    <collection property="opClmInfoModels" ofType="com.plateer.ec1.common.model.order.OpClmInfoModel" autoMapping="true" javaType="List" select="selectClaimInfo" column="ordNo=ord_no"/>
+    <collection property="opOrdCostInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" autoMapping="true" javaType="List" select="selectCostInfo" column="ordNo=ord_no"/>
+    <collection property="opOrdBnfRelInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" autoMapping="true" javaType="List" select="selectOrdBnfRelInfo" column="ordNo=ord_no"/>
+    <collection property="opOrdBnfInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" autoMapping="true" javaType="List" select="selectBnfInfo" column="ordNo=ord_no"/>
   </resultMap>
+
+  <select id="selectBnfInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+    select
+        oobi.*
+        , '' as ord_no
+    from op_ord_bnf_info oobi
+        inner join op_ord_bnf_rel_info oobri
+        on oobi.ord_bnf_no = oobri.ord_bnf_no
+        and oobri.ord_no = #{ordNo}
+  </select>
+
+  <select id="selectCostInfo" resultType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+    select
+        ooci.*
+    from op_ord_cost_info ooci
+    where
+        ooci.ord_no = #{ordNo}
+        and ooci.aply_ccd = '10';
+  </select>
+
+  <select id="selectOrdBnfRelInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+    select
+        oobri.*
+    from
+      op_ord_bnf_rel_info oobri
+    where
+        oobri.ord_no = #{ordNo}
+        and aply_cncl_ccd = '10'
+  </select>
+
+  <select id="selectClaimInfo" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    select
+        oci.*
+    from
+        op_clm_info oci
+    where
+      oci.ord_no = #{ordNo}
+      and oci.ord_clm_tp_cd = 'O'
+      and oci.cncl_cnt = 0
+      and oci.rtgs_cnt = 0
+  </select>
 
   <select id="selectClaimProcess" resultMap="orgClaimInfo" parameterType="string">
     select
-        #{ordNo} as ord_no,
-        oci.*,
-        ooci.*,
-        oobri.*,
-        oobi.*,
-        ooci.*,
-        opi.*
-    from
-        op_clm_info oci
-        left outer join op_ord_bnf_rel_info oobri
-        on oci.ord_no = oobri.ord_no
-        inner join op_ord_bnf_info oobi
-        on oobri.ord_bnf_no = oobi.ord_bnf_no
-        inner join op_ord_cost_info ooci
-        on oci.ord_no = ooci.ord_no , op_pay_info opi
-    where
-        oci.ord_no = #{ordNo}
-        and oci.ord_clm_tp_cd = 'O'
-        and oci.cncl_cnt = 0
-        and oci.rtgs_cnt = 0
-        and opi.ord_no = #{ordNo}
+        #{ordNo} as ord_no
   </select>
 </mapper>

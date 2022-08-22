@@ -14,5 +14,4 @@ public class ClaimProcessVo {
     private List<OpOrdCostInfoModel> opOrdCostInfoModels;
     private List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels;
     private List<OpOrdBnfInfoModel> opOrdBnfInfoModels;
-    private List<OpPayInfoModel> opPayInfoModels;
 }
