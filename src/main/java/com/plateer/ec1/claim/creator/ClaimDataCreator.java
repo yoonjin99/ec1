@@ -1,5 +1,6 @@
 package com.plateer.ec1.claim.creator;
 
+import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -27,13 +29,25 @@ public abstract class ClaimDataCreator {
         return "C" + claimMapper.selectClaimNo();
     }
 
-    public ClaimProcessVo getClaimData(String ordNo){
+    public ClaimProcessVo getClaimData(String ordNo, String type){
+        if(type.equals(ClaimType.MCC.name())){
+            return getEcouponCancelData(ordNo);
+        }
         return claimMapper.selectClaimProcess(ordNo);
+    }
+
+    public ClaimProcessVo getEcouponCancelData(String ordNo){
+        OpClmInfoModel clm =  claimMapper.selectClaim(ordNo);
+        ClaimProcessVo vo = new ClaimProcessVo();
+        List<OpClmInfoModel> clmInfoModels = new ArrayList<>();
+        clmInfoModels.add(clm);
+        vo.setOpClmInfoModels(clmInfoModels);
+        return vo;
     }
 
     public ClaimProcessVo getInsertClaimData(ClaimProcessVo claimProcessVo){
         log.info("클레임 등록할 데이터 가져오기------");
-        return insertDataCreator(claimProcessVo);
+        return claimProcessVo.getClaimType().equals(ClaimType.MCC.name()) ? null : insertDataCreator(claimProcessVo);
     }
 
     public ClaimProcessVo getUpdateClaimData(ClaimProcessVo claimProcessVo){

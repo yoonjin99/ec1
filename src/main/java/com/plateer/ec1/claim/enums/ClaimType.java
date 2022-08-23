@@ -11,6 +11,7 @@ import java.util.List;
 public enum ClaimType {
     GCC("GCC",ProcessorType.COMPLETE, CreatorType.C, Arrays.asList(),Arrays.asList(), true, ""),
     MCA("MCA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.C, Arrays.asList(),Arrays.asList(), true, ""),
+    MCC("MCC",ProcessorType.COMPLETE, CreatorType.C, Arrays.asList(),Arrays.asList(), true, ""),
     RA("RA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.R, Arrays.asList(),Arrays.asList(), true, ""),
     RW("RW",ProcessorType.ACCEPTWITHDRWAL, CreatorType.R, Arrays.asList(),Arrays.asList(), true, ""),
     EA("EA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.EX, Arrays.asList(),Arrays.asList(), true, "");

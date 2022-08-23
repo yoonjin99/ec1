@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plateer.ec1.order.mapper.history.OrderHistoryTrxMapper">
-  <insert id="insertHistoryLog" parameterType="com.plateer.ec1.order.vo.history.OrderHistoryInsertVo">
+  <select id="insertHistoryLog" parameterType="com.plateer.ec1.order.vo.history.OrderHistoryInsertVo" resultType="string">
     insert into
       op_ord_clm_mnt_log(
          ord_no
@@ -25,7 +25,8 @@
       , now()
       , 'admin'
     )
-  </insert>
+    returning log_seq
+  </select>
 
   <update id="updateHistoryLog" parameterType="com.plateer.ec1.order.vo.history.OrderHistoryUpdateVo">
     update

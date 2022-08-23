@@ -1,6 +1,7 @@
 package com.plateer.ec1.claim.processor.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
+import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.ProcessorType;
 import com.plateer.ec1.claim.factory.DataCreatorFactory;
 import com.plateer.ec1.claim.processor.ClaimProcessor;
@@ -8,6 +9,8 @@ import com.plateer.ec1.claim.processor.IFCallHelper;
 import com.plateer.ec1.claim.validator.ClaimValidator;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.claim.vo.ClaimVo;
+import com.plateer.ec1.common.code.order.OPT0004Type;
+import com.plateer.ec1.common.model.order.OpClmInfoModel;
 import com.plateer.ec1.order.service.OrderHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -46,19 +49,31 @@ public class CompleteProcessor extends ClaimProcessor {
 //             유효성 검증
             doValidationProcess(claimDto);
 //             update 대상 데이터 생성
-            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto.getOrdNo());
+            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto.getOrdNo(),claimDto.getClaimType().name());
+            orgData.setClaimType(claimDto.getClaimType().name());
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(orgData);
             ClaimProcessVo updateData = claimDataCreator.getUpdateClaimData(orgData);
 //             데이터 저장
             claimDataCreator.saveClaimData(insertData, updateData);
+
+            orgData.setCnclPrice(claimDto.getCnclPrice());
+            ifCallHelper.callCreatePaymentIF(orgData);
+//             금액검증
+            validPayment();
+//             쿠폰복원 IF 호출
+            ifCallHelper.callRestoreCouponIF(orgData);
 //             결제 IF 호출
-            ifCallHelper.callPaymentIF(claimDto, claimNo); // 결제 취소 인터페이스 호출하는 부분
+            ifCallHelper.callPaymentIF(orgData);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
             // 주문 모니터링 update
             updateLog(monitoringLog, claimDto);
         }
+    }
+
+    private void validPayment(){
+        // sum(주문상품금액) + sum(배송비용) - sum(혜택) = sum(결제)
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class CreatorTest {
+public class GeneralTest {
 
     @Autowired
     ClaimService service;

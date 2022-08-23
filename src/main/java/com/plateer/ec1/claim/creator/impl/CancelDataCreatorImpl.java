@@ -1,6 +1,7 @@
 package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
+import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
@@ -81,9 +82,16 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         // 취소수량
         List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpClmInfoModels())){
-            for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
-                clm.setCnclCnt(clm.getOrdCnt());
-                opClmInfoModelList.add(clm);
+            if(vo.getClaimType().equals(ClaimType.MCC.name())){
+                for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
+                    clm.setOrdPrgsScd(OPT0004Type.CS.getType());
+                    opClmInfoModelList.add(clm);
+                }
+            }else{
+                for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
+                    clm.setCnclCnt(clm.getOrdCnt());
+                    opClmInfoModelList.add(clm);
+                }
             }
         }
         return opClmInfoModelList;
@@ -96,7 +104,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         if(!Objects.isNull(vo.getOpClmInfoModels())){
             for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
                 clm.setOrdClmTpCd(OPT0003Type.C.name());
-                clm.setOrdPrgsScd(OPT0004Type.CS.getType()); // todo : 모바일쿠폰일때는 취소접수로 바뀌도록 개발해야함.
+                clm.setOrdPrgsScd(vo.getClaimType().equals(ClaimType.MCA.name()) ? OPT0004Type.CA.getType() : OPT0004Type.CS.getType());
                 clm.setOrgProcSeq(clm.getProcSeq());
                 clm.setProcSeq(clm.getProcSeq() +  1);
                 clm.setClmNo(vo.getClmNo());

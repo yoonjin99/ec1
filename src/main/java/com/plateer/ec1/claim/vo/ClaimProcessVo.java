@@ -9,9 +9,12 @@ import java.util.List;
 public class ClaimProcessVo {
     private String clmNo;
     private String ordNo;
+    private String claimType;
+    private Long cnclPrice;
 
     private List<OpClmInfoModel> opClmInfoModels;
     private List<OpOrdCostInfoModel> opOrdCostInfoModels;
     private List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels;
     private List<OpOrdBnfInfoModel> opOrdBnfInfoModels;
+    private OpPayInfoModel opPayInfoModel;
 }

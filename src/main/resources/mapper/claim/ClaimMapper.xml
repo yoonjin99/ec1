@@ -88,4 +88,15 @@
     select
         #{ordNo} as ord_no
   </select>
+
+  <select id="selectClaim" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel" parameterType="string">
+    select
+        oci.*
+    from
+        op_clm_info oci
+    where
+        oci.ord_no = #{ordNo}
+        and oci.ord_clm_tp_cd = '20'
+        and oci.ord_prgs_scd = '20'
+  </select>
 </mapper>
