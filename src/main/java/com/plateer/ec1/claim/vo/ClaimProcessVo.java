@@ -17,4 +17,11 @@ public class ClaimProcessVo {
     private List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels;
     private List<OpOrdBnfInfoModel> opOrdBnfInfoModels;
     private OpPayInfoModel opPayInfoModel;
+
+    public ClaimProcessVo createVo(ClaimVo claimDto, ClaimProcessVo vo){
+        vo.setClaimType(claimDto.getClaimType().name());
+        vo.setClmNo(claimDto.getClaimNo());
+        vo.setCnclPrice(claimDto.getCnclPrice());
+        return vo;
+    }
 }

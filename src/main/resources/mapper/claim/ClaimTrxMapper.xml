@@ -41,7 +41,7 @@
            , #{t.dvRvtCcd}
            , #{t.ordAmt}
            , #{t.ordCnt}
-           , #{t.cnclCnt}
+           , 0
            , #{t.rtgsCnt}
            , #{t.dvGrpNo}
            , #{t.ordClmReqDtime}
@@ -136,6 +136,20 @@
         op_clm_info
       set
         cncl_cnt = #{t.cnclCnt}
+      where
+        ord_no = #{t.ordNo}
+        and ord_goods_no = #{t.ordGoodsNo}
+        and ord_item_no = #{t.ordItemNo}
+        and ord_clm_tp_cd = 'O'
+    </foreach>
+  </update>
+
+  <update id="updateEcouponComplete" parameterType="list">
+    <foreach collection="list" item="t" separator=";">
+      update
+        op_clm_info
+      set
+        ord_prgs_scd = #{t.ordPrgsScd}
       where
         ord_no = #{t.ordNo}
         and ord_goods_no = #{t.ordGoodsNo}

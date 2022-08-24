@@ -23,8 +23,15 @@ public abstract class ClaimProcessor {
         claimValidator.isValidStatus(claimDto);
     }
 
-    protected Long insertLog(ClaimVo claimVo, String clmNo){
-        return orderHistoryService.insertOrderHistory(claimVo, "" ,clmNo);
+    protected void amountValid(String clmNo) throws Exception {
+        log.info("금액검증 실행");
+        if(!claimValidator.isValidAmount(clmNo)){
+            throw new Exception("금액 검증 실패");
+        }
+    }
+
+    protected Long insertLog(ClaimVo claimVo){
+        return orderHistoryService.insertOrderHistory(claimVo, "" ,claimVo.getClaimNo());
     }
 
     protected void updateLog(Long monitoringLog, ClaimVo vo){

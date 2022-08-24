@@ -42,11 +42,8 @@ public class ClaimValidator {
         }
     }
 
-    public void isValidAmount(ClaimVo claimDto){
-
+    public boolean isValidAmount(String clmNo){
+        return claimValidationMapper.amountValid(clmNo);
     }
 
-    public void verifyAmount(ClaimVo claimDto){
-
-    }
 }

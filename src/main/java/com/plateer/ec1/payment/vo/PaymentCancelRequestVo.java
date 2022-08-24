@@ -1,5 +1,6 @@
 package com.plateer.ec1.payment.vo;
 
+import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.payment.enums.PaymentType;
 import lombok.Data;
 
@@ -16,4 +17,14 @@ public class PaymentCancelRequestVo {
     @NotNull
     private Long cancelPrice;
     private Long payAmt;
+
+    public PaymentCancelRequestVo createRequestVo(ClaimProcessVo claimProcessVo){
+        PaymentCancelRequestVo cancelRequestVo = new PaymentCancelRequestVo();
+        cancelRequestVo.setPaymentType(claimProcessVo.getOpPayInfoModel().getPayCcd().equals(PaymentType.INICIS.getType()) ? PaymentType.INICIS : PaymentType.POINT);
+        cancelRequestVo.setOrdNo(claimProcessVo.getOrdNo());
+        cancelRequestVo.setClmNo(claimProcessVo.getClmNo());
+        cancelRequestVo.setCancelPrice(claimProcessVo.getCnclPrice());
+
+        return cancelRequestVo;
+    }
 }

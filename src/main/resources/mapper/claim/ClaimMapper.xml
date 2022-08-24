@@ -96,7 +96,35 @@
         op_clm_info oci
     where
         oci.ord_no = #{ordNo}
-        and oci.ord_clm_tp_cd = '20'
+        and oci.ord_clm_tp_cd = 'C'
         and oci.ord_prgs_scd = '20'
+  </select>
+
+  <select id="amountValid" resultType="boolean" parameterType="string">
+    select case when (total_price + total_dvp_price - coalesce(total_bnf_price, 0) = opi.pay_amt) then 1
+                else 0 end payment_check
+    from (
+           select sum(price.ord_price) as total_price,
+                  sum(price.dvp_price) as total_dvp_price,
+                  sum(bnf_price) as total_bnf_price
+           from
+             (select
+                oci.ord_amt * oci.ord_cnt as ord_price,
+                ooci.aply_dv_amt as dvp_price,
+                oobri.aply_amt as bnf_price
+              from
+                op_clm_info oci
+                  inner join op_ord_cost_info ooci
+                             on oci.ord_no = ooci.ord_no
+                               and oci.dv_grp_no = ooci.dv_grp_no
+                  left outer join op_ord_bnf_rel_info oobri
+                                  on oci.ord_no = oobri.ord_no
+                                    and oci.ord_seq = oobri.ord_seq
+              where
+                oci.ord_no = #{clmNo}
+             ) price
+         ) payment ,  op_pay_info opi
+    where
+      opi.ord_no = #{clmNo}
   </select>
 </mapper>

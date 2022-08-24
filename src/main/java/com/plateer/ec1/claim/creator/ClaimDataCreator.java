@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -37,11 +38,9 @@ public abstract class ClaimDataCreator {
     }
 
     public ClaimProcessVo getEcouponCancelData(String ordNo){
-        OpClmInfoModel clm =  claimMapper.selectClaim(ordNo);
+        List<OpClmInfoModel> clm =  claimMapper.selectClaim(ordNo);
         ClaimProcessVo vo = new ClaimProcessVo();
-        List<OpClmInfoModel> clmInfoModels = new ArrayList<>();
-        clmInfoModels.add(clm);
-        vo.setOpClmInfoModels(clmInfoModels);
+        vo.setOpClmInfoModels(clm);
         return vo;
     }
 
@@ -58,11 +57,20 @@ public abstract class ClaimDataCreator {
     @Transactional
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
-        if(!insertData.getOpClmInfoModels().isEmpty()) claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
-        if(!insertData.getOpOrdBnfRelInfoModels().isEmpty()) claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
-        if(!insertData.getOpOrdCostInfoModels().isEmpty()) claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
-        if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
-        if(!updateData.getOpOrdBnfInfoModels().isEmpty()) claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
+        if(!Objects.isNull(insertData)){
+            if(!insertData.getOpClmInfoModels().isEmpty()) claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
+            if(!insertData.getOpOrdBnfRelInfoModels().isEmpty()) claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
+            if(!insertData.getOpOrdCostInfoModels().isEmpty()) claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
+        }
+        if(!Objects.isNull(updateData)){
+            if(!updateData.getClaimType().equals(ClaimType.MCC.name())){
+                if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
+            }else{
+                if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateEcouponComplete(updateData.getOpClmInfoModels());
+            }
+
+            if(!updateData.getOpOrdBnfInfoModels().isEmpty()) claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
+        }
     }
 
     public abstract ClaimProcessVo updateDataCreator(ClaimProcessVo vo);

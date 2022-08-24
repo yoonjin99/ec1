@@ -13,5 +13,6 @@ public interface ClaimMapper {
     List<ClaimStatusVo> statusCheck(List<OrdClaimInfoVo> ordClaimInfoVoList);
     String selectClaimNo();
     ClaimProcessVo selectClaimProcess(String ordNo);
-    OpClmInfoModel selectClaim(String ordNo);
+    List<OpClmInfoModel> selectClaim(String ordNo);
+    boolean amountValid(String clmNo);
 }

@@ -40,6 +40,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         ClaimProcessVo processVo = new ClaimProcessVo();
         processVo.setOpOrdBnfInfoModels(bnf);
         processVo.setOpClmInfoModels(clm);
+        processVo.setClaimType(vo.getClaimType());
         return processVo;
     }
 
@@ -54,6 +55,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         processVo.setOpClmInfoModels(clm);
         processVo.setOpOrdBnfRelInfoModels(rel);
         processVo.setOpOrdCostInfoModels(cost);
+        processVo.setClaimType(vo.getClaimType());
 
         return processVo;
     }
@@ -125,8 +127,9 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         if(!Objects.isNull(vo.getOpOrdBnfRelInfoModels())){
             for(OpOrdBnfRelInfoModel rel : vo.getOpOrdBnfRelInfoModels()){
                 rel.setProcSeq(rel.getProcSeq() + 1);
-                rel.setAplyCnclCcd(OPT0005Type.CNCL.name());
+                rel.setAplyCnclCcd(OPT0005Type.CNCL.getType());
                 rel.setClmNo(vo.getClmNo());
+                opOrdBnfRelInfoModelList.add(rel);
             }
         }
         return opOrdBnfRelInfoModelList;
@@ -139,7 +142,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
                 cost.setClmNo(vo.getClmNo());
-                cost.setAplyCcd(OPT0005Type.CNCL.name());
+                cost.setAplyCcd(OPT0005Type.CNCL.getType());
                 cost.setOrgOrdCstNo(cost.getOrdCstNo());
                 opOrdCostInfoModelList.add(cost);
             }

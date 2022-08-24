@@ -1,5 +1,6 @@
 package com.plateer.ec1.promotion.vo;
 
+import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,4 +24,13 @@ public class CouponRequestVo {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime sysModDtime;
     private String sysModrId = "admin";
+
+    public CouponRequestVo createRequest(OpOrdBnfInfoModel bnf){
+        CouponRequestVo couponRequestVo = new CouponRequestVo();
+        couponRequestVo.setCpnIssNo(bnf.getCpnIssNo());
+        couponRequestVo.setPrmNo(bnf.getPrmNo());
+        couponRequestVo.setMbrNo("test01");
+
+        return couponRequestVo;
+    }
 }

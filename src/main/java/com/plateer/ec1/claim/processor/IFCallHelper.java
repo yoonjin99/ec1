@@ -26,30 +26,17 @@ public class IFCallHelper {
     public void callRestoreCouponIF(ClaimProcessVo orgData){
         log.info("----------IFCallHelper 쿠폰복원 실행--------");
         for(OpOrdBnfInfoModel bnf : orgData.getOpOrdBnfInfoModels()){
-            CouponRequestVo couponRequestVo = new CouponRequestVo();
-            couponRequestVo.setCpnIssNo(bnf.getCpnIssNo());
-            couponRequestVo.setPrmNo(bnf.getPrmNo());
-            couponRequestVo.setMbrNo("test01");
-            couponUseCancelService.cancelCoupon(couponRequestVo);
+            couponUseCancelService.cancelCoupon(new CouponRequestVo().createRequest(bnf));
         }
     }
 
     public void callPaymentIF(ClaimProcessVo claimProcessVo){
         log.info("----------IFCallHelper 결제취소 실행--------");
-        PaymentCancelRequestVo cancelRequestVo = new PaymentCancelRequestVo();
-        cancelRequestVo.setPaymentType(claimProcessVo.getOpPayInfoModel().getPayCcd().equals(PaymentType.INICIS.getType()) ? PaymentType.INICIS : PaymentType.POINT);
-        cancelRequestVo.setOrdNo(claimProcessVo.getOrdNo());
-        cancelRequestVo.setClmNo(claimProcessVo.getClmNo());
-        cancelRequestVo.setCancelPrice(claimProcessVo.getCnclPrice());
-        paymentService.cancel(cancelRequestVo);
+        paymentService.cancel(new PaymentCancelRequestVo().createRequestVo(claimProcessVo));
     }
 
     public void callCreatePaymentIF(ClaimProcessVo claimProcessVo){
-        PaymentCancelRequestVo cancelRequestVo = new PaymentCancelRequestVo();
-        cancelRequestVo.setPaymentType(claimProcessVo.getOpPayInfoModel().getPayCcd().equals(PaymentType.INICIS.getType()) ? PaymentType.INICIS : PaymentType.POINT);
-        cancelRequestVo.setOrdNo(claimProcessVo.getOrdNo());
-        cancelRequestVo.setClmNo(claimProcessVo.getClmNo());
-        cancelRequestVo.setCancelPrice(claimProcessVo.getCnclPrice());
-        paymentService.createCancelData(cancelRequestVo);
+        log.info("----------IFCallHelper 결제취소 전 데이터 insert 실행--------");
+        paymentService.createCancelData(new PaymentCancelRequestVo().createRequestVo(claimProcessVo));
     }
 }

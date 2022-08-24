@@ -14,6 +14,7 @@ public interface ClaimTrxMapper {
     void insertOpOrdBnfRelInfo(List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels);
     void insertOpOrdCostInfo(List<OpOrdCostInfoModel> opOrdCostInfoModels);
     void updateOpClmInfo(List<OpClmInfoModel> opClmInfoModels);
+    void updateEcouponComplete(List<OpClmInfoModel> opClmInfoModels);
     void updateOpOrdBnfInfo(List<OpOrdBnfInfoModel> opOrdBnfInfoModels);
 //    void updateOpOrdCostInfo(List<OpOrdCostInfoModel> opOrdCostInfoModels);
 }
