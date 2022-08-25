@@ -41,7 +41,19 @@
     <collection property="opOrdCostInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" autoMapping="true" javaType="List" select="selectCostInfo" column="ordNo=ord_no"/>
     <collection property="opOrdBnfRelInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" autoMapping="true" javaType="List" select="selectOrdBnfRelInfo" column="ordNo=ord_no"/>
     <collection property="opOrdBnfInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" autoMapping="true" javaType="List" select="selectBnfInfo" column="ordNo=ord_no"/>
+    <collection property="opPayInfoModel" ofType="com.plateer.ec1.common.model.order.OpPayInfoModel" autoMapping="true" select="selectPayInfo" column="ordNo=ord_no"/>
   </resultMap>
+
+  <select id="selectPayInfo" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo" resultType="com.plateer.ec1.common.model.order.OpPayInfoModel">
+    select
+        opi.*
+    from
+        op_pay_info opi
+    where
+        opi.ord_no = #{ordNo}
+        and opi.pay_ccd = '10'
+        and clm_no is null
+  </select>
 
   <select id="selectBnfInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
     select
@@ -115,16 +127,16 @@
               from
                 op_clm_info oci
                   inner join op_ord_cost_info ooci
-                             on oci.ord_no = ooci.ord_no
+                             on oci.clm_no = ooci.clm_no
                                and oci.dv_grp_no = ooci.dv_grp_no
                   left outer join op_ord_bnf_rel_info oobri
-                                  on oci.ord_no = oobri.ord_no
+                                  on oci.clm_no = oobri.clm_no
                                     and oci.ord_seq = oobri.ord_seq
               where
-                oci.ord_no = #{clmNo}
+                oci.clm_no = #{clmNo}
              ) price
          ) payment ,  op_pay_info opi
     where
-      opi.ord_no = #{clmNo}
+      opi.clm_no = #{clmNo}
   </select>
 </mapper>

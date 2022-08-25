@@ -3,11 +3,13 @@ package com.plateer.ec1.payment.vo;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.payment.enums.PaymentType;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
+@Slf4j
 public class PaymentCancelRequestVo {
     private PaymentType paymentType;
     @NotEmpty

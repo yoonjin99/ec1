@@ -74,6 +74,7 @@
         op_pay_info
     set
       cncl_amt = #{cancelPrice}
+    , clm_no = #{clmNo}
     , rfnd_avl_amt = #{payAmt} - #{cancelPrice}
     where
         ord_no = #{ordNo}

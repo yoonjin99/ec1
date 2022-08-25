@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -54,22 +55,21 @@ public abstract class ClaimDataCreator {
         return updateDataCreator(claimProcessVo);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
         if(!Objects.isNull(insertData)){
-            if(!insertData.getOpClmInfoModels().isEmpty()) claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
-            if(!insertData.getOpOrdBnfRelInfoModels().isEmpty()) claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
-            if(!insertData.getOpOrdCostInfoModels().isEmpty()) claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
+            Optional.ofNullable(insertData.getOpClmInfoModels()).ifPresent(claimTrxMapper::insertOpClmInfo);
+            Optional.ofNullable(insertData.getOpOrdBnfRelInfoModels()).ifPresent(claimTrxMapper::insertOpOrdBnfRelInfo);
+            Optional.ofNullable(insertData.getOpOrdCostInfoModels()).ifPresent(claimTrxMapper::insertOpOrdCostInfo);
         }
         if(!Objects.isNull(updateData)){
             if(!updateData.getClaimType().equals(ClaimType.MCC.name())){
-                if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
+                Optional.ofNullable(updateData.getOpClmInfoModels()).ifPresent(claimTrxMapper::updateOpClmInfo);
             }else{
-                if(!updateData.getOpClmInfoModels().isEmpty()) claimTrxMapper.updateEcouponComplete(updateData.getOpClmInfoModels());
+                Optional.ofNullable(updateData.getOpClmInfoModels()).ifPresent(claimTrxMapper::updateEcouponComplete);
             }
-
-            if(!updateData.getOpOrdBnfInfoModels().isEmpty()) claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
+            Optional.ofNullable(updateData.getOpOrdBnfInfoModels()).ifPresent(claimTrxMapper::updateOpOrdBnfInfo);
         }
     }
 

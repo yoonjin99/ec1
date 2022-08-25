@@ -24,6 +24,7 @@ public class GeneralTest {
         ClaimVo vo = new ClaimVo();
         vo.setClaimType(ClaimType.GCC);
         vo.setOrdNo("O20220808103004");
+        vo.setCnclPrice(84950L);
 
         List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
 

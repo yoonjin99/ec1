@@ -14,6 +14,7 @@ import com.plateer.ec1.common.model.order.OpClmInfoModel;
 import com.plateer.ec1.order.service.OrderHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -34,6 +35,7 @@ public class CompleteProcessor extends ClaimProcessor {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public void doProcess(ClaimVo claimDto) {
         log.info("----------CompleteProcessor doProcess 실행--------");
         Long monitoringLog = null;

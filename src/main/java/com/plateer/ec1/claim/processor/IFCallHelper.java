@@ -3,6 +3,7 @@ package com.plateer.ec1.claim.processor;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
+import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
 import com.plateer.ec1.payment.enums.PaymentType;
 import com.plateer.ec1.payment.service.PaymentService;
 import com.plateer.ec1.payment.vo.CancelReqVo;
@@ -13,7 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,9 +29,27 @@ public class IFCallHelper {
 
     public void callRestoreCouponIF(ClaimProcessVo orgData){
         log.info("----------IFCallHelper 쿠폰복원 실행--------");
+        Map<String, Long> couponMap = couponPrice(orgData);
         for(OpOrdBnfInfoModel bnf : orgData.getOpOrdBnfInfoModels()){
-            couponUseCancelService.cancelCoupon(new CouponRequestVo().createRequest(bnf));
+            if(couponMap.containsKey(bnf.getOrdBnfNo()) && Objects.equals(couponMap.get(bnf.getOrdBnfNo()), bnf.getOrdBnfAmt())){
+                couponUseCancelService.cancelCoupon(new CouponRequestVo().createRequest(bnf));
+            }
         }
+    }
+
+    private Map<String , Long> couponPrice(ClaimProcessVo orgData){
+        Map<String , Long> couponMap = new HashMap<>();
+        for(OpOrdBnfInfoModel bnf : orgData.getOpOrdBnfInfoModels()){
+            Long bnfPrice = 0L;
+            for(OpOrdBnfRelInfoModel bnfRelInfoModel : orgData.getOpOrdBnfRelInfoModels()){
+                if(bnf.getOrdBnfNo().equals(bnfRelInfoModel.getOrdBnfNo())){
+                    bnfPrice += bnfRelInfoModel.getAplyAmt();
+                }
+            }
+            couponMap.put(bnf.getOrdBnfNo(), bnfPrice);
+        }
+
+        return couponMap;
     }
 
     public void callPaymentIF(ClaimProcessVo claimProcessVo){

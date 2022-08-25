@@ -24,4 +24,5 @@ public class ClaimProcessVo {
         vo.setCnclPrice(claimDto.getCnclPrice());
         return vo;
     }
+
 }
