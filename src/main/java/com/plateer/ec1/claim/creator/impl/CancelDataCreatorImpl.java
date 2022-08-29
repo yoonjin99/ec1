@@ -1,6 +1,7 @@
 package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
+import com.plateer.ec1.claim.creator.ClaimDataCreatorInterface;
 import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
@@ -10,6 +11,7 @@ import com.plateer.ec1.common.code.order.OPT0003Type;
 import com.plateer.ec1.common.code.order.OPT0004Type;
 import com.plateer.ec1.common.code.order.OPT0005Type;
 import com.plateer.ec1.common.model.order.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +22,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class CancelDataCreatorImpl extends ClaimDataCreator {
+public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
 
     public CancelDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
         super(claimMapper, claimTrxMapper);
@@ -60,23 +62,8 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
         return processVo;
     }
 
-    @Override
     public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
-        // 혜택취소금액
-        List<OpOrdBnfInfoModel> opOrdBnfInfoModelList = new ArrayList<>();
-        if(!Objects.isNull(vo.getOpOrdBnfInfoModels())){
-            for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModels()){
-                bnf.setOrdCnclBnfAmt(bnf.getOrdBnfAmt());
-                opOrdBnfInfoModelList.add(bnf);
-            }
-        }
-        return opOrdBnfInfoModelList;
-    }
-
-    @Override
-    public List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo) {
-        // 없음
-        return null;
+        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
     }
 
     @Override
@@ -101,38 +88,19 @@ public class CancelDataCreatorImpl extends ClaimDataCreator {
 
     @Override
     public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo) {
-        // 처리순번, 주문클레임유형코드, 주문상태코드, 클레임번호, 이전처리순번, 주문클레임요청일시, 주문클레임접수일시, 주문클레임완료일시
-        List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
-        if(!Objects.isNull(vo.getOpClmInfoModels())){
+        List<OpClmInfoModel> opClmInfoModelList = OpClmInfoModel.builder().build().insertOrderClaim(vo);
+        if(!Objects.isNull(opClmInfoModelList)){
             for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
                 clm.setOrdClmTpCd(OPT0003Type.C.name());
                 clm.setOrdPrgsScd(vo.getClaimType().equals(ClaimType.MCA.name()) ? OPT0004Type.CA.getType() : OPT0004Type.CS.getType());
-                clm.setOrgProcSeq(clm.getProcSeq());
-                clm.setProcSeq(clm.getProcSeq() +  1);
-                clm.setClmNo(vo.getClmNo());
-                clm.setOrdClmReqDtime(LocalDateTime.now());
-                clm.setOrdClmAcptDtime(LocalDateTime.now());
                 clm.setOrdClmCmtDtime(LocalDateTime.now());
-                opClmInfoModelList.add(clm);
             }
         }
-
         return opClmInfoModelList;
     }
 
-    @Override
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
-        // 처리순번, 적용취소구분, 클레임번호
-        List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModelList = new ArrayList<>();
-        if(!Objects.isNull(vo.getOpOrdBnfRelInfoModels())){
-            for(OpOrdBnfRelInfoModel rel : vo.getOpOrdBnfRelInfoModels()){
-                rel.setProcSeq(rel.getProcSeq() + 1);
-                rel.setAplyCnclCcd(OPT0005Type.CNCL.getType());
-                rel.setClmNo(vo.getClmNo());
-                opOrdBnfRelInfoModelList.add(rel);
-            }
-        }
-        return opOrdBnfRelInfoModelList;
+        return OpOrdBnfRelInfoModel.builder().build().insertOrderBenefitRelation(vo);
     }
 
     @Override

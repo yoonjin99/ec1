@@ -32,7 +32,7 @@ public class IFCallHelper {
         Map<String, Long> couponMap = couponPrice(orgData);
         for(OpOrdBnfInfoModel bnf : orgData.getOpOrdBnfInfoModels()){
             if(couponMap.containsKey(bnf.getOrdBnfNo()) && Objects.equals(couponMap.get(bnf.getOrdBnfNo()), bnf.getOrdBnfAmt())){
-                couponUseCancelService.cancelCoupon(new CouponRequestVo().createRequest(bnf));
+                couponUseCancelService.cancelCoupon(new CouponRequestVo().createRequest(bnf)); //혜택테이블 -> 취소금액으로 판별
             }
         }
     }

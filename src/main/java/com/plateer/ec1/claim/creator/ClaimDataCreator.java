@@ -19,18 +19,21 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class ClaimDataCreator {
+public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
 
     private final ClaimMapper claimMapper;
     private final ClaimTrxMapper claimTrxMapper;
 
+    private static final String CLAIM = "C";
 
     public abstract CreatorType getType();
 
+    @Override
     public String getClaimNo(){
-        return "C" + claimMapper.selectClaimNo();
+        return CLAIM + claimMapper.selectClaimNo();
     }
 
+    @Override
     public ClaimProcessVo getClaimData(String ordNo, String type){
         if(type.equals(ClaimType.MCC.name())){
             return getEcouponCancelData(ordNo);
@@ -38,6 +41,7 @@ public abstract class ClaimDataCreator {
         return claimMapper.selectClaimProcess(ordNo);
     }
 
+    @Override
     public ClaimProcessVo getEcouponCancelData(String ordNo){
         List<OpClmInfoModel> clm =  claimMapper.selectClaim(ordNo);
         ClaimProcessVo vo = new ClaimProcessVo();
@@ -45,16 +49,19 @@ public abstract class ClaimDataCreator {
         return vo;
     }
 
+    @Override
     public ClaimProcessVo getInsertClaimData(ClaimProcessVo claimProcessVo){
         log.info("클레임 등록할 데이터 가져오기------");
         return claimProcessVo.getClaimType().equals(ClaimType.MCC.name()) ? null : insertDataCreator(claimProcessVo);
     }
 
+    @Override
     public ClaimProcessVo getUpdateClaimData(ClaimProcessVo claimProcessVo){
         log.info("클레임 업데이트할 데이터 가져오기------");
         return updateDataCreator(claimProcessVo);
     }
 
+    @Override
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
@@ -72,19 +79,4 @@ public abstract class ClaimDataCreator {
             Optional.ofNullable(updateData.getOpOrdBnfInfoModels()).ifPresent(claimTrxMapper::updateOpOrdBnfInfo);
         }
     }
-
-    public abstract ClaimProcessVo updateDataCreator(ClaimProcessVo vo);
-    public abstract ClaimProcessVo insertDataCreator(ClaimProcessVo vo);
-
-    public abstract List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo);
-
-    public abstract List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo);
-
-    public abstract List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo);
-
-    public abstract List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo);
-
-    public abstract List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo);
-
-    public abstract List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo);
 }

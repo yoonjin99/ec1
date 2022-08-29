@@ -1,5 +1,9 @@
 package com.plateer.ec1.common.model.order;
 
+import com.plateer.ec1.claim.enums.ClaimType;
+import com.plateer.ec1.claim.vo.ClaimProcessVo;
+import com.plateer.ec1.common.code.order.OPT0003Type;
+import com.plateer.ec1.common.code.order.OPT0004Type;
 import com.plateer.ec1.order.vo.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +11,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 @Builder
@@ -59,5 +66,18 @@ public class OpClmInfoModel {
                 .build();
     }
 
-
+    public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo){
+        List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
+        if(!Objects.isNull(vo.getOpClmInfoModels())){
+            for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
+                clm.setOrgProcSeq(clm.getProcSeq());
+                clm.setProcSeq(clm.getProcSeq() +  1);
+                clm.setClmNo(vo.getClmNo());
+                clm.setOrdClmReqDtime(LocalDateTime.now());
+                clm.setOrdClmAcptDtime(LocalDateTime.now());
+                opClmInfoModelList.add(clm);
+            }
+        }
+        return opClmInfoModelList;
+    }
 }

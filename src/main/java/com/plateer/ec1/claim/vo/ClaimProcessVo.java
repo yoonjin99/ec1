@@ -1,11 +1,15 @@
 package com.plateer.ec1.claim.vo;
 
 import com.plateer.ec1.common.model.order.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class ClaimProcessVo {
     private String clmNo;
     private String ordNo;

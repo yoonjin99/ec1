@@ -1,19 +1,23 @@
 package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
+import com.plateer.ec1.claim.creator.ClaimDataCreatorInterface;
 import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
+import com.plateer.ec1.common.code.order.OPT0005Type;
 import com.plateer.ec1.common.model.order.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
-public class ReturnDataCreatorImpl extends ClaimDataCreator {
+public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
 
     public ReturnDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
         super(claimMapper, claimTrxMapper);
@@ -36,12 +40,10 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
         return null;
     }
 
-    @Override
     public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
-        return null;
+        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
     }
 
-    @Override
     public List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo) {
         return null;
     }
@@ -56,9 +58,8 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
         return null;
     }
 
-    @Override
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
-        return null;
+        return OpOrdBnfRelInfoModel.builder().build().insertOrderBenefitRelation(vo);
     }
 
     @Override
@@ -66,5 +67,3 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator {
         return null;
     }
 }
-
-// ecoupon과 일반주문이 데이터가 같음
