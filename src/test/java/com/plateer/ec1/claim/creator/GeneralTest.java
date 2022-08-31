@@ -70,4 +70,50 @@ public class GeneralTest {
         service.claim(vo);
     }
 
+    @Test
+    @DisplayName("교환 테스트 - 고객 사유")
+    void exchangeTest(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.EA);
+        vo.setOrdNo("O20220808103004");
+        vo.setImtnRsnCcd("10"); // 고객 사유
+
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
+    }
+
+    @Test
+    @DisplayName("교환 테스트 - 당사 사유")
+    void exchangeCompanyTest(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.EA);
+        vo.setOrdNo("O20220808103004");
+        vo.setImtnRsnCcd("20"); // 고객 사유
+
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
+    }
+
 }

@@ -12,4 +12,5 @@ public class ClaimVo {
     private String ordNo;
     private List<OrdClaimInfoVo> ordClaimInfoVoList;
     private Long cnclPrice;
+    private String imtnRsnCcd;
 }

@@ -43,7 +43,7 @@ public class AcceptWithdrawalProcessor extends ClaimProcessor {
             // 유효성 검증
             doValidationProcess(claimDto);
 
-            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto.getOrdNo(),claimDto.getClaimType().name()); // 원주문 데이터 select
+            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto); // 원주문 데이터 select
             orgData = orgData.createVo(claimDto, orgData);
 
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(orgData);

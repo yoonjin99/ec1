@@ -15,6 +15,7 @@ public class ClaimProcessVo {
     private String ordNo;
     private String claimType;
     private Long cnclPrice;
+    private String imtnRsnCcd;
 
     private List<OpClmInfoModel> opClmInfoModels;
     private List<OpOrdCostInfoModel> opOrdCostInfoModels;
@@ -26,6 +27,7 @@ public class ClaimProcessVo {
         vo.setClaimType(claimDto.getClaimType().name());
         vo.setClmNo(claimDto.getClaimNo());
         vo.setCnclPrice(claimDto.getCnclPrice());
+        vo.setImtnRsnCcd(claimDto.getImtnRsnCcd());
         return vo;
     }
 

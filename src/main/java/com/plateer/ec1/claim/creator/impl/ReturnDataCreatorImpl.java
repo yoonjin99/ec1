@@ -6,7 +6,7 @@ import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
-import com.plateer.ec1.common.code.order.OPT0005Type;
+import com.plateer.ec1.common.code.order.*;
 import com.plateer.ec1.common.model.order.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,13 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
-
+    // todo : 반품 접수 & 철회 개발하기
     public ReturnDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
         super(claimMapper, claimTrxMapper);
+        this.claimMapper = claimMapper;
     }
+
+    private final ClaimMapper claimMapper;
 
     @Override
     public CreatorType getType() {
@@ -55,7 +58,17 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
 
     @Override
     public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo) {
-        return null;
+        List<OpClmInfoModel> opClmInfoModelList = OpClmInfoModel.builder().build().insertOrderClaim(vo);
+        if(!Objects.isNull(opClmInfoModelList)){
+            Integer dvpGrpNo = claimMapper.selectDvpGrpNo(vo.getOrdNo());
+            for (OpClmInfoModel clm : opClmInfoModelList) {
+                clm.setDvRvtCcd(OPT0014Type.RETURN.getType());
+                clm.setOrdClmTpCd(OPT0003Type.X.name());
+                clm.setOrdPrgsScd(OPT0004Type.EA.getType());
+                clm.setDvGrpNo(dvpGrpNo + 1);
+            }
+        }
+        return opClmInfoModelList;
     }
 
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
@@ -64,6 +77,24 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
 
     @Override
     public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo) {
-        return null;
+        List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
+        if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
+            for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
+                cost.setClmNo(vo.getClmNo());
+                cost.setAplyCcd(OPT0005Type.APLY.getType());
+                cost.setOrgOrdCstNo(cost.getOrdCstNo());
+                cost.setDvAmtTpCd(OPT0006Type.EXCHANGE.getType());
+                if(vo.getImtnRsnCcd().equals(OPT0008Type.CONSUMER.getType())){
+                    cost.setAplyDvAmt(3000L); // 고객사유일때
+                }else{
+                    cost.setDvBnfAmt(3000L); // 당사사유일때
+                }
+                cost.setOrgDvAmt(3000L);
+                cost.setDvPlcTpCd(DVP0001Type.CASH.getType());
+                cost.setImtnRsnCcd(vo.getImtnRsnCcd());
+                opOrdCostInfoModelList.add(cost);
+            }
+        }
+        return opOrdCostInfoModelList;
     }
 }

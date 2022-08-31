@@ -5,6 +5,7 @@ import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
+import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.common.model.order.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +35,11 @@ public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
     }
 
     @Override
-    public ClaimProcessVo getClaimData(String ordNo, String type){
-        if(type.equals(ClaimType.MCC.name())){
-            return getEcouponCancelData(ordNo);
+    public ClaimProcessVo getClaimData(ClaimVo vo){
+        if(vo.getClaimType().getType().equals(ClaimType.MCC.name())){
+            return getEcouponCancelData(vo.getOrdNo());
         }
-        return claimMapper.selectClaimProcess(ordNo);
+        return claimMapper.selectClaimProcess(vo);
     }
 
     @Override

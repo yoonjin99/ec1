@@ -1,6 +1,7 @@
 package com.plateer.ec1.claim.creator;
 
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
+import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.common.model.order.OpClmInfoModel;
 import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
 import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface ClaimDataCreatorInterface {
     String getClaimNo();
-    ClaimProcessVo getClaimData(String ordNo, String type);
+    ClaimProcessVo getClaimData(ClaimVo vo);
     ClaimProcessVo getEcouponCancelData(String ordNo);
     ClaimProcessVo getInsertClaimData(ClaimProcessVo claimProcessVo);
     ClaimProcessVo getUpdateClaimData(ClaimProcessVo claimProcessVo);

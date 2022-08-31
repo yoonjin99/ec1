@@ -47,7 +47,7 @@ public class CompleteProcessor extends ClaimProcessor {
 
             doValidationProcess(claimDto);
 
-            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto.getOrdNo(),claimDto.getClaimType().name());
+            ClaimProcessVo orgData = claimDataCreator.getClaimData(claimDto);
             orgData = orgData.createVo(claimDto, orgData);
 
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(orgData);
