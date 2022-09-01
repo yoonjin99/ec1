@@ -141,6 +141,7 @@
         and ord_goods_no = #{t.ordGoodsNo}
         and ord_item_no = #{t.ordItemNo}
         and ord_clm_tp_cd = 'O'
+--       and ord_clm_tp_cd = 'R'
     </foreach>
   </update>
 
@@ -158,6 +159,20 @@
     </foreach>
   </update>
 
+  <update id="updateReturnClaimInfo" parameterType="list">
+    <foreach collection="list" item="t" separator=";">
+      update
+        op_clm_info
+      set
+        rtgs_cnt = #{t.rtgsCnt}
+      where
+        ord_no = #{t.ordNo}
+        and ord_goods_no = #{t.ordGoodsNo}
+        and ord_item_no = #{t.ordItemNo}
+        and ord_clm_tp_cd = 'O'
+    </foreach>
+  </update>
+
   <update id="updateOpOrdBnfInfo" parameterType="list">
     <foreach collection="list" item="t" separator=";">
       update
@@ -169,7 +184,14 @@
     </foreach>
   </update>
 
-<!--  <update id="updateOpOrdCostInfo" parameterType="list">-->
-
-<!--  </update>-->
+  <update id="updateOpOrdCostInfo" parameterType="list">
+    <foreach collection="list" item="t" separator=";">
+      update
+        op_ord_cost_info
+      set
+        cncl_dv_amt = #{t.aplyDvAmt}
+      where
+        ord_cst_no = #{t.orgOrdCstNo}
+    </foreach>
+  </update>
 </mapper>

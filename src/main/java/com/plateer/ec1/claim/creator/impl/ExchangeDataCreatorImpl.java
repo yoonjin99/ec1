@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,11 +37,10 @@ public class ExchangeDataCreatorImpl extends ClaimDataCreator implements ClaimDa
     public ClaimProcessVo updateDataCreator(ClaimProcessVo vo) {
         log.info("교환 update 데이터 생성 로직 호출");
         List<OpClmInfoModel> clm = updateOrderClaim(vo);
-
-        ClaimProcessVo processVo = new ClaimProcessVo();
-        processVo.setOpClmInfoModels(clm);
-        processVo.setClaimType(vo.getClaimType());
-        return processVo;
+        return ClaimProcessVo.builder()
+                .opClmInfoModels(clm)
+                .claimType(vo.getClaimType())
+                .build();
     }
 
     @Override
@@ -50,11 +50,11 @@ public class ExchangeDataCreatorImpl extends ClaimDataCreator implements ClaimDa
         List<OpOrdCostInfoModel> cost = insertOrderCost(vo);
         List<OpDvpInfo> dvp = insertOpDvpInfo(clm);
 
-        ClaimProcessVo processVo = new ClaimProcessVo();
-        processVo.setOpClmInfoModels(clm);
-        processVo.setOpOrdCostInfoModels(cost);
-        processVo.setClaimType(vo.getClaimType());
-        return processVo;
+        return ClaimProcessVo.builder()
+                .opClmInfoModels(clm)
+                .opOrdCostInfoModels(cost)
+                .claimType(vo.getClaimType())
+                .build();
     }
 
     @Override
@@ -80,15 +80,17 @@ public class ExchangeDataCreatorImpl extends ClaimDataCreator implements ClaimDa
                 clm.setOrdPrgsScd(OPT0004Type.EA.getType());
                 clm.setDvGrpNo(dvpGrpNo + 1);
             }
-            List<OpClmInfoModel> reOpClmInfoModels = new ArrayList<>(opClmInfoModelList);
-            for (OpClmInfoModel clm : reOpClmInfoModels) {
-                clm.setDvRvtCcd(OPT0014Type.DVP.getType());
-                clm.setProcSeq(clm.getProcSeq() +  1);
-                clm.setDvGrpNo(clm.getDvGrpNo() + 1);
-                opClmInfoModelList.add(clm);
+
+            List<OpClmInfoModel> re = new ArrayList<>(opClmInfoModelList);
+            for (OpClmInfoModel clm : re) {
+                OpClmInfoModel clmInfoModel = clm.toBuilder()
+                        .dvRvtCcd(OPT0014Type.DVP.getType())
+                        .procSeq(clm.getProcSeq() +  1)
+                        .dvGrpNo(clm.getDvGrpNo() + 1)
+                        .build();
+                opClmInfoModelList.add(clmInfoModel);
             }
         }
-        log.info(opClmInfoModelList.toString() + "클레임 테이블값");
         return opClmInfoModelList;
     }
 

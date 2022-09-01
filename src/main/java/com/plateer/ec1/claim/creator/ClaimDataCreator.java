@@ -39,15 +39,29 @@ public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
         if(vo.getClaimType().getType().equals(ClaimType.MCC.name())){
             return getEcouponCancelData(vo.getOrdNo());
         }
-        return claimMapper.selectClaimProcess(vo);
+
+        List<OpClmInfoModel> clmInfoModels = claimMapper.selectClaimInfo(vo);
+        List<OpOrdCostInfoModel> opOrdCostInfoModels = claimMapper.selectCostInfo(clmInfoModels);
+        List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels = claimMapper.selectBnfRelInfo(clmInfoModels);
+        List<OpOrdBnfInfoModel> opOrdBnfInfoModels = claimMapper.selectBnfInfo(clmInfoModels);
+        OpPayInfoModel opPayInfoModel = claimMapper.selectPayInfo(clmInfoModels);
+
+        return ClaimProcessVo.builder()
+                .ordNo(vo.getOrdNo())
+                .opClmInfoModels(clmInfoModels)
+                .opOrdCostInfoModels(opOrdCostInfoModels)
+                .opOrdBnfRelInfoModels(opOrdBnfRelInfoModels)
+                .opOrdBnfInfoModels(opOrdBnfInfoModels)
+                .opPayInfoModel(opPayInfoModel)
+                .build();
     }
 
     @Override
     public ClaimProcessVo getEcouponCancelData(String ordNo){
         List<OpClmInfoModel> clm =  claimMapper.selectClaim(ordNo);
-        ClaimProcessVo vo = new ClaimProcessVo();
-        vo.setOpClmInfoModels(clm);
-        return vo;
+        return ClaimProcessVo.builder()
+                .opClmInfoModels(clm)
+                .build();
     }
 
     @Override

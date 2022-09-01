@@ -35,70 +35,107 @@
     select nextval('nextval_clm_no') as claim_no
   </select>
 
-  <resultMap id="orgClaimInfo" type="com.plateer.ec1.claim.vo.ClaimProcessVo">
-    <result column="ord_no" property="ordNo"/>
-    <collection property="opClmInfoModels" ofType="com.plateer.ec1.common.model.order.OpClmInfoModel" autoMapping="true" javaType="List" select="selectClaimInfo" column="ordNo=ord_no"/>
-    <collection property="opOrdCostInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" autoMapping="true" javaType="List" select="selectCostInfo" column="ordNo=ord_no"/>
-    <collection property="opOrdBnfRelInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" autoMapping="true" javaType="List" select="selectOrdBnfRelInfo" column="ordNo=ord_no"/>
-    <collection property="opOrdBnfInfoModels" ofType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" autoMapping="true" javaType="List" select="selectBnfInfo" column="ordNo=ord_no"/>
-    <collection property="opPayInfoModel" ofType="com.plateer.ec1.common.model.order.OpPayInfoModel" autoMapping="true" select="selectPayInfo" column="ordNo=ord_no"/>
-  </resultMap>
-
-  <select id="selectPayInfo" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo" resultType="com.plateer.ec1.common.model.order.OpPayInfoModel">
+  <select id="selectPayInfo" parameterType="com.plateer.ec1.common.model.order.OpClmInfoModel" resultType="com.plateer.ec1.common.model.order.OpPayInfoModel">
+    with clm_info as (
+      <foreach collection="list" item="item" separator="union all">
+        select
+            #{item.ordNo} as ord_no
+      </foreach>
+    )
     select
         opi.*
     from
         op_pay_info opi
+        inner join clm_info oci
+        on oci.ord_no = opi.ord_no
     where
-        opi.ord_no = #{ordNo}
-        and opi.pay_ccd = '10'
+        opi.pay_ccd = '10'
         and clm_no is null
   </select>
 
-  <select id="selectBnfInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+  <select id="selectBnfInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfInfoModel" parameterType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    with clm_info as (
+      <foreach collection="list" item="item" separator="union all">
+        select
+          #{item.ordSeq} as ord_seq
+          , #{item.procSeq} as proc_seq
+          , #{item.ordNo} as ord_no
+      </foreach>
+    )
     select
         oobi.*
         , '' as ord_no
     from op_ord_bnf_info oobi
         inner join op_ord_bnf_rel_info oobri
         on oobi.ord_bnf_no = oobri.ord_bnf_no
-        and oobri.ord_no = #{ordNo}
+        inner join clm_info oci
+        on oci.ord_no = oobri.ord_no
+        and oci.ord_seq = oobri.ord_seq
+        and oci.proc_seq = oobri.proc_seq
   </select>
 
-  <select id="selectCostInfo" resultType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+  <select id="selectCostInfo" resultType="com.plateer.ec1.common.model.order.OpOrdCostInfoModel" parameterType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    with clm_info as (
+    <foreach collection="list" item="item" separator="union all">
+      select
+        #{item.dvGrpNo} as dv_grp_no
+        , #{item.ordNo} as ord_no
+    </foreach>
+    )
     select
         ooci.*
-    from op_ord_cost_info ooci
+    from
+        op_ord_cost_info ooci
+        inner join clm_info oci
+        on oci.ord_no = ooci.ord_no
+        and oci.dv_grp_no = ooci.dv_grp_no
     where
-        ooci.ord_no = #{ordNo}
-        and ooci.aply_ccd = '10';
+        ooci.aply_ccd = '10';
   </select>
 
-  <select id="selectOrdBnfRelInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo">
+  <select id="selectBnfRelInfo" resultType="com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel" parameterType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    with clm_info as (
+      <foreach collection="list" item="item" separator="union all">
+        select
+          #{item.ordSeq} as ord_seq
+          , #{item.procSeq} as proc_seq
+          , #{item.ordNo} as ord_no
+      </foreach>
+    )
     select
         oobri.*
     from
       op_ord_bnf_rel_info oobri
+      inner join clm_info oci
+      on oci.ord_no = oobri.ord_no
+      and oci.ord_seq = oobri.ord_seq
+      and oci.proc_seq = oobri.proc_seq
     where
-        oobri.ord_no = #{ordNo}
-        and aply_cncl_ccd = '10'
+        aply_cncl_ccd = '10'
   </select>
 
-  <select id="selectClaimInfo" parameterType="com.plateer.ec1.claim.vo.ClaimProcessVo" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+  <select id="selectClaimInfo" parameterType="com.plateer.ec1.claim.vo.ClaimVo" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    with goods_info as (
+      <foreach collection="ordClaimInfoVoList" item="item" separator="union all">
+        select
+          #{item.ordGoodsNo} as goods_no
+          , #{item.ordItemNo} as item_no
+          , #{item.ordNo} as ord_no
+          , #{item.dvGrpNo} as dv_grp_no
+      </foreach>
+    )
     select
         oci.*
     from
-        op_clm_info oci
+      op_clm_info oci
+      inner join goods_info gi
+      on oci.ord_no = gi.ord_no
+      and oci.ord_goods_no = gi.goods_no
+      and oci.ord_item_no = gi.item_no
     where
-      oci.ord_no = #{ordNo}
-      and oci.ord_clm_tp_cd = 'O'
+      oci.ord_clm_tp_cd = 'O'
       and oci.cncl_cnt = 0
       and oci.rtgs_cnt = 0
-  </select>
-
-  <select id="selectClaimProcess" resultMap="orgClaimInfo" parameterType="string">
-    select
-        #{ordNo} as ord_no
   </select>
 
   <select id="selectClaim" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel" parameterType="string">
@@ -138,5 +175,14 @@
          ) payment ,  op_pay_info opi
     where
       opi.clm_no = #{clmNo}
+  </select>
+
+  <select id="selectDvpGrpNo" resultType="integer" parameterType="string">
+    select
+        max(odi.dv_grp_no) as max_dvp_no
+    from
+        op_dvp_info odi
+    where
+        odi.ord_no = #{ordNo}
   </select>
 </mapper>

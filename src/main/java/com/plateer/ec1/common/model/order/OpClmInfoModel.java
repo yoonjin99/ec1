@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-@Builder
+@Builder(toBuilder = true)
 @ToString
 @Getter
 @Setter

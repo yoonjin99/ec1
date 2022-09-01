@@ -18,7 +18,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
-    // todo : 반품 접수 & 철회 개발하기
+
     public ReturnDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
         super(claimMapper, claimTrxMapper);
         this.claimMapper = claimMapper;
@@ -34,21 +34,33 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
     @Override
     public ClaimProcessVo updateDataCreator(ClaimProcessVo vo) {
         log.info("반품 update 데이터 생성 로직 호출");
-        return null;
+        List<OpOrdBnfInfoModel> bnf = updateOrderBenefitData(vo);
+        List<OpClmInfoModel> clm = updateOrderClaim(vo);
+
+        return ClaimProcessVo.builder()
+                .opOrdBnfInfoModels(bnf)
+                .opClmInfoModels(clm)
+                .claimType(vo.getClaimType())
+                .build();
     }
 
     @Override
     public ClaimProcessVo insertDataCreator(ClaimProcessVo vo) {
         log.info("반품 insert 데이터 생성 로직 호출");
-        return null;
+        List<OpClmInfoModel> clm = insertOrderClaim(vo);
+        List<OpOrdBnfRelInfoModel> rel = insertOrderBenefitRelation(vo);
+        List<OpOrdCostInfoModel> cost = insertOrderCost(vo);
+
+        return ClaimProcessVo.builder()
+                .opClmInfoModels(clm)
+                .opOrdBnfRelInfoModels(rel)
+                .opOrdCostInfoModels(cost)
+                .claimType(vo.getClaimType())
+                .build();
     }
 
     public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
         return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
-    }
-
-    public List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo) {
-        return null;
     }
 
     @Override
@@ -63,8 +75,8 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
             Integer dvpGrpNo = claimMapper.selectDvpGrpNo(vo.getOrdNo());
             for (OpClmInfoModel clm : opClmInfoModelList) {
                 clm.setDvRvtCcd(OPT0014Type.RETURN.getType());
-                clm.setOrdClmTpCd(OPT0003Type.X.name());
-                clm.setOrdPrgsScd(OPT0004Type.EA.getType());
+                clm.setOrdClmTpCd(OPT0003Type.R.name());
+                clm.setOrdPrgsScd(OPT0004Type.RA.getType());
                 clm.setDvGrpNo(dvpGrpNo + 1);
             }
         }
@@ -83,14 +95,14 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 cost.setClmNo(vo.getClmNo());
                 cost.setAplyCcd(OPT0005Type.APLY.getType());
                 cost.setOrgOrdCstNo(cost.getOrdCstNo());
-                cost.setDvAmtTpCd(OPT0006Type.EXCHANGE.getType());
+                cost.setDvAmtTpCd(OPT0006Type.RETURN.getType());
                 if(vo.getImtnRsnCcd().equals(OPT0008Type.CONSUMER.getType())){
                     cost.setAplyDvAmt(3000L); // 고객사유일때
                 }else{
                     cost.setDvBnfAmt(3000L); // 당사사유일때
                 }
                 cost.setOrgDvAmt(3000L);
-                cost.setDvPlcTpCd(DVP0001Type.CASH.getType());
+                cost.setDvPlcTpCd(DVP0001Type.CHARGED.getType());
                 cost.setImtnRsnCcd(vo.getImtnRsnCcd());
                 opOrdCostInfoModelList.add(cost);
             }

@@ -2,7 +2,6 @@ package com.plateer.ec1.claim.creator.impl;
 
 import com.plateer.ec1.claim.creator.ClaimDataCreator;
 import com.plateer.ec1.claim.creator.ClaimDataCreatorInterface;
-import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.enums.CreatorType;
 import com.plateer.ec1.claim.mapper.ClaimMapper;
 import com.plateer.ec1.claim.mapper.ClaimTrxMapper;
@@ -10,31 +9,33 @@ import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.common.code.order.OPT0003Type;
 import com.plateer.ec1.common.code.order.OPT0004Type;
 import com.plateer.ec1.common.code.order.OPT0005Type;
-import com.plateer.ec1.common.model.order.*;
+import com.plateer.ec1.common.model.order.OpClmInfoModel;
+import com.plateer.ec1.common.model.order.OpOrdBnfInfoModel;
+import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
+import com.plateer.ec1.common.model.order.OpOrdCostInfoModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
 @Component
-public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
+@Slf4j
+public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements ClaimDataCreatorInterface {
 
-    public CancelDataCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
+    public ReturnWithdrawCreatorImpl(ClaimMapper claimMapper, ClaimTrxMapper claimTrxMapper) {
         super(claimMapper, claimTrxMapper);
     }
 
     @Override
     public CreatorType getType() {
-        return CreatorType.C;
+        return null;
     }
 
     @Override
     public ClaimProcessVo updateDataCreator(ClaimProcessVo vo) {
-        log.info("취소 update 데이터 생성 로직 호출");
+        log.info("반품 update 데이터 생성 로직 호출");
         List<OpOrdBnfInfoModel> bnf = updateOrderBenefitData(vo);
         List<OpClmInfoModel> clm = updateOrderClaim(vo);
 
@@ -47,7 +48,7 @@ public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimData
 
     @Override
     public ClaimProcessVo insertDataCreator(ClaimProcessVo vo) {
-        log.info("취소 insert 데이터 생성 로직 호출");
+        log.info("반품 insert 데이터 생성 로직 호출");
         List<OpClmInfoModel> clm = insertOrderClaim(vo);
         List<OpOrdBnfRelInfoModel> rel = insertOrderBenefitRelation(vo);
         List<OpOrdCostInfoModel> cost = insertOrderCost(vo);
@@ -60,55 +61,31 @@ public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 .build();
     }
 
-    public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
-        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
-    }
-
     @Override
     public List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo) {
-        // 취소수량
-        List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
-        if(!Objects.isNull(vo.getOpClmInfoModels())){
-            if(vo.getClaimType().equals(ClaimType.MCC.name())){
-                for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
-                    clm.setOrdPrgsScd(OPT0004Type.CS.getType());
-                    opClmInfoModelList.add(clm);
-                }
-            }else{
-                for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
-                    clm.setCnclCnt(clm.getOrdCnt());
-                    opClmInfoModelList.add(clm);
-                }
-            }
-        }
-        return opClmInfoModelList;
+        // 원주문 - 반품수량
+        // 반품접수 - 반품수량
+        return null;
     }
 
     @Override
     public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo) {
         List<OpClmInfoModel> opClmInfoModelList = OpClmInfoModel.builder().build().insertOrderClaim(vo);
         if(!Objects.isNull(opClmInfoModelList)){
-            for(OpClmInfoModel clm : vo.getOpClmInfoModels()){
-                clm.setOrdClmTpCd(OPT0003Type.C.name());
-                clm.setOrdPrgsScd(vo.getClaimType().equals(ClaimType.MCA.name()) ? OPT0004Type.CA.getType() : OPT0004Type.CS.getType());
-                clm.setOrdClmCmtDtime(LocalDateTime.now());
+            for (OpClmInfoModel clm : opClmInfoModelList) {
+                clm.setOrdClmTpCd(OPT0003Type.RC.name());
+                clm.setOrdPrgsScd(OPT0004Type.RW.getType());
             }
         }
         return opClmInfoModelList;
     }
 
-    public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
-        return OpOrdBnfRelInfoModel.builder().build().insertOrderBenefitRelation(vo);
-    }
-
     @Override
     public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo) {
-        // 적용구분코드, 클레임번호, 원주문비용번호
+        // 원주문비용번호만 추가해주면 됨
         List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
-                cost.setClmNo(vo.getClmNo());
-                cost.setAplyCcd(OPT0005Type.CNCL.getType());
                 cost.setOrgOrdCstNo(cost.getOrdCstNo());
                 opOrdCostInfoModelList.add(cost);
             }
@@ -116,4 +93,23 @@ public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimData
         return opOrdCostInfoModelList;
     }
 
+    private List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo){
+        // 반품접수 - 취소배송비
+        List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
+        if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
+            for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
+                cost.setCnclDvAmt(cost.getAplyDvAmt());
+                opOrdCostInfoModelList.add(cost);
+            }
+        }
+        return opOrdCostInfoModelList;
+    }
+
+    public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
+        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
+    }
+
+    public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
+        return OpOrdBnfRelInfoModel.builder().build().insertOrderBenefitRelation(vo);
+    }
 }
