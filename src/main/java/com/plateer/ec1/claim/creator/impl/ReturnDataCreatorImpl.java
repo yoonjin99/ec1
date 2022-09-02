@@ -106,6 +106,18 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 cost.setImtnRsnCcd(vo.getImtnRsnCcd());
                 opOrdCostInfoModelList.add(cost);
             }
+
+            if(vo.getImtnRsnCcd().equals(OPT0008Type.COMPANY.getType())){
+                for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
+                    OpOrdCostInfoModel reCost = cost.toBuilder()
+                            .aplyCcd(OPT0005Type.CNCL.getType())
+                            .dvAmtTpCd(OPT0006Type.SHIPMENT.getType())
+                            .orgOrdCstNo(cost.getOrdCstNo())
+                            .dvPlcTpCd(DVP0001Type.FREE.getType())
+                            .build();
+                    opOrdCostInfoModelList.add(reCost);
+                }
+            }
         }
         return opOrdCostInfoModelList;
     }

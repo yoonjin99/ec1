@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @ToString
 public class OpOrdCostInfoModel {
     private String ordCstNo;
