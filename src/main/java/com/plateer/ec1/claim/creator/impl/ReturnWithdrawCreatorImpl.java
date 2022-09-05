@@ -30,7 +30,7 @@ public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements Claim
 
     @Override
     public CreatorType getType() {
-        return null;
+        return CreatorType.RW;
     }
 
     @Override
@@ -65,7 +65,15 @@ public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements Claim
     public List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo) {
         // 원주문 - 반품수량
         // 반품접수 - 반품수량
-        return null;
+        List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
+        if(!Objects.isNull(vo.getOpClmInfoModels())){
+            for (OpClmInfoModel clm : vo.getOpClmInfoModels()) {
+                clm.setRtgsCnt(clm.getOrdCnt());
+                clm.setCnclCnt(clm.getOrdCnt());
+                opClmInfoModelList.add(clm);
+            }
+        }
+        return opClmInfoModelList;
     }
 
     @Override

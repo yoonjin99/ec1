@@ -4,6 +4,7 @@ import com.plateer.ec1.claim.enums.ClaimType;
 import com.plateer.ec1.claim.service.ClaimService;
 import com.plateer.ec1.claim.vo.ClaimVo;
 import com.plateer.ec1.claim.vo.OrdClaimInfoVo;
+import com.plateer.ec1.common.code.order.OPT0008Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,75 @@ public class GeneralTest {
         ClaimVo vo = new ClaimVo();
         vo.setClaimType(ClaimType.EA);
         vo.setOrdNo("O20220808103004");
-        vo.setImtnRsnCcd("20"); // 고객 사유
+        vo.setImtnRsnCcd("20"); // 당사 사유
+
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
+    }
+
+    @Test
+    @DisplayName("반품 접수 테스트 - 고객 사유")
+    void ReturnConsumerTest(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.RA);
+        vo.setOrdNo("O20220808103004");
+        vo.setImtnRsnCcd("10"); // 고객 사유
+
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
+    }
+    
+    @Test
+    @DisplayName("반품 접수 테스트 - 당사 사유")
+    void ReturnCompanyTest(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.RA);
+        vo.setOrdNo("O20220808103004");
+        vo.setImtnRsnCcd("20"); // 당사 사유
+
+        List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
+
+        OrdClaimInfoVo v1 = new OrdClaimInfoVo();
+        v1.setOrdNo("O20220808103004");
+        v1.setOrdGoodsNo("P001");
+        v1.setOrdItemNo("1");
+        v1.setDvGrpNo(1);
+
+        claimInfoVos.add(v1);
+
+        vo.setOrdClaimInfoVoList(claimInfoVos);
+
+        service.claim(vo);
+    }
+
+    @Test
+    @DisplayName("반품 철회 테스트")
+    void ReturnWithdraw(){
+        ClaimVo vo = new ClaimVo();
+        vo.setClaimType(ClaimType.RW);
+        vo.setOrdNo("O20220808103004");
 
         List<OrdClaimInfoVo> claimInfoVos = new ArrayList<>();
 

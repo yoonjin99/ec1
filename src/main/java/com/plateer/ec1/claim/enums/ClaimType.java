@@ -13,7 +13,7 @@ public enum ClaimType {
     MCA("MCA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.C),
     MCC("MCC",ProcessorType.COMPLETE, CreatorType.C),
     RA("RA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.R),
-    RW("RW",ProcessorType.ACCEPTWITHDRWAL, CreatorType.R),
+    RW("RW",ProcessorType.ACCEPTWITHDRWAL, CreatorType.RW),
     EA("EA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.EX);
 
     private String type;

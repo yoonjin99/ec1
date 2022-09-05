@@ -14,6 +14,7 @@ public interface ClaimMapper {
     List<ClaimStatusVo> statusCheck(List<OrdClaimInfoVo> ordClaimInfoVoList);
     String selectClaimNo();
     List<OpClmInfoModel> selectClaimInfo(ClaimVo vo);
+    List<OpClmInfoModel> selectReturnClaimInfo(ClaimVo vo);
     List<OpOrdCostInfoModel> selectCostInfo(List<OpClmInfoModel> clmInfoModels);
     List<OpOrdBnfInfoModel> selectBnfInfo(List<OpClmInfoModel> clmInfoModels);
     List<OpOrdBnfRelInfoModel> selectBnfRelInfo(List<OpClmInfoModel> clmInfoModels);

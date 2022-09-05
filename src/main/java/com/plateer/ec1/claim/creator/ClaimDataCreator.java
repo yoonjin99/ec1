@@ -40,7 +40,12 @@ public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
             return getEcouponCancelData(vo.getOrdNo());
         }
 
-        List<OpClmInfoModel> clmInfoModels = claimMapper.selectClaimInfo(vo);
+        List<OpClmInfoModel> clmInfoModels = null;
+        if(vo.getClaimType().getType().equals(ClaimType.RW.name())){
+            clmInfoModels = getReturnWithdraw(vo);
+        }else{
+            clmInfoModels = claimMapper.selectClaimInfo(vo);
+        }
         List<OpOrdCostInfoModel> opOrdCostInfoModels = claimMapper.selectCostInfo(clmInfoModels);
         List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModels = claimMapper.selectBnfRelInfo(clmInfoModels);
         List<OpOrdBnfInfoModel> opOrdBnfInfoModels = claimMapper.selectBnfInfo(clmInfoModels);
@@ -54,6 +59,10 @@ public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
                 .opOrdBnfInfoModels(opOrdBnfInfoModels)
                 .opPayInfoModel(opPayInfoModel)
                 .build();
+    }
+
+    private List<OpClmInfoModel> getReturnWithdraw(ClaimVo vo){
+        return claimMapper.selectReturnClaimInfo(vo);
     }
 
     @Override
@@ -81,17 +90,19 @@ public abstract class ClaimDataCreator implements ClaimDataCreatorInterface{
     public void saveClaimData(ClaimProcessVo insertData, ClaimProcessVo updateData){
         log.info("주문 클레임 데이터 저장");
         if(!Objects.isNull(insertData)){
-            Optional.ofNullable(insertData.getOpClmInfoModels()).ifPresent(claimTrxMapper::insertOpClmInfo);
-            Optional.ofNullable(insertData.getOpOrdBnfRelInfoModels()).ifPresent(claimTrxMapper::insertOpOrdBnfRelInfo);
-            Optional.ofNullable(insertData.getOpOrdCostInfoModels()).ifPresent(claimTrxMapper::insertOpOrdCostInfo);
+            if (insertData.getOpClmInfoModels().size() > 0) claimTrxMapper.insertOpClmInfo(insertData.getOpClmInfoModels());
+            if (insertData.getOpOrdBnfRelInfoModels().size() > 0) claimTrxMapper.insertOpOrdBnfRelInfo(insertData.getOpOrdBnfRelInfoModels());
+            if (insertData.getOpOrdCostInfoModels().size() > 0) claimTrxMapper.insertOpOrdCostInfo(insertData.getOpOrdCostInfoModels());
         }
         if(!Objects.isNull(updateData)){
-            if(!updateData.getClaimType().equals(ClaimType.MCC.name())){
-                Optional.ofNullable(updateData.getOpClmInfoModels()).ifPresent(claimTrxMapper::updateOpClmInfo);
-            }else{
-                Optional.ofNullable(updateData.getOpClmInfoModels()).ifPresent(claimTrxMapper::updateEcouponComplete);
+            if(updateData.getClaimType().equals(ClaimType.MCC.name())){
+                if (updateData.getOpClmInfoModels().size() > 0) claimTrxMapper.updateEcouponComplete(updateData.getOpClmInfoModels());
+            } else if (updateData.getClaimType().equals(ClaimType.RW.name())){
+                if (updateData.getOpClmInfoModels().size() > 0) claimTrxMapper.updateReturnWithdrawOpClmInfo(updateData.getOpClmInfoModels());
+            } else{
+                if (updateData.getOpClmInfoModels().size() > 0) claimTrxMapper.updateOpClmInfo(updateData.getOpClmInfoModels());
             }
-            Optional.ofNullable(updateData.getOpOrdBnfInfoModels()).ifPresent(claimTrxMapper::updateOpOrdBnfInfo);
+            if (updateData.getOpOrdBnfInfoModels().size() > 0) claimTrxMapper.updateOpOrdBnfInfo(updateData.getOpOrdBnfInfoModels());
         }
     }
 }

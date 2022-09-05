@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.*;
 @Setter
 @Builder
 @ToString
+@Slf4j
 public class OpOrdBnfRelInfoModel {
     private String ordNo;
     private Integer ordSeq;
@@ -32,6 +34,7 @@ public class OpOrdBnfRelInfoModel {
 
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
         List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModelList = new ArrayList<>();
+        log.info(vo.getOpOrdBnfRelInfoModels() + "값");
         if(!Objects.isNull(vo.getOpOrdBnfRelInfoModels())){
             for(OpOrdBnfRelInfoModel rel : vo.getOpOrdBnfRelInfoModels()){
                 rel.setProcSeq(rel.getProcSeq() + 1);

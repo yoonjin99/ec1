@@ -138,6 +138,30 @@
       and oci.rtgs_cnt = 0
   </select>
 
+  <select id="selectReturnClaimInfo" parameterType="com.plateer.ec1.claim.vo.ClaimVo" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel">
+    with goods_info as (
+    <foreach collection="ordClaimInfoVoList" item="item" separator="union all">
+      select
+      #{item.ordGoodsNo} as goods_no
+      , #{item.ordItemNo} as item_no
+      , #{item.ordNo} as ord_no
+      , #{item.dvGrpNo} as dv_grp_no
+    </foreach>
+    )
+    select
+    oci.*
+    from
+    op_clm_info oci
+    inner join goods_info gi
+    on oci.ord_no = gi.ord_no
+    and oci.ord_goods_no = gi.goods_no
+    and oci.ord_item_no = gi.item_no
+    where
+    oci.ord_clm_tp_cd = 'R'
+    and oci.cncl_cnt = 0
+    and oci.rtgs_cnt = 0
+  </select>
+
   <select id="selectClaim" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel" parameterType="string">
     select
         oci.*

@@ -50,7 +50,7 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
         List<OpClmInfoModel> clm = insertOrderClaim(vo);
         List<OpOrdBnfRelInfoModel> rel = insertOrderBenefitRelation(vo);
         List<OpOrdCostInfoModel> cost = insertOrderCost(vo);
-
+        
         return ClaimProcessVo.builder()
                 .opClmInfoModels(clm)
                 .opOrdBnfRelInfoModels(rel)
@@ -65,7 +65,16 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
 
     @Override
     public List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo) {
-        return null;
+        List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
+        if(!Objects.isNull(vo.getOpClmInfoModels())){
+            for (OpClmInfoModel clm : vo.getOpClmInfoModels()) {
+                OpClmInfoModel clmInfoModel = clm.toBuilder()
+                        .rtgsCnt(clm.getOrdCnt())
+                        .build();
+                opClmInfoModelList.add(clmInfoModel);
+            }
+        }
+        return opClmInfoModelList;
     }
 
     @Override
@@ -93,6 +102,7 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
                 cost.setClmNo(vo.getClmNo());
+                cost.setDvGrpNo(cost.getDvGrpNo() + 1);
                 cost.setAplyCcd(OPT0005Type.APLY.getType());
                 cost.setOrgOrdCstNo(cost.getOrdCstNo());
                 cost.setDvAmtTpCd(OPT0006Type.RETURN.getType());
@@ -110,15 +120,19 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
             if(vo.getImtnRsnCcd().equals(OPT0008Type.COMPANY.getType())){
                 for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
                     OpOrdCostInfoModel reCost = cost.toBuilder()
+                            .dvGrpNo(cost.getDvGrpNo() - 1)
                             .aplyCcd(OPT0005Type.CNCL.getType())
                             .dvAmtTpCd(OPT0006Type.SHIPMENT.getType())
                             .orgOrdCstNo(cost.getOrdCstNo())
+                            .orgDvAmt(cost.getAplyDvAmt())
                             .dvPlcTpCd(DVP0001Type.FREE.getType())
                             .build();
                     opOrdCostInfoModelList.add(reCost);
                 }
             }
         }
+
+        log.info(opOrdCostInfoModelList.toString() + "비용");
         return opOrdCostInfoModelList;
     }
 }
