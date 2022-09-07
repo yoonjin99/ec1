@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 public enum ClaimType {
     GCC("GCC",ProcessorType.COMPLETE, CreatorType.C),
-    MCA("MCA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.C),
+    MCA("MCA",ProcessorType.ACCEPT, CreatorType.C),
     MCC("MCC",ProcessorType.COMPLETE, CreatorType.C),
-    RA("RA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.R),
-    RW("RW",ProcessorType.ACCEPTWITHDRWAL, CreatorType.RW),
-    EA("EA",ProcessorType.ACCEPTWITHDRWAL, CreatorType.EX);
+    RA("RA",ProcessorType.ACCEPT, CreatorType.R),
+    RW("RW",ProcessorType.WITHDRAWAL, CreatorType.RW),
+    EA("EA",ProcessorType.WITHDRAWAL, CreatorType.EX);
 
     private String type;
     private ProcessorType processorType;

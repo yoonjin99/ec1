@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Builder
+@Builder(toBuilder = true)
 public class OpDvpInfo {
     private Integer dvGrpNo;
     private String ordNo;

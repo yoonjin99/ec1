@@ -113,7 +113,8 @@ public class CancelDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 opOrdCostInfoModelList.add(cost);
             }
         }
+
         return opOrdCostInfoModelList;
     }
-
 }
+
