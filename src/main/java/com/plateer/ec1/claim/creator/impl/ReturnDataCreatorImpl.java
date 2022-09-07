@@ -59,10 +59,6 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 .build();
     }
 
-    public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
-        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
-    }
-
     @Override
     public List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo) {
         List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
@@ -92,6 +88,10 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
         return opClmInfoModelList;
     }
 
+    public List<OpOrdBnfInfoModel> updateOrderBenefitData(ClaimProcessVo vo) {
+        return OpOrdBnfInfoModel.builder().build().updateOrderBenefitData(vo);
+    }
+
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
         return OpOrdBnfRelInfoModel.builder().build().insertOrderBenefitRelation(vo);
     }
@@ -100,9 +100,10 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
     public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo) {
         List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
+            Integer dvpGrpNo = claimMapper.selectDvpGrpNo(vo.getOrdNo());
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
                 cost.setClmNo(vo.getClmNo());
-                cost.setDvGrpNo(cost.getDvGrpNo() + 1);
+                cost.setDvGrpNo(dvpGrpNo + 1);
                 cost.setAplyCcd(OPT0005Type.APLY.getType());
                 cost.setOrgOrdCstNo(cost.getOrdCstNo());
                 cost.setDvAmtTpCd(OPT0006Type.RETURN.getType());
@@ -120,7 +121,7 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
             if(vo.getImtnRsnCcd().equals(OPT0008Type.COMPANY.getType())){
                 for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
                     OpOrdCostInfoModel reCost = cost.toBuilder()
-                            .dvGrpNo(cost.getDvGrpNo() - 1)
+                            .dvGrpNo(dvpGrpNo)
                             .aplyCcd(OPT0005Type.CNCL.getType())
                             .dvAmtTpCd(OPT0006Type.SHIPMENT.getType())
                             .orgOrdCstNo(cost.getOrdCstNo())
@@ -131,8 +132,6 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 }
             }
         }
-
-        log.info(opOrdCostInfoModelList.toString() + "비용");
         return opOrdCostInfoModelList;
     }
 }

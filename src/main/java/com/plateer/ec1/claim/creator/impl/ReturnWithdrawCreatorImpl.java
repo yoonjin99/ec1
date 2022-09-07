@@ -63,14 +63,14 @@ public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements Claim
 
     @Override
     public List<OpClmInfoModel> updateOrderClaim(ClaimProcessVo vo) {
-        // 원주문 - 반품수량
-        // 반품접수 - 반품수량
         List<OpClmInfoModel> opClmInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpClmInfoModels())){
             for (OpClmInfoModel clm : vo.getOpClmInfoModels()) {
-                clm.setRtgsCnt(clm.getOrdCnt());
-                clm.setCnclCnt(clm.getOrdCnt());
-                opClmInfoModelList.add(clm);
+                OpClmInfoModel clmInfoModel = clm.toBuilder()
+                        .rtgsCnt(clm.getOrdCnt())
+                        .cnclCnt(clm.getOrdCnt())
+                        .build();
+                opClmInfoModelList.add(clmInfoModel);
             }
         }
         return opClmInfoModelList;
@@ -90,7 +90,6 @@ public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements Claim
 
     @Override
     public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo) {
-        // 원주문비용번호만 추가해주면 됨
         List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
@@ -102,7 +101,6 @@ public class ReturnWithdrawCreatorImpl extends ClaimDataCreator implements Claim
     }
 
     private List<OpOrdCostInfoModel> updateOrderCost(ClaimProcessVo vo){
-        // 반품접수 - 취소배송비
         List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
         if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
             for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){

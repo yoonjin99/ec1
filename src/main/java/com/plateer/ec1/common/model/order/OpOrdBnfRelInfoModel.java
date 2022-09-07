@@ -34,7 +34,6 @@ public class OpOrdBnfRelInfoModel {
 
     public List<OpOrdBnfRelInfoModel> insertOrderBenefitRelation(ClaimProcessVo vo) {
         List<OpOrdBnfRelInfoModel> opOrdBnfRelInfoModelList = new ArrayList<>();
-        log.info(vo.getOpOrdBnfRelInfoModels() + "값");
         if(!Objects.isNull(vo.getOpOrdBnfRelInfoModels())){
             for(OpOrdBnfRelInfoModel rel : vo.getOpOrdBnfRelInfoModels()){
                 rel.setProcSeq(rel.getProcSeq() + 1);

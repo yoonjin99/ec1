@@ -1,7 +1,10 @@
 package com.plateer.ec1.common.model.order;
 
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
+import com.plateer.ec1.common.code.order.OPT0003Type;
+import com.plateer.ec1.common.code.order.OPT0004Type;
 import com.plateer.ec1.common.code.order.OPT0005Type;
+import com.plateer.ec1.common.code.order.OPT0014Type;
 import com.plateer.ec1.order.vo.OrdDvpAreaInfoVo;
 import com.plateer.ec1.order.vo.OrdDvpInfo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
@@ -51,19 +54,6 @@ public class OpOrdCostInfoModel {
                 .dvBnfAmt(0L)
                 .aplyDvAmt(0L)
                 .build();
-    }
-
-    public List<OpOrdCostInfoModel> insertOrderCost(ClaimProcessVo vo){
-        List<OpOrdCostInfoModel> opOrdCostInfoModelList = new ArrayList<>();
-        if(!Objects.isNull(vo.getOpOrdCostInfoModels())){
-            for(OpOrdCostInfoModel cost : vo.getOpOrdCostInfoModels()){
-                cost.setClmNo(vo.getClmNo());
-                cost.setAplyCcd(OPT0005Type.CNCL.getType());
-                cost.setOrgOrdCstNo(cost.getOrdCstNo());
-                opOrdCostInfoModelList.add(cost);
-            }
-        }
-        return opOrdCostInfoModelList;
     }
 
 }

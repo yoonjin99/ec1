@@ -110,8 +110,6 @@
       on oci.ord_no = oobri.ord_no
       and oci.ord_seq = oobri.ord_seq
       and oci.proc_seq = oobri.proc_seq
-    where
-        aply_cncl_ccd = '10'
   </select>
 
   <select id="selectClaimInfo" parameterType="com.plateer.ec1.claim.vo.ClaimVo" resultType="com.plateer.ec1.common.model.order.OpClmInfoModel">
