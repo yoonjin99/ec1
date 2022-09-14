@@ -7,6 +7,7 @@ import com.plateer.ec1.claim.processor.ClaimProcessor;
 import com.plateer.ec1.claim.validator.ClaimValidator;
 import com.plateer.ec1.claim.vo.ClaimProcessVo;
 import com.plateer.ec1.claim.vo.ClaimVo;
+import com.plateer.ec1.common.code.order.OPT0008Type;
 import com.plateer.ec1.common.model.order.OpClmInfoModel;
 import com.plateer.ec1.common.model.order.OpOrdBnfRelInfoModel;
 import com.plateer.ec1.order.service.OrderHistoryService;
@@ -51,11 +52,11 @@ public class AcceptProcessor extends ClaimProcessor {
             ClaimProcessVo insertData = claimDataCreator.getInsertClaimData(orgData);
             // update 대상 데이터 생성
             ClaimProcessVo updateData = claimDataCreator.getUpdateClaimData(orgData);
+            // 데이터 저장
+            claimDataCreator.saveClaimData(insertData, updateData);
 
             amountValid(claimDto, insertData);
 
-            // 데이터 저장
-            claimDataCreator.saveClaimData(insertData, updateData);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -68,7 +69,6 @@ public class AcceptProcessor extends ClaimProcessor {
         log.info("접수 금액 검증");
         Long orderPrice = 0L;
         for(OpClmInfoModel clm : processVo.getOpClmInfoModels()) orderPrice += clm.getOrdAmt();
-
         Long bnfPrice = 0L;
         for(OpOrdBnfRelInfoModel rel : processVo.getOpOrdBnfRelInfoModels()) bnfPrice += rel.getAplyAmt();
 

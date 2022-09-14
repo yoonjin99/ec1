@@ -20,7 +20,7 @@ public class HistoryTest {
     @DisplayName("모니터링 로그 등록 테스트")
     void insertTest(){
         OrderRequestVo vo = JsonFileReader.getObject("json/order/orderRequest.json", OrderRequestVo.class);
-//        orderHistoryService.insertOrderHistory(vo);
+        orderHistoryService.insertOrderHistory(vo, vo.getOrdNo(), "");
     }
 
     @Test

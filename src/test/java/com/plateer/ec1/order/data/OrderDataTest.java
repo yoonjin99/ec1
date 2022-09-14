@@ -52,16 +52,4 @@ public class OrderDataTest {
         OrderRequestVo orderRequest = JsonFileReader.getObject("json/order/orderRequestEcouponP.json", OrderRequestVo.class);
         context.execute(new EcouponDataStrategy(), new FoAfterStrategy(), orderRequest);
     }
-
-    @Test
-    @DisplayName("생성된 데이터로 결제 테스트")
-    void payment(){
-
-    }
-
-    @Test
-    @DisplayName("데이터 등록 테스트")
-    void insertData(){
-
-    }
 }

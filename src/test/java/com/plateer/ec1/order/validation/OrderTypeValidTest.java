@@ -3,6 +3,7 @@ package com.plateer.ec1.order.validation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.plateer.ec1.common.model.product.PrGoodsBaseModel;
 import com.plateer.ec1.order.validator.OrderTypeValidators;
+import com.plateer.ec1.order.vo.OrderProductViewVo;
 import com.plateer.ec1.order.vo.OrderRequestVo;
 import com.plateer.ec1.order.vo.OrderValidationVo;
 import com.plateer.ec1.util.JsonFileReader;
@@ -20,20 +21,18 @@ public class OrderTypeValidTest {
     @DisplayName("ecoupon 상품이 맞는지 확인")
     void isEcouponProductTest(){
         // 1. ecoupon 상품이 아님
-        List<PrGoodsBaseModel> listPrdGoods = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
-
-//        OrderValidationVo vo = OrderValidationVo.builder()
-//                .prGoodsBaseModel(listPrdGoods)
-//                .build();
-//        Assertions.assertFalse(OrderTypeValidators.isEcouponProduct.test(vo));
+        List<OrderProductViewVo> listPrdGoods = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<OrderProductViewVo>>(){});
+        OrderValidationVo vo = OrderValidationVo.builder()
+                .prGoodsBaseModel(listPrdGoods)
+                .build();
+        Assertions.assertFalse(OrderTypeValidators.isEcouponProduct.test(vo));
 
         // 2. ecoupon 상품이 맞음
-        List<PrGoodsBaseModel> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
-
-//        OrderValidationVo vo2 = OrderValidationVo.builder()
-//                .prGoodsBaseModel(listPrdGoods2)
-//                .build();
-//        Assertions.assertTrue(OrderTypeValidators.isEcouponProduct.test(vo2));
+        List<OrderProductViewVo> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<OrderProductViewVo>>(){});
+        OrderValidationVo vo2 = OrderValidationVo.builder()
+                .prGoodsBaseModel(listPrdGoods2)
+                .build();
+        Assertions.assertTrue(OrderTypeValidators.isEcouponProduct.test(vo2));
     }
 
     @Test
@@ -41,7 +40,6 @@ public class OrderTypeValidTest {
     void isEcouponValidTest(){
         // 휴대폰 번호가 없음
         OrderRequestVo orderRequestVo = JsonFileReader.getObject("json/order/valid/typeValid/ecoupon/noPhoneNum.json", OrderRequestVo.class);
-
         OrderValidationVo vo = OrderValidationVo.builder()
                 .orderRequestVo(orderRequestVo)
                 .build();
@@ -49,7 +47,6 @@ public class OrderTypeValidTest {
 
         // 휴대폰 번호가 있음
         OrderRequestVo orderRequestVo2 = JsonFileReader.getObject("json/order/orderRequest.json", OrderRequestVo.class);
-
         OrderValidationVo vo2 = OrderValidationVo.builder()
                 .orderRequestVo(orderRequestVo2)
                 .build();
@@ -85,28 +82,25 @@ public class OrderTypeValidTest {
     @DisplayName("일반상품이고 직배송인지 확인")
     void isGeneralProductTest(){
         // 1. 일반상품이 아님
-        List<PrGoodsBaseModel> listPrdGoods = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
-
-//        OrderValidationVo vo = OrderValidationVo.builder()
-//                .prGoodsBaseModel(listPrdGoods)
-//                .build();
-//        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo));
+        List<OrderProductViewVo> listPrdGoods = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<OrderProductViewVo>>(){});
+        OrderValidationVo vo = OrderValidationVo.builder()
+                .prGoodsBaseModel(listPrdGoods)
+                .build();
+        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo));
 
         // 2. 직배송이 아님
-        List<PrGoodsBaseModel> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
-
-//        OrderValidationVo vo2 = OrderValidationVo.builder()
-//                .prGoodsBaseModel(listPrdGoods2)
-//                .build();
-//        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo2));
+        List<OrderProductViewVo> listPrdGoods2 = JsonFileReader.getObject("json/order/mobileProduct.json", new TypeReference<List<OrderProductViewVo>>(){});
+        OrderValidationVo vo2 = OrderValidationVo.builder()
+                .prGoodsBaseModel(listPrdGoods2)
+                .build();
+        Assertions.assertFalse(OrderTypeValidators.isGeneralProduct.test(vo2));
 
         // 3. 1,2 해당함
-        List<PrGoodsBaseModel> listPrdGoods3 = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<PrGoodsBaseModel>>(){});
-
-//        OrderValidationVo vo3 = OrderValidationVo.builder()
-//                .prGoodsBaseModel(listPrdGoods3)
-//                .build();
-//        Assertions.assertTrue(OrderTypeValidators.isGeneralProduct.test(vo3));
+        List<OrderProductViewVo> listPrdGoods3 = JsonFileReader.getObject("json/order/generalProduct.json", new TypeReference<List<OrderProductViewVo>>(){});
+        OrderValidationVo vo3 = OrderValidationVo.builder()
+                .prGoodsBaseModel(listPrdGoods3)
+                .build();
+        Assertions.assertTrue(OrderTypeValidators.isGeneralProduct.test(vo3));
     }
 
     @Test

@@ -10,8 +10,10 @@ import com.plateer.ec1.common.code.order.*;
 import com.plateer.ec1.common.model.order.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -76,7 +78,7 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
     @Override
     public List<OpClmInfoModel> insertOrderClaim(ClaimProcessVo vo) {
         List<OpClmInfoModel> opClmInfoModelList = OpClmInfoModel.builder().build().insertOrderClaim(vo);
-        if(!Objects.isNull(opClmInfoModelList)){
+        if(!CollectionUtils.isEmpty(opClmInfoModelList)){  // todo : CollectionUtils.isEmpty 공부하기
             Integer dvpGrpNo = claimMapper.selectDvpGrpNo(vo.getOrdNo());
             for (OpClmInfoModel clm : opClmInfoModelList) {
                 clm.setDvRvtCcd(OPT0014Type.RETURN.getType());
@@ -84,6 +86,7 @@ public class ReturnDataCreatorImpl extends ClaimDataCreator implements ClaimData
                 clm.setOrdPrgsScd(OPT0004Type.RA.getType());
                 clm.setDvGrpNo(dvpGrpNo + 1);
             }
+            dvpGrpNo++;
         }
         return opClmInfoModelList;
     }

@@ -55,7 +55,6 @@ public class OrderContext {
             ApproveResVo approveResVo = paymentCall(orderRequest);
             dto.setProcCcd(OPT0012Type.FP);
 
-            // TODO : 개선하기
             if(orderRequest.getOrdPayInfoVo().getPaymentType().equals("POINT")){ // 포인트 결제
                 dto.getOpOrdBaseModel().setOrdCmtDtime(LocalDateTime.now());
                 for(OpClmInfoModel model : dto.getOpClmInfoModelList()){
@@ -125,7 +124,6 @@ public class OrderContext {
             orderDataTrxMapper.insertOrderAreaInfo(vo.getOpDvpAreaInfo());
             orderDataTrxMapper.insertOrderDvpInfo(vo.getOpDvpInfoList());
 
-            // TODO : 개선하기
             for(OpOrdBnfInfoModel bnf : vo.getOpOrdBnfInfoModelList()){
                 String key = orderDataTrxMapper.insertOrderBnf(bnf);
 
@@ -137,7 +135,6 @@ public class OrderContext {
                 }
             }
             orderDataTrxMapper.insertOrderCost(vo.getOpOrdCostInfoModelList());
-//            throw new Exception("데이터 등록 오류 발생");
         }catch (Exception e){
             e.printStackTrace();
         }

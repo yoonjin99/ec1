@@ -22,7 +22,6 @@ public class OrderController {
 
     @PostMapping("/order")
     public void order(@Valid @RequestBody OrderRequestVo orderRequest){
-        log.info(orderRequest.toString() + "request 값 확인용");
         orderService.order(orderRequest);
     }
 
